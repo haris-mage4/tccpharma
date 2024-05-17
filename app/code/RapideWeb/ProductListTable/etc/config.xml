@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+	<default>
+		<productlisttable>
+			<general>
+				<enabled>1</enabled>
+				<page_title>Product List Table</page_title>
+				<navigation>1</navigation>
+				<product_image>1</product_image>
+				<product_option>1</product_option>
+			</general>
+			<design>
+				<image_width>80</image_width>
+				<image_height>80</image_height>
+				<button_text>Add to Cart</button_text>
+				<button_bg_color>#c00c00</button_bg_color>
+				<button_color>#ffffff</button_color>
+			</design>
+		</productlisttable>
+	</default>
+</config>

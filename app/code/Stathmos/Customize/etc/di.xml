@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\CatalogUrlRewrite\Observer\ProductUrlKeyAutogeneratorObserver" type="Stathmos\Customize\Preference\ProductUrlKeyAutogeneratorObserver" />
+    <!-- <preference for="Magento\Sales\Model\Order" type="Stathmos\Customize\Model\Order" /> -->
+    <type name="Magento\Webapi\Controller\Rest">
+        <plugin name="vladflonta-rest-api-log" type="Stathmos\Customize\Plugin\RestApiLog"/>
+    </type>
+    <type name="Magento\Elasticsearch\Model\Adapter\Index\Builder">
+            <plugin name="custom_like_search_builder" type="Stathmos\Customize\Plugin\Model\Adapter\Index\CustomBuilder" />
+    </type>
+    <type name="Magento\Catalog\Model\ProductRepository">
+        <plugin name="Mageplaza_HelloWorld_Plugin" type="Stathmos\Customize\Plugin\Model\ProductRepository" sortOrder="10" disabled="false"  />
+    </type>
+</config>

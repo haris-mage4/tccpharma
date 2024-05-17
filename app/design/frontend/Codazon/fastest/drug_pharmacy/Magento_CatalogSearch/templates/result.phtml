@@ -1,0 +1,77 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** This changes need to valid applying filters and configuration before search process is started. */
+$productList = $block->getProductListHtml();
+$helper = $this->helper('Eagle\CustomSearchBlock\Helper\Data');
+?>
+<?php if ($block->getResultCount()) : ?>
+    <?= /* @noEscape */ $block->getChildHtml('tagged_product_list_rss_link') ?>
+<div class="search results">
+    <?php if ($messages = $block->getNoteMessages()) : ?>
+    <div class="message notice">
+        <div>
+            <?php foreach ($messages as $message) : ?>
+                <?= /* @noEscape */ $message ?><br />
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+    <?php if ($helper->isParamInNames()) : ?>
+    <div class="search results">
+     <h2><?php echo __("'%1' can be found on the following pages:",  str_replace("Search results for: ", '', $block->getSearchQueryText())) ?></h2>
+       <ul>
+            <li><a href="<?php echo $this->getUrl('short-dated-discounted-inventory'); ?>" class="smile-cms-link">Short Dated Discounted Inventory</a></li>
+       </ul>
+   </div>
+   <?php endif; ?>
+
+   <?php if ($helper->isParamInMediacalPage()) : ?>
+    <div class="search results">
+     <h2><?php echo __("'%1' can be found on the following pages:",  str_replace("Search results for: ", '', $block->getSearchQueryText())) ?></h2>
+       <ul>
+            <li><a href="<?php echo $this->getUrl('medical-supply-special-offerings'); ?>" class="smile-cms-link">Medical Supply Special Offerings</a></li>
+       </ul>
+   </div>
+   <?php endif; ?>
+
+    <table style="width: 100%; margin-bottom: 20px; margin-left: auto; margin-right: auto; color: #ffffff; padding: 0;">
+    <tbody>
+        <tr>
+            <td style="background: linear-gradient(to right top, #F86532 40%, #F86532 90%); font-size: 24px; padding: 10px 20px; border-radius: 10px; text-align: center;" bgcolor="#F86532"><a style="color: #ffffff; text-decoration: none;" href="<?php echo $this->getUrl('custom-quote-request'); ?>">Looking for something else? Submit a custom request by clicking here!</a></td>
+        </tr>
+    </tbody>
+</table>
+    <?= /* @noEscape */ $productList ?>
+</div>
+<?php else : ?>
+
+<div class="message notice">
+    <div>
+        <?php echo "No matching records found... Don't give up! We are here to help you get what you need!" ?>
+        <?= /* @noEscape */ $block->getAdditionalHtml() ?>
+        <?php if ($messages = $block->getNoteMessages()) : ?>
+            <?php foreach ($messages as $message) : ?>
+                <br /><?= /* @noEscape */ $message ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+</div>
+ <table style="width: 100%; margin-left: auto; margin-right: auto; color: #ffffff; padding: 0;">
+    <tbody>
+        <tr>
+            <td style="background: linear-gradient(to right top, #F86532 40%, #F86532 90%); font-size: 24px; padding: 10px 20px; border-radius: 10px; text-align: center;" bgcolor="#F86532"><a style="color: #ffffff; text-decoration: none;" href="<?php echo $this->getUrl('custom-quote-request'); ?>">Looking for something else? Submit a custom request by clicking here!</a></td>
+        </tr>
+    </tbody>
+</table>
+<?php endif; ?>
+<script type="text/javascript">
+    require(['jquery', 'jquery/ui'], function($){
+      jQuery(document).ready( function() {
+        console.log("Page loaded.");
+      });
+    });
+</script>

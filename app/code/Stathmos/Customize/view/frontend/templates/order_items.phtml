@@ -1,0 +1,317 @@
+<?php
+/**
+* Copyright © Magento, Inc. All rights reserved.
+* See COPYING.txt for license details.
+*/
+
+// phpcs:disable Magento2.Templates.ThisInTemplate
+// @codingStandardsIgnoreFile
+
+/** @var \Magento\Sales\Block\Order\History $block */
+?>
+<?php $_orders = $block->getOrders(); ?>
+<?php if ($_orders && count($_orders)) : ?>
+    <?php 
+    $stathmosHelper = $this->helper('Stathmos\Customize\Helper\Data');
+    $amastyCartHelper = $this->helper('Amasty\RequestQuote\Helper\Cart');
+    $catalogImageHelper = $this->helper('Magento\Catalog\Helper\Image');
+    $priceFormateHelper = $this->helper('Magento\Framework\Pricing\Helper\Data');
+    //$productListBlock= $block->getLayout()->createBlock('Magento\Catalog\Block\Product\ListProduct');
+    ?>
+    <div class="orders-history item_history">
+        <form class="order-search" id="order-search" action="<?php echo $this->getUrl('customize/index/view') ?>">
+            <input type="text" placeholder="Search order items here..." value="<?php if(isset($_GET['search']) && $_GET['search']){ echo $_GET['search']; } ?>" name="search">
+            <button type="submit" title="Search" class="action search primary">
+                <span>Search</span>
+            </button>
+        </form>
+        <div class="history">
+            <span><caption class="table-caption"><?= $block->escapeHtml(__('Ordered Items')) ?></caption></span>
+            <table>
+                <tr>
+                    <th style="width: 200px">S/No.</th>
+                    <th style="width: 80px">Brand/Part Number</th>
+                    <th style="width: 100px">Item Name</th>
+                    <th style="width: 60px">SKU</th>
+                    <th style="width: 80px">NDC</th>
+                    <!--<th style="width: 80px">U.O.M</th>-->
+                    <th style="width: 80px">Quoted Price</th>
+                    <th style="width: 60px">Discount</th>
+                    <th style="width: 60px">Quantity</th>
+                    <th style="width: 80px">Quoted On</th>
+                    <th style="width: 80px">Quote#</th>
+                    <th></th>
+                </tr>
+                <?php 
+                $productSrNo = 1;
+                foreach ($_orders as $_order) :
+
+                    $productCollection = $block->getProductCollection();
+
+                    foreach ($productCollection as $products){
+                        $pid = $products->getId();
+                        $opid = $_order->getProductId();
+
+                        if($pid == $opid){
+
+
+                            $product = $stathmosHelper->getProduct($_order->getProductId());
+                            //$addToCartUrl =  $productListBlock->getAddToCartUrl($product);
+
+                            $productUrl = $product->getProductUrl();
+
+                            $imageUrl = $catalogImageHelper
+                            ->init($product, 'product_base_image')
+                            ->constrainOnly(true)
+                            ->keepAspectRatio(true)
+                            ->keepTransparency(true)
+                            ->keepFrame(false)
+                            ->resize(150, 150)->getUrl();
+                            ?>
+                            <tr>
+                                <td><p><?= __($productSrNo);?></p><img src="<?php echo $imageUrl;?>" class="fotorama__stage__shaft"></td>
+                                <td><?= __($product->getManufacturer());?></td>  
+                                <td><a href ="<?php echo $productUrl; ?>"><?php echo $_order->getName(); ?></a></td> 
+                                <td><?php echo $_order->getSku(); ?></td> 
+                                <td><?php echo $product->getNdc(); ?></td>
+                                <!--<td>48 Eash / Case</td> -->
+                                <td><?php echo $priceFormateHelper->currency($_order->getPrice(),true,false); ?></td> 
+                                <td><?php echo ($_order->getDiscountPercent() > 0) ? $_order->getDiscountPercent()."%" : "0%";?></td>
+                                <td><?php echo intval($_order->getQtyOrdered()); ?></td>
+                                <td><?= $block->formatDate($_order->getCreatedAt());?></td>
+                                <td><?= $_order->getIncrementId();?></td>
+                                <td>
+                                    <form data-role="tocart-form" action="<?php //echo $addToCartUrl; ?>" method="post"> 
+                                        <?php echo $block->getBlockHtml('formkey')?>
+                                        <button type="submit" title="Add to Cart" class="add_to_cart">Add To Cart</button>
+                                    </form>
+                                    <form class="product_addtocart_form" id="product_addtocart_form_<?php echo $productSrNo;?>" data-amquote-js="addtoquote"  action="<?php echo $amastyCartHelper->getAddUrl($product); ?>" method="post"> 
+                                        <?php echo $block->getBlockHtml('formkey')?>
+                                        <button type="submit" onclick="event.preventDefault(); testfunction(<?php echo $productSrNo; ?>)" data-amquote-js="addto-button" id="product-addtoquote" title="Requote" class="requote_a">Requote</button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            <?php
+                        }
+                    }
+
+                    $productSrNo++;  endforeach; ?>
+                </table>
+            </div>
+        </div>
+    <?php endif ?>
+    <script type="text/x-magento-init">
+        {
+            "[data-role=tocart-form], .form.map.checkout": {
+                "catalogAddToCart": {}
+            }
+        }
+    </script>
+    <script type="text/javascript">
+
+        var testfunction;
+        require([
+            'jquery',
+            'mage/mage',
+            'Magento_Catalog/product/view/validation',
+            'Magento_Catalog/js/catalog-add-to-cart'
+            ], function ($) {
+            'use strict';
+
+            $( document ).ready(function() {
+
+                testfunction = function(value){
+
+                    var form = jQuery('#product_addtocart_form_'+value);
+                    var widget = $(form).catalogAddToCart({
+                        bindSubmit: false
+                    });
+
+                    widget.catalogAddToCart('submitForm', $(form),'product-addtoquote');
+
+                    return false;
+                }
+            });
+        });
+    </script>
+    <style type="text/css">
+        button.requote_a {
+            border: 0;
+        }
+        button.requote_a {
+            float: left;
+            background-color: #f0ad4e;
+            color: #fff;
+            padding: 8px;
+            width: 113px;
+            text-align: center;
+            margin-top: 5px;
+            text-decoration:none; 
+            text-transform: none;
+        }
+        a.allocation {
+            background-color: #0094c6;
+            padding: 9px 4px;
+            color: #fff;
+            font-size: 12px;
+            float: left;
+            text-decoration: none;
+        }
+        button.add_to_cart {
+            background-color: #1a800e;
+            color: #fff;
+            padding: 8px;
+            width: 113px;
+            text-align: center;
+            text-decoration: none;
+            float: left;
+            margin-bottom: 5px;
+            text-transform: none;
+        }
+        .history p {
+            margin-bottom: 0;
+        }
+        img.fotorama__stage__shaft {
+            max-width: 110px;
+            height: 80px;
+        }
+        .history table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .history table tr td {
+            padding: 25px 8px 10px 8px;
+        }
+        .history table tr:first-child {
+            border-top: 0;
+        }
+        .history table tr {
+            border-top: 1px solid #ccc;
+        }
+        .history span {
+            float: left;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        form#order-search button {
+            float: right;
+        }
+        form#order-search input {
+            float: left;
+            width: 88%;
+            margin-bottom: 15px;
+        }
+        p.bold_data {
+            font-weight: bold;
+        }
+        p.Pending {
+            color: #e6540d;
+        }
+        p.Canceled {
+            color: red;
+        }
+        .history {
+            float: left;
+            width: 100%;
+        }
+        .item_history .order_data {
+            float: right;
+            width: 100%;
+            padding-top: 10px;
+        }
+        .no_border {
+            border-top: 0;
+            padding-top: 0;
+        }
+        .order_col p{
+            float: right;
+            width: 70%;
+        }
+        .order_col h4{
+            float: left;
+            width: 30%;
+            clear: both;
+        }
+        .order_data p  {
+            float: right;
+            width: 80%;
+        }
+        .order_data h4 {
+            float: left;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        .history h4 {
+            color: #121212;
+            font: 400 14px/1.35 Poppins, Helvetica Neue, Verdana, Arial, sans-serif;
+            text-transform: uppercase;
+        }
+        a.action.view {
+            float: left;
+            border-right: 1px solid #ccc;
+            height: 16px;
+            margin-left: -10px;
+            padding-right: 16px;
+            color: #1979c3;
+        }
+        a.action.order {
+            float: right;
+            width: 80%;
+            margin-top: -28px;
+        }
+        .item_history .hallcontent {
+            float: left;
+            width: 46%;
+            border-top: 1px solid #ccc;
+            padding-top: 15px;
+            padding-bottom: 5px;
+            margin-right: 4%;
+            height: 220px;
+        }
+        .hallcontent:last-child {
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+        @media only screen and (max-width: 1024px) {
+            .history {
+                overflow-x: auto;
+            }
+        }
+        @media only screen and (max-width: 991px) {
+            .history {
+                overflow-x: auto;
+            }
+            .item_history .hallcontent {
+                width: 100%;
+                margin-right: 0;
+                height: 100%;
+            }
+            form#order-search input {
+                width: 80%;
+            }
+            .order_col {
+                float: left;
+                width: 100%;
+            }
+            .order_data {
+                float: right;
+                width: 100%;
+            }
+        }
+        @media only screen and (max-width: 767px) {
+            .history {
+                overflow-x: auto;
+            }
+            .item_history .hallcontent {
+                width: 100%;
+                margin-right: 0;
+                height: 100%;
+            }
+            form#order-search input {
+                width: 70%;
+            }
+            .order_data p {
+                width: 70%;
+            }
+        }
+    </style>

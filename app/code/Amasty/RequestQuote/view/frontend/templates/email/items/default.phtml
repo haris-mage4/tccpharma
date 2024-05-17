@@ -1,0 +1,46 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
+ * @package Amasty_RequestQuote
+ */
+?>
+<?php
+/** @var $block \Amasty\RequestQuote\Block\Email\Items\Renderer\DefaultRenderer */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var $item \Magento\Quote\Model\Quote\Item */
+$item = $block->getItem();
+$quote = $item->getQuote();
+$helper = $this->helper('Magemonkeys\Quote\Helper\Data');
+$ndc = $helper->getProductNdc($item->getSku());
+$price  = $helper->getProductPrice($item->getSku());
+?>
+<tr>
+    <td class="item-info<?php if ($block->getItemOptions()): ?> has-extra<?php endif; ?>">
+        <p class="product-name"><?= $escaper->escapeHtml($item->getName()) ?></p>
+        <p class="sku"><?= /* @noEscape */  __('SKU') ?>: <?= $escaper->escapeHtml($item->getSku()) ?></p>
+        <p class="sku"><?= /* @noEscape */  __('NDC') ?>: <?= $escaper->escapeHtml($ndc) ?></p>
+        <?php if ($block->getItemOptions()): ?>
+            <dl class="item-options">
+                <?php foreach ($block->getItemOptions() as $option): ?>
+                    <dt><strong><em><?= /* @noEscape */  $option['label'] ?></em></strong></dt>
+                    <dd>
+                        <?= /* @noEscape */  nl2br($option['value']) ?>
+                    </dd>
+                <?php endforeach; ?>
+            </dl>
+        <?php endif; ?>
+        <?php $addInfoBlock = $block->getProductAdditionalInformationBlock(); ?>
+        <?php if ($addInfoBlock): ?>
+            <?= $addInfoBlock->setItem($item)->toHtml() ?>
+        <?php endif; ?>
+        <?= $escaper->escapeHtml($item->getDescription()) ?>
+    </td>
+    <td class="item-qty"><?= /* @noEscape */  $item->getQty() * 1 ?></td>
+    <td class="item-price">
+        <?= /* @noEscape */  $block->getUnitPriceHtml($item) ?>
+    </td>
+    <td class="item-price">
+        <?= /* @noEscape */  $price; ?>
+    </td>
+</tr>

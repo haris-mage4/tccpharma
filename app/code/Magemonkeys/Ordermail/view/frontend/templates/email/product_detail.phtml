@@ -1,0 +1,53 @@
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$orderIncrementId = 'your_order_increment_id_here'; // Replace with your actual order increment ID
+$order = $objectManager->create('Magento\Sales\Model\Order')->loadByIncrementId($block->getData('orderid'));
+// $sub
+/*$writer = new \Zend_Log_Writer_Stream(BP . '/var/log/order.log');
+$zendLogger = new \Zend_Log();
+$zendLogger->addWriter($writer);
+$zendLogger->info(print_r(get_class_methods($order),true));*/
+?>
+
+<?php $_items = $order->getAllItems(); ?>
+    <table class="email-items">
+        <thead>
+            <tr>
+                <th class="item-info">
+                    <?= $block->escapeHtml(__('Items')) ?>
+                </th>
+                <th class="item-qtyorder    ">
+                    <?= $block->escapeHtml(__('Qty')) ?>
+                </th>
+                <th class="item-price">
+                    <?= $block->escapeHtml(__('Price')) ?>
+                </th>
+            </tr>
+        </thead>
+        <?php foreach ($order->getAllVisibleItems()  as $item) : ?>
+            <?php if (!$item->getParentItem()) : ?>
+                <tbody>
+        <tr>
+            <td><?= $item->getName(); ?><br><span>SKU: <?= $item->getSku(); ?></span></td>
+            <td><?= $item->getQtyOrdered(); ?></td>            
+            <td><?= $test['subtotal']=$item->getRowTotal(); ?></td>
+            <?php if(!empty($test['subtotal'])){
+                $test['subtotal']+=$item->getRowTotal();
+            }?>
+            
+
+        </tr>
+        
+    </tbody>            
+        <?php endif; ?>
+    
+        <?php endforeach; ?>
+        <tfoot class="order-totals" style="background-color:#f5f5f5">
+                <span>Subtotal:<?= $order->getSubtotal() ?></span><br>
+                <span>Shipping & Handling:<?= $order->getShippingAmount() ?></span><br>
+                <span>Estimated Total:<?= $order->getBaseGrandTotal() ?></span>
+
+
+                  
+        </tfoot>
+    </table>

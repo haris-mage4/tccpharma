@@ -1,0 +1,51 @@
+<button id="findButton">Find Search Term</button>
+
+<div id="popupContainer" style="display: none;">
+    <div id="popupContent">
+        <h2>Find Search Term</h2>
+        <span>Total Match: <span id="totalMatches">0</span></span>
+        <input type="text" id="searchInput" placeholder="Search...">
+        <button onclick="searchText()">Search/Next Result</button>
+        <button id="closeButton">Close</button>
+    </div>
+</div>
+
+<script>
+    function searchText() {
+        var searchText = document.getElementById("searchInput").value;
+        if (searchText) {
+            var totalMatches = window.find(searchText, false, false, true, false, false, false);
+            if (totalMatches > 0) {
+                document.getElementById("totalMatches").innerText = totalMatches;
+                document.getElementById("searchInput").style.background = "lightgreen";
+                var bodyText = document.body.innerText;
+                var regex = new RegExp(searchText, "gi");
+                var matches = bodyText.match(regex);
+                if (matches && matches.length > 0) {
+                    document.getElementById("totalMatches").innerText = matches.length;
+                    document.getElementById("searchInput").style.background = "lightgreen";
+                }
+            } else {
+                alert("Text not found");
+            }
+        }
+    }
+
+    require(['jquery'], function($) {
+        $(document).ready(function() {
+            var searchTextValue = "";
+            var currentIndex = 0;
+
+            $("#findButton").click(function(event) {
+                event.preventDefault();
+                $("#popupContainer").fadeIn();
+                searchTextValue = $("#searchInput").val();
+                currentIndex = 0;
+            });
+
+            $("#closeButton").click(function() {
+                $("#popupContainer").fadeOut();
+            });
+        });
+    });
+</script>

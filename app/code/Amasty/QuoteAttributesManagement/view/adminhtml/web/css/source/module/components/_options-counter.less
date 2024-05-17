@@ -1,0 +1,30 @@
+//
+//  Dynamic rows options counter
+//  ___________________________________________
+
+//
+//  Common
+//  -------------------------------------------
+
+& when (@media-common = true) {
+    .amquoteattrs-options-container {
+        .admin__fieldset > & {
+            margin-bottom: 0;
+        }
+    }
+
+    .amquoteattrs-options-counter {
+        .amquoteattrs-options-container + & {
+            margin-top: 0;
+        }
+
+        &.admin__field > .admin__field-control {
+            float: none;
+            width: ~'calc(100% - @{temp_gutter})';
+        }
+
+        .admin__control-text {
+            .lib-visually-hidden();
+        }
+    }
+}

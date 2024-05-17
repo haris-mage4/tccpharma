@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Request a Quote Attribute Management for Magento 2 (System)
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Amasty_QuoteAttributesManagement::attributes" title="Custom Quote Fields" translate="title" module="Amasty_QuoteAttributesManagement" sortOrder="20" parent="Amasty_RequestQuote::quotes_operation" action="amasty_quoteattributes/attribute" resource="Amasty_QuoteAttributesManagement::attributes"/>
+    </menu>
+</config>

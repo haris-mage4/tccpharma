@@ -1,0 +1,26 @@
+{
+    "name": "rapideweb/module-productlisttable",
+    "description": "Show all products list table with add to cart button",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "authors": [
+        {
+            "email": "info@mage2gen.com",
+            "name": "Mage2Gen"
+        },
+        {
+            "email": "james4u.boda@gmail.com",
+            "name": "James Wu"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "RapideWeb\\ProductListTable\\": ""
+        }
+    }
+}

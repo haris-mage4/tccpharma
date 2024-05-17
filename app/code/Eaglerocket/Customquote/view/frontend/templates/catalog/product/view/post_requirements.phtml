@@ -1,0 +1,187 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/**
+ * Product view template
+ *
+ * @var $block \Magento\Catalog\Block\Product\View
+ */
+?>
+<?php $_helper = $this->helper('Magento\Catalog\Helper\Output'); ?>
+<?php $_product = $block->getProduct(); ?>
+<?php if($_product->getFinalPrice() > 0){ ?>
+<div class="product-add-form">
+    <form action="<?php /* @escapeNotVerified */ echo $block->getSubmitUrl($_product) ?>" method="post"
+          id="product_addtocart_form"<?php if ($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+        <input type="hidden" name="product" value="<?php /* @escapeNotVerified */ echo $_product->getId() ?>" />
+        <input type="hidden" name="selected_configurable_option" value="" />
+        <input type="hidden" name="related_product" id="related-products-field" value="" />
+        <input type="hidden" name="item"  value="<?= /* @noEscape */ $block->getRequest()->getParam('id') ?>" />
+        <?php echo $block->getBlockHtml('formkey')?>
+        <?php echo $block->getChildHtml('form_top'); ?>
+        <?php if (!$block->hasOptions()):?>
+            <?php echo $block->getChildHtml('product.info.type'); ?>           
+                <?php echo $block->getChildHtml('product_info_form_content'); ?>           
+        <?php else:?>
+            <?php if ($_product->isSaleable() && $block->getOptionsContainer() == 'container1'):?>
+                <?php echo $block->getChildChildHtml('options_container') ?>
+            <?php endif;?>
+        <?php echo $block->getChildHtml('product.info.type'); ?>   
+        <?php endif; ?>
+
+        <?php if ($_product->isSaleable() && $block->hasOptions() && $block->getOptionsContainer() == 'container2'):?>
+            <?php echo $block->getChildChildHtml('options_container') ?>
+        <?php endif;?>     
+        
+        <?php echo $block->getChildHtml('form_bottom'); ?>
+        <?php echo $block->getChildHtml('addto'); ?>
+        <?php echo $block->getChildHtml('product.info.staticblock'); ?>         
+    </form>
+</div>
+<script>
+    require([
+        'jquery',
+        'priceBox'
+    ], function($){
+        var dataPriceBoxSelector = '[data-role=priceBox]',
+            dataProductIdSelector = '[data-product-id=<?= $block->escapeHtml($_product->getId()) ?>]',
+            priceBoxes = $(dataPriceBoxSelector + dataProductIdSelector);
+
+        priceBoxes = priceBoxes.filter(function(index, elem){
+            return !$(elem).find('.price-from').length;
+        });
+
+        priceBoxes.priceBox({'priceConfig': <?php /* @escapeNotVerified */ echo $block->getJsonConfig() ?>});
+    });
+    require(['jquery','modal'],
+    function($){
+                $('.size-chart-content').modal({
+                        wrapperClass: "modals-wrapper cdz-popup-sizechart",
+                        trigger:".sizechart-trigger"
+                });
+    });
+</script>
+<?php } else{ ?>
+
+<?php 
+$erHelper = $this->helper('Eaglerocket\Customquote\Helper\Data');
+$questions = $erHelper->getQuestions();
+ ?>
+  <div class="box-tocart">
+      <div class="fieldset">
+        <div class="actions">
+          <button type="button" class="action primary tocart btn btn-primary btn-lg" id="popupButton" data-toggle="modal" data-target="#myModal"><?php echo __('Quote')?></button>
+        </div>
+      </div>
+  </div>
+  <div class="modal fade quote" id="myModal" role="dialog" style="display:none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title"><?php echo __('Get Quote')?></h4>
+        </div>
+        <div class="modal-body">
+            <form  method="post" class="customquote-form" action="<?php echo $block->getUrl('customquote/index/index')?>" >
+                <fieldset class="fieldset">
+                  <?php foreach ($questions as $question) { ?>
+                    <div class="field comment required">
+                        <div class="control">
+                            <textarea name="question[<?php echo $question->getId() ?>]"  title="<?php echo $question->getQuestion() ?>" placeholder="<?php echo $question->getQuestion() ?>" class="input-text required" cols="5" rows="3"></textarea>
+                        </div>
+                    </div>
+                  <?php } ?>
+                </fieldset>
+                <!-- <div>
+                    <div class="primary">
+                            <button type="submit" title="Submit">
+                          <span>Submit</span>
+                      </button>
+                    </div>
+                </div> -->
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+<script type="text/x-magento-init">
+    {
+        ".customquote-form": {
+            "validation": {}
+        }
+    }
+</script>
+<script>
+    require(['jquery','Magento_Ui/js/modal/modal'],function($,modal) {
+        var options = {
+            type: 'popup',
+            responsive: true,
+            innerScroll: true,
+            buttons: [{
+                text: $.mage.__('Submit'),
+                class: 'mymodal1',
+                click: function () {
+                    jQuery('.customquote-form').submit();
+                }
+            }]
+         };
+        var popup = modal(options, $('#myModal'));
+        $("#popupButton").on('click',function(){
+            $("#myModal").modal("openModal");
+        });
+    });
+</script>
+<?php } ?>
+<style type="text/css">
+    .quote .modal-footer{
+        display: none;
+    }
+.modal-popup .modal-title {
+    color: #fff;
+    word-wrap: break-word;
+    background-color: #0094c6;
+    float: left;
+    width: 100%;
+    padding: 25px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+}
+.modal-popup fieldset.fieldset {
+    border: 1px solid #ccc;
+    border-left: 5px solid #0094c6;
+    box-shadow: 0 2px 3px rgb(0 0 0 / 8%);
+    margin-top: 30px;
+    float: left;
+    width: 100%;
+    border-radius: 5px;
+    padding: 10px;
+}
+.modal-content .modal-header {
+    padding: 10px 0 !important;
+}
+.modal-content .modal-content {
+    padding-bottom: 0 !important;
+}
+.modal-content .modal-body textarea {
+    background-color: #fff;
+    height: 60px;
+    font-size: 15px !important;
+    padding-top: 16px;
+}
+.modal-content button.mymodal1 {
+    text-align: center;
+    float: none;
+    width: 100%;
+    max-width: 100px;
+    margin: 0 auto;
+    display: block;
+}
+.modal-content .field.comment.required {
+    margin-top: 20px;
+}
+</style>

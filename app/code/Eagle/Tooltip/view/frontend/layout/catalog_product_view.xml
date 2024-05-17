@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="product.info.price">
+          <container name="tooltip.container" as="tooltipContainer" htmlTag="div" htmlClass="tooltip-container" after="-">
+                <block class="Eagle\Tooltip\Block\Tooltip\Block\Price" name="product.tooltip" template="Eagle_Tooltip::tooltip/price.phtml" ifconfig="tooltip/general/enable_tooltip"/>
+            </container>
+     </referenceBlock>
+    </body>
+</page>

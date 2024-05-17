@@ -1,0 +1,94 @@
+<?php
+/** @var \Ulmod\Ordernotes\Block\Order\History $block */
+?>
+<?php $_orders = $block->getOrders(); ?>
+<?= $block->getChildHtml('info') ?>
+<?php if ($_orders && count($_orders)): ?>
+    <div class="table-wrapper orders-history um-custom-orders-history">
+        <table class="data table table-order-items history" id="my-orders-table">
+            <caption class="table-caption"><?= $block->escapeHtml(__('Orders')) ?></caption>
+            <thead>
+                <tr>
+                    <th scope="col" class="col id"><?= $block->escapeHtml(__('Order #')) ?></th>
+                    <th scope="col" class="col date"><?= $block->escapeHtml(__('Date')) ?></th>
+                    <?= /* @noEscape */ $block->getChildHtml('extra.column.header') ?>
+                    <th scope="col" class="col shipping"><?= $block->escapeHtml(__('Ship To')) ?></th>
+                    <th scope="col" class="col total"><?= $block->escapeHtml(__('Order Total')) ?></th>
+                    <th scope="col" class="col status"><?= $block->escapeHtml(__('Status')) ?></th>
+                    <th scope="col" class="col order-note-col">
+                        <?= $block->escapeHtml(__('Order Note')) ?>
+                    </th>                    
+                    <th scope="col" class="col actions"><?= $block->escapeHtml(__('Action')) ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($_orders as $_order): ?>
+                    <tr>
+                        <td data-th="<?= $block->escapeHtml(__('Order #')) ?>" class="col id">
+                            <?= /* @noEscape */ $_order->getRealOrderId() ?>
+                        </td>
+                        <td data-th="<?= $block->escapeHtml(__('Date')) ?>" class="col date">
+                            <?= /* @noEscape */ $block->formatDate($_order->getCreatedAt()) ?>
+                        </td>
+                        <?php $extra = $block->getChildBlock('extra.container'); ?>
+                        <?php if ($extra): ?>
+                            <?php $extra->setOrder($_order); ?>
+                            <?= /* @noEscape */ $extra->getChildHtml() ?>
+                        <?php endif; ?>
+                        <td data-th="<?= $block->escapeHtml(__('Ship To')) ?>" class="col shipping">
+                            <?= $_order->getShippingAddress() ?
+                            $block->escapeHtml($_order->getShippingAddress()->getName()) : '&nbsp;' ?>
+                        </td>
+                        <td data-th="<?= $block->escapeHtml(__('Order Total')) ?>" class="col total">
+                            <?= /* @noEscape */ $_order->formatPrice($_order->getGrandTotal()) ?>
+                        </td>
+                        <td data-th="<?= $block->escapeHtml(__('Status')) ?>" class="col status">
+                            <?= /* @noEscape */ $_order->getStatusLabel() ?>            
+                        </td>
+                        <td data-th="<?= $block->escapeHtml(__('Order Notes')) ?>" class="col um-order-notes"> 
+                        <?php
+                            $lastNoteByOrder = $block->getLastNoteByOrder($_order);
+                            $orderNotesReadUrl = $block->getOrderNotesReadUrl($_order);
+                        ?>
+                            <input type="hidden" name="um_orderid" 
+                                value="<?= /* @noEscape */ $_order->getEntityId(); ?>">
+                            <?php if ($block->isNewMessage($lastNoteByOrder)): ?>                                     
+                            <div class="um-grid-new-note um-note">
+                                <?= $block->escapeHtml(__('* New message')) ?>
+                            </div>     
+                            <a id="um-grid-send-msg-read um-note" 
+                                 onclick="setLocation(this.href)"
+                                 href="<?= $block->escapeUrl($orderNotesReadUrl); ?>" 
+                                 class="um-action-readnote action view">
+                                 <span><?= $block->escapeHtml(__('Read message')) ?></span>
+                            </a>                                         
+                            <?php else: ?>                                        
+                            <div class="um-grid-no-note um-note">
+                                <?= $block->escapeHtml(__('No message')) ?></div>                              
+                            <?php endif ?>                            
+                        </td>                        
+                        <td data-th="<?= $block->escapeHtml(__('Actions')) ?>" class="col actions">
+                            <a href="<?= $block->escapeUrl($block->getViewUrl($_order)) ?>" class="action view">
+                                <span><?= $block->escapeHtml(__('View Order')) ?></span>
+                            </a>
+                            <?php if ($block->getSalesReorder()->canReorder($_order->getEntityId())): ?>
+                                <a href="#" data-post='<?= /* @noEscape */
+                                $block->getPostHelper()->getPostData($block->getReorderUrl($_order))
+                                ?>' class="action order">
+                                    <span><?= $block->escapeHtml(__('Reorder')) ?></span>
+                                </a>
+                            <?php endif ?>                            
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php if ($block->getPagerHtml()): ?>
+        <div class="order-products-toolbar toolbar bottom"><?= $block->getPagerHtml() ?></div>
+    <?php endif ?>
+<?php else: ?>
+    <div class="message info empty">
+        <span><?= $block->escapeHtml(__('You have placed no orders.')) ?></span>
+    </div>
+<?php endif ?>

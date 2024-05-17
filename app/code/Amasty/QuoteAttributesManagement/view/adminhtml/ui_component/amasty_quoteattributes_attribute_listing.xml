@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Request a Quote Attribute Management for Magento 2 (System)
+ */-->
+
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">amasty_quoteattributes_attribute_listing.amasty_quoteattributes_attribute_listing_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="add">
+                <url path="*/*/new"/>
+                <class>primary</class>
+                <label translate="true">Add New Field</label>
+            </button>
+        </buttons>
+        <spinner>amasty_quoteattributes_attribute_columns</spinner>
+        <deps>
+            <dep>amasty_quoteattributes_attribute_listing.amasty_quoteattributes_attribute_listing_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="amasty_quoteattributes_attribute_listing_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">attribute_id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <dataProvider class="Amasty\QuoteAttributesManagement\Ui\DataProvider\Listing\DataProvider"
+                      name="amasty_quoteattributes_attribute_listing_data_source">
+            <settings>
+                <requestFieldName>attribute_id</requestFieldName>
+                <primaryFieldName>attribute_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters">
+            <filterSelect name="stores" provider="${ $.parentName }">
+                <settings>
+                    <label translate="true">Store View</label>
+                    <caption translate="true">All Store Views</caption>
+                    <dataType>select</dataType>
+                    <dataScope>stores</dataScope>
+                    <options class="Magento\Store\Ui\Component\Listing\Column\Store\Options"/>
+                </settings>
+            </filterSelect>
+        </filters>
+        <filterSearch name="default_frontend_label"/>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="amasty_quoteattributes_attribute_columns">
+        <settings>
+            <childDefaults>
+                <param name="fieldAction" xsi:type="array">
+                    <item name="provider" xsi:type="string">amasty_quoteattributes_attribute_listing.amasty_quoteattributes_attribute_listing.amasty_quoteattributes_attribute_columns.actions</item>
+                    <item name="target" xsi:type="string">applyAction</item>
+                    <item name="params" xsi:type="array">
+                        <item name="0" xsi:type="string">edit</item>
+                        <item name="1" xsi:type="string">${ $.$data.rowIndex }</item>
+                    </item>
+                </param>
+            </childDefaults>
+        </settings>
+
+        <column name="attribute_code" sortOrder="10">
+            <settings>
+                <label translate="true">Code</label>
+                <filter>text</filter>
+                <sorting>asc</sorting>
+            </settings>
+        </column>
+
+        <column name="default_frontend_label" sortOrder="20">
+            <settings>
+                <label translate="true">Label</label>
+                <filter>text</filter>
+            </settings>
+        </column>
+
+        <column name="frontend_input" component="Magento_Ui/js/grid/columns/select" sortOrder="30">
+            <settings>
+                <label translate="true">Type</label>
+                <dataType>select</dataType>
+                <filter>select</filter>
+                <options class="Amasty\QuoteAttributesManagement\Model\Source\FrontendInput" />
+            </settings>
+        </column>
+
+        <column name="stores" class="Amasty\QuoteAttributesManagement\Ui\Component\Listing\Attribute\Columns\Store"
+                sortOrder="35">
+            <settings>
+                <label translate="true">Store View</label>
+                <sortable>false</sortable>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+                <dataType>multiselect</dataType>
+            </settings>
+        </column>
+
+        <column name="is_required" component="Magento_Ui/js/grid/columns/select" sortOrder="40">
+            <settings>
+                <label translate="true">Required</label>
+                <dataType>select</dataType>
+                <filter>select</filter>
+                <options class="Magento\Config\Model\Config\Source\Yesno" />
+            </settings>
+        </column>
+
+        <column name="used_in_grid" component="Magento_Ui/js/grid/columns/select" sortOrder="50">
+            <settings>
+                <label translate="true">Show on Quotes Grid</label>
+                <dataType>select</dataType>
+                <filter>select</filter>
+                <options class="Magento\Config\Model\Config\Source\Yesno" />
+            </settings>
+        </column>
+
+        <column name="sort_order" sortOrder="60">
+            <settings>
+                <label translate="true">Sort Order</label>
+                <filter>textRange</filter>
+            </settings>
+        </column>
+
+        <actionsColumn name="actions" class="Magento\Backend\Ui\Component\Listing\Column\EditAction">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="editUrlPath" xsi:type="string">amasty_quoteattributes/attribute/edit</item>
+                </item>
+            </argument>
+            <settings>
+                <visible>true</visible>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

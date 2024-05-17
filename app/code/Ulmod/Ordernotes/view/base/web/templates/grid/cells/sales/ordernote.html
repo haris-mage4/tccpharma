@@ -1,0 +1,14 @@
+<form id="um-order-note-form-<%- customerid %>" method="get" enctype="multipart/form-data" action="<%- formaction %>">
+    <div class="modal-body">
+        <div class="bootbox-body">
+             <input type="hidden" name="new_admin_note_markread" value="1">
+              <input type="hidden" name="entity_id" value="<%- customerid %>">         
+        </div>
+    </div>
+    <div class="modal-footer">
+        <span class="error"></span>
+        <button type="reset" class="btn btn-default um-btn-reset"><%- cancellabel %></button>
+        <button type="submit" id="um-btn-submit-<%- customerid %>" class="btn btn-primary um-btn-submit"><%- submitlabel %></button>
+        <span class="clear"></span>
+    </div>
+</form>

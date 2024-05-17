@@ -1,0 +1,532 @@
+<?php
+
+/**
+ * @company RapideWeb
+ * @package RapideWeb_ProductListTable
+ * @author James Wu <james4u.boda@gmail.com>
+ * @date Mar 30, 2018
+ *
+ */
+?>
+
+<?php
+/**
+ * @var $block \RapideWeb\ProductListTable\Block\ProductList
+ */
+
+use Magento\Framework\App\Action\Action;
+
+?>
+<?php
+$_productCollection = $block->getAllProductsListTable();
+
+$_helper = $this->helper('Magento\Catalog\Helper\Output');
+$_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+
+$searchCategoryId = $this->getRequest()->getParam('category');
+$liveSearchRedirectUrl = '';
+if (isset($searchCategoryId)) {
+    $category = $_objectManager->create('Magento\Catalog\Model\Category')->load($searchCategoryId);
+    $liveSearchRedirectUrl = $category->getData('live_search_redirect_url');
+}
+
+
+$isEnabled = $block->isEnabled();
+$isShowImage = $block->isShowProductImage();
+$isShowOption = $block->isShowProductOption();
+$imageWidth = $block->getImageWidth();
+$imageHeight = $block->getImageHeight();
+$btnText = $block->getButtonText();
+$btnBgColor = $block->getButtonBgColor();
+$btnColor = $block->getButtonColor();
+
+$image = 'category_page_grid';
+$search = "";
+if (isset($_GET['query'])) {
+    $search = $_GET['query'];
+}
+
+$manufacturer = false;
+if (isset($_GET['manufacturer'])) {
+    $manufacturer = $_GET['manufacturer'];
+}
+$size = false;
+if (isset($_GET['size'])) {
+    $size = $_GET['size'];
+}
+$from_price = false;
+if (isset($_GET['from_price'])) {
+    $from_price = $_GET['from_price'];
+}
+$from_to = false;
+if (isset($_GET['from_to'])) {
+    $from_to = $_GET['from_to'];
+}
+$availability = false;
+if (isset($_GET['availability'])) {
+    $availability = $_GET['availability'];
+}
+
+?>
+<?php if ($isEnabled) : ?>
+
+    <div class="product-list-table-wrapper">
+        <?php $queriedChar = $block->getQueriedChar() ?>
+        <?php $isEnabled = $block->isShowNavigation(); ?>
+        <?php //$isEnabled = false;
+        ?>
+        <?php if ($isEnabled) : ?>
+            <div class="products-table-navigation">
+                <?php foreach (range('a', 'z') as $char) : ?>
+                    <span class="navigation-item">
+                        <?php if ($char == $queriedChar) : ?>
+                            <span class="navigation-link selected"><?= $char ?></span>
+                        <?php else : ?>
+                            <a href="<?= $block->getQueryUrl($char) ?>" class="navigation-link"><?= $char ?></a>
+                        <?php endif; ?>
+                    </span>
+                <?php endforeach; ?>
+                <span class="navigation-item">
+                    <?php if (!$queriedChar || $queriedChar == 'all') : ?>
+                        <span class="navigation-link all selected"><?= 'All' ?></span>
+                    <?php else : ?>
+                        <a href="<?= $block->getQueryUrl('all') ?>" class="navigation-link all"><?= 'All' ?></a>
+                    <?php endif; ?>
+                </span>
+            </div>
+        <?php endif; ?>
+        <?php echo $block->getToolbarHtml() ?>
+        <div class="products wrapper products-table">
+            <form action="<?php echo $this->getUrl('productlisttable') ?>" method="get">
+                <div id="productlisttable_filter-manufacturer" class="dataTables_filter_extra">
+                    <label>Manufacturer :</label>
+                    <input type="text" class="" name="manufacturer" value="<?php if ($manufacturer) {
+                                                                                echo $manufacturer;
+                                                                            } ?>" placeholder="Manufacturer" aria-controls="productlisttable">
+                </div>
+                <div id="productlisttable_filter-size" class="dataTables_filter_extra">
+                    <label>Unit of Measure :</label>
+                    <input type="text" class="" name="size" placeholder="Size" aria-controls="productlisttable" value="<?php if ($size) {
+                                                                                                                            echo $size;
+                                                                                                                        } ?>">
+                </div>
+                <div id="productlisttable_filter-price-to" class="dataTables_filter_extra">
+                    <label>Price From :</label>
+                    <input type="text" class="" name="from_price" placeholder="Price From" aria-controls="productlisttable" value="<?php if ($from_price) {
+                                                                                                                                        echo $from_price;
+                                                                                                                                    } ?>">
+                </div>
+                <div id="productlisttable_filter-price-from" class="dataTables_filter_extra">
+                    <label>Price To :</label>
+                    <input type="text" class="" name="from_to" placeholder="Price To" aria-controls="productlisttable" value="<?php if ($from_to) {
+                                                                                                                                    echo $from_to;
+                                                                                                                                } ?>">
+                </div>
+                <!-- <div id="productlisttable_filter-category" class="dataTables_filter_extra">
+                    <label>Category:</label>
+                    <select name="category" aria-controls="productlisttable">
+                        <option value="">All Categories</option>
+                        <?php
+                        // $blockObj = $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Customerinfo');
+                        // $customerGroupId = $blockObj->getGroupId();
+                        // $customerSession = $_objectManager->get('Magento\Customer\Model\Session');
+                        // if (!$customerSession->isLoggedIn()) {
+                        //     $categories = $_objectManager->create('Magento\Catalog\Model\Category')->getCollection()
+                        //         ->addAttributeToSelect('name')
+                        //         ->addAttributeToFilter('category_customergroup', array('eq' => 00))
+                        //         ->addAttributeToFilter('level', ['eq' => 3]);
+                        // } else {
+                        //     $categories = $_objectManager->create('Magento\Catalog\Model\Category')->getCollection()
+                        //         ->addAttributeToSelect('name')
+                        //         ->addAttributeToFilter('category_customergroup', array('finset' => $customerGroupId))
+                        //         ->addAttributeToFilter('level', ['eq' => 3]);
+                        // }
+
+                        // foreach ($categories as $category) {
+                        //     $selected = '';
+                        //     $catId = '';
+                        //     if (isset($_GET['category'])) {
+                        //         $catId = $_GET['category'];
+                        //     }
+                        //     if ($category->getId() === $catId) {
+                        //         $selected = 'selected';
+                        //     }
+                        //     echo '<option value="' . $category->getId() . '" ' . $selected . '>' . $category->getName() . '</option>';
+                        // }
+                        ?>
+                    </select>
+                </div> -->
+
+                <div class="productlistbutton"><button>Submit</button></div>
+            </form>
+
+            <div id="checkboxContainer">
+                <label for="inStock">In Stock</label>
+                <input type="checkbox" id="inStock">
+            </div>
+
+            <div class="tooltip-container category-info">
+                <div class="tooltip-icon baseuser">
+                    <a href="https://shop.tccpharma.com/search-terms" target="_blank">
+                        <span class="tooltip-question-mark">?</span>
+                    </a>
+                </div>
+                <div class="tooltip-content category-info">
+                      Include a category search term to narrow your product search.
+                    <a href="https://shop.tccpharma.com/search-terms" target="_blank">
+                    Click here
+                    </a>
+                     for more information on product category descriptions.
+                </div>
+            </div>
+
+            <table class="products-table-list" id="productlisttable">
+                <thead>
+                    <tr>
+                        <th class="product-table-sku"><?=/* @escapeNotVerified */ __('SKU') ?></th>
+                        <th class="product-table-ndc"><?=/* @escapeNotVerified */ __('NDC') ?></th>
+                        <th class="product-table-name"><?=/* @escapeNotVerified */ __('Name') ?></th>
+                        <th class="product-table-man"><?=/* @escapeNotVerified */ __('Manufacturer') ?></th>
+                        <th class="product-table-unit"><?=/* @escapeNotVerified */ __('Unit of Measure') ?></th>
+                        <th class="product-table-price"><?=/* @escapeNotVerified */ __('Price') ?></th>
+                        <th class="product-table-qty"><?=/* @escapeNotVerified */ __('Availability') ?></th>
+                        <th class="product-table-btn"><?=/* @escapeNotVerified */ __('Action') ?></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <?php if (!$block->isRedirectToCartEnabled()) : ?>
+            <script type="text/x-magento-init">
+                {
+            "[data-role=tocart-form], .form.map.checkout": {
+                "catalogAddToCart": {
+                    "product_sku": ""
+                }
+            }
+        }
+        </script>
+        <?php endif; ?>
+        <?php
+        $ajaxUrl = $this->getUrl('productlisttable/index/ajax');
+        if ($_SERVER['QUERY_STRING']) {
+            $ajaxUrl = $ajaxUrl . '?' . $_SERVER['QUERY_STRING'];
+        }
+        ?>
+        <script>
+            require(['jquery'], function(jQuery) {
+                var $body = jQuery('body');
+                $body.on('change', '.products-table-list .product-table-qty select', function() {
+                    var $productItem = jQuery(this).closest('.product-table-item');
+                    var $qtyBox = jQuery(this).closest('.product-table-qty').siblings('.product-table-btn').find('.qty');
+                    var qtyVal = jQuery(this).val();
+                    $qtyBox.val(qtyVal);
+                });
+
+                $body.on('click', '.customizable-option', function() {
+                    jQuery(this).siblings().removeClass('selected');
+                    jQuery(this).addClass('selected');
+
+                    var priceType = jQuery(this).data('price-type');
+                    var priceAmount = jQuery(this).data('price-amount');
+                    var optionTypeId = jQuery(this).data('option-type-id');
+                    var $priceBox = jQuery(this).closest('.product-table-option').siblings('.product-table-price').find('.price');
+                    var $optionbox = jQuery(this).closest('.product-table-option').siblings('.product-table-btn').find('.option');
+
+                    $optionbox.val(optionTypeId);
+
+                    if (priceType == 'fixed') {
+                        $priceBox.html(priceAmount);
+                    }
+                });
+            });
+            requirejs(['jquery', 'dataTable'], function(jQuery, dataTable) {
+                jQuery(document).ready(function() {
+                    var ajaxUrl = "<?php echo $ajaxUrl ?>";
+                    var inStockOnly = 0;
+
+                    jQuery('#inStock').on('click', function() {
+                        inStockOnly = jQuery(this).prop('checked') ? 1 : 0;
+                        jQuery('#productlisttable').DataTable().ajax.reload();
+                    });
+
+                    // DataTable initialization
+                    jQuery('#productlisttable').DataTable({
+                        "processing": true,
+                        "serverSide": true,
+                        "ajax": {
+                            "url": ajaxUrl,
+                            "data": function(data) {
+
+                                data.inStockOnly = inStockOnly;
+                            }
+                        },
+                        "language": {
+                            'processing': '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading..n.</span>'
+                        },
+                        "initComplete": function(settings, json) {
+                            console.log("initComplete");
+                            jQuery("#productlisttable_length select").appendTo("#productlisttable_length");
+                            jQuery("#productlisttable_filter input").appendTo("#productlisttable_filter");
+                            jQuery("#productlisttable_filter input").attr('placeholder', "Quick Search");
+                            jQuery("#productlisttable_length label").text("Show");
+                            jQuery(".table-placeholder").hide();
+                            jQuery(".product-list-table-wrapper").show();
+                            jQuery(".products-table-navigation-placeholder").hide();
+                        }
+                    });
+                });
+            });
+
+
+            function updateQty(ele) {
+                var product_id = jQuery(ele).attr('product_id');
+                var qty = jQuery(ele).val();
+                jQuery('.qty-' + product_id).val(qty);
+            }
+
+            function addToQuote(product_id) {
+                jQuery.ajax({
+                    url: "<?= $this->getUrl('amasty_quote/cart/add', ['uenc' => base64_encode($this->getUrl('productlisttable'))]) ?>",
+                    type: "POST",
+                    data: {
+                        product: product_id,
+                        item: product_id,
+                        form_key: jQuery.cookie('form_key'),
+                        qty: jQuery('#qty-a-' + product_id).val()
+                    },
+                }).done(function(data) {
+                    jQuery('html, body').animate({
+                        scrollTop: 0
+                    }, 'slow');
+                    // if (data.backUrl != 'undefined') {
+                    //     require([
+                    //         'jquery', 'Magento_Customer/js/customer-data'
+                    //     ], function($, cd) {
+                    //         cd.reload(['cart'], true);
+                    //         cd.reload(['messages'], true);
+                    //     });
+                    // }
+                    // console.log(data.backUrl)
+                    return true;
+                });
+            }
+
+            require(['jquery'], function(jQuery) {
+                jQuery(document).ready(function() {
+                    jQuery('.paginate_button').click(function() {
+                        jQuery('.paginate_button').removeClass('current');
+                        jQuery(this).addClass('current');
+                    });
+
+                    jQuery(document).on('click', '.amquote-addto-button-text', function() {
+                        jQuery(this).text('Added to Quote');
+                    });
+                });
+            });
+        </script>
+    </div>
+<?php endif; ?>
+<script type="text/javascript">
+    require(['jquery'], function($) {
+        $(document).ready(function() {
+            <?php if ($liveSearchRedirectUrl) : ?>
+                window.location.href = '<?= $liveSearchRedirectUrl ?>';
+            <?php endif; ?>
+        });
+    });
+</script>
+
+
+<style type="text/css">
+    .dataTables_length {
+        width: 45%;
+        float: left;
+    }
+
+    .dataTables_filter {
+        width: 45%;
+        float: right;
+    }
+
+    .dataTables_length select,
+    .dataTables_filter input {
+        height: 35px;
+        width: 75%;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .dataTables_length select {
+        width: 50%;
+    }
+
+    /*--------*/
+    .dataTables_length1 {
+        width: 45%;
+        float: left;
+    }
+
+    .dataTables_filter1 {
+        width: 45%;
+        float: right;
+    }
+
+    .dataTables_length1 select,
+    .dataTables_filter1 input {
+        height: 35px;
+        width: 75%;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .dataTables_length1 select {
+        width: 50%;
+    }
+
+    .table-placeholder {
+        display: none;
+    }
+
+    .dataTables_processing {
+        z-index: 99999;
+        top: 50%;
+        position: fixed;
+        left: 50%;
+        padding: 40px;
+    }
+
+    .amquote-addto-button {
+        width: 100%;
+        padding: 1px;
+        text-align: center;
+        font-size: 14px;
+        text-decoration: none;
+    }
+
+    .amquote-addto-button:link,
+    .amquote-addto-button:visited,
+    .amquote-addto-button:hover,
+    .amquote-addto-button:active {
+        text-decoration: none;
+    }
+
+    #productlisttable .tooltip-icon {
+        position: absolute;
+        top: -35px;
+        left: 61px;
+        width: 16px;
+        height: 17px;
+        background-color: #808080;
+        border-radius: 50%;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    #productlisttable .tooltip-icon-special-price {
+        position: absolute;
+        top: -17px;
+        left: 42px;
+        width: 18px;
+        height: 20px;
+        background-color: #008000;
+        border-radius: 50%;
+        text-align: center;
+        cursor: pointer;
+        cursor: pointer;
+    }
+
+    .container {
+        background-color: #ffff;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Hide the browser's default checkbox */
+    .container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .container:hover input~.checkmark {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .container input:checked~.checkmark {
+        background-color: #2196F3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .container input:checked~.checkmark:after {
+        display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .container .checkmark:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+
+    .tooltip-container.category-info {
+        margin-left: 988px;
+        margin-bottom: -81px !important;
+    }
+
+    .paginate_button.current {
+        background-color: #282828 !important;
+    }
+</style>
+<?php if ($btnBgColor && $btnColor) : ?>
+    <style>
+        .products-table-list .product-table-btn .action.primary {
+            background: <?=/* @NoEscape */ $btnBgColor ?>;
+            border-color: <?=/* @NoEscape */ $btnBgColor ?>;
+            color: <?=/* @NoEscape */ $btnColor ?>;
+        }
+
+        .products-table-list .product-table-btn .action.primary:hover {
+            background: <?=/* @NoEscape */ $btnColor ?>;
+            color: <?=/* @NoEscape */ $btnBgColor ?>;
+        }
+
+        .products-table-list .product-table-image img {
+            max-width: <?=/* @NoEscape */ $imageWidth ?>px;
+            max-height: <?=/* @NoEscape */ $imageHeight ?>px;
+        }
+    </style>
+<?php endif; ?>

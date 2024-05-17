@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- <preference for="Amasty\RequestQuote\Model\Email\Sender" type="Magemonkeys\Quote\Model\Email\Sender" /> -->
+        <preference for="Amasty\RequestQuote\Block\Adminhtml\Quote\Edit\History" type="Magemonkeys\Quote\Block\Adminhtml\Quote\Edit\History" />
+        <preference for="Stathmos\QuoteCommunication\Controller\Index\Add" type="Magemonkeys\Quote\Controller\Index\Add"/>
+         <!-- <type name="Amasty\RequestQuote\CustomerData\QuoteCart">
+            <plugin name="quote_cart_plugin" type="Magemonkeys\Quote\Plugin\CustomerData\QuoteCart" sortOrder="1" />
+        </type> -->
+</config>

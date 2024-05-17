@@ -1,0 +1,23 @@
+<!--@subject {{trans "Order Item Cancellation by Customer"}} @-->
+{{template config_path="design/email/header_template"}}
+<p>{{trans "Hello,"}} Admin</p>
+
+<p>A customer has canceled an item in their recent Quote #{{layout handle="item_cancel" quote=$quote area="frontend"}} . Here are the details:</p>
+<br>
+<table>
+    <tr class="email-information">
+        <td>
+            {{layout handle="amasty_quote_cancel_email_items" quote=$quote area="frontend"}}
+        </td>
+    </tr>
+    <tr class="quote-customer-info">
+        <td>
+            {{layout handle="amasty_quote_email_quote_attributes" quoteid=$quoteid area="frontend"}}
+        </td>
+    </tr>
+</table>
+<br>
+<br>
+<p>If you need further information or have any questions, please contact the customer or review the order details in your admin panel.</p>
+
+{{template config_path="design/email/footer_template"}}

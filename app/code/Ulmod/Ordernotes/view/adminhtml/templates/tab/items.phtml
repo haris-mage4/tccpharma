@@ -1,0 +1,62 @@
+<?php
+/**
+ * Copyright © Ulmod. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+?>
+<?php  if ($block->getCollection() && count($block->getCollection()) > 0): ?>
+<ul class="um-notes notes">
+    <?php foreach ($block->getCollection() as $note):?>
+        <?php $id = $note->getNote(); ?>
+<li class="note-item clearfix ">
+<div class="notes-body clearfix <?php if ($note->getCustomerId() > 0):?>from-customer<?php endif;?>">
+    <div class="post-header">
+    <a name="note-<?= $block->escapeHtml($note->getId()) ?>"></a>
+    <strong class="primary-font">
+            <?= $block->escapeHtml(($note->getCfirstname() != '' ? $note->getCfirstname()
+            : $note->getFirstname()))?>
+    </strong>
+    <small class="text-muted">
+            <?= /* @noEscape */ __('Added: %1', $block->formatDate($note->getCreatedAt()))?>
+    </small>
+    &nbsp;
+            <?php if (!$block->getIsOrder()):?>
+        <a class="um-note-edit" href="#" 
+            onclick="document.getElementById('masonotes_note_<?= /* @noEscape */ $id; ?>').style.display = 'block';
+            return false;">
+                    <?= $block->escapeHtml(__('Edit')) ?>
+        </a>
+    <?php endif;?>
+    </div>
+    <p>
+    <p class="note-message"><?= $block->escapeHtml($note->getNote());?></p>
+    <textarea name="masonotes_note[<?= $block->escapeHtml($note->getId())?>][note]" 
+    id="masonotes_note_<?= $block->escapeHtml($note->getId());?>" 
+    class="masonotes_edit" style="display: none;"><?= $block->escapeHtml($note->getNote()) ?></textarea>
+    <input name="masonotes_note[<?= $block->escapeHtml($note->getId()) ?>][edited]" value="0" type="hidden" />
+    </p>
+         <?php if (!$block->getIsOrder()):?>
+        <div class="post-footer">
+        <input type="hidden" name="masonotes_note[<?= $block->escapeHtml($note->getId()); ?>][status]" 
+        value="0" />
+        <label class="um_mastnotes_status" 
+            for="mastnotes_status_<?= $block->escapeHtml($note->getId()); ?>">
+            <input id="mastnotes_status_<?= $block->escapeHtml($note->getId()); ?>" 
+                    <?php if ($note->getVisible() == 1):?>checked<?php endif;?> 
+            type="checkbox" name="masonotes_note[<?= $block->escapeHtml($note->getId()); ?>][status]" 
+            value="1" />&nbsp;<?= $block->escapeHtml(__('Show To Customer'));?>
+        </label>&nbsp;
+        <label class="um_mastnotes_delete" 
+            for="mastnotes_delete_<?= $block->escapeHtml($note->getId());?>">
+            <input id="mastnotes_delete_<?= $block->escapeHtml($note->getId());?>" 
+            type="checkbox" 
+            name="masonotes_note[<?= $block->escapeHtml($note->getId());?>][delete]">
+            &nbsp;<?= $block->escapeHtml(__('Delete'));?>
+        </label>
+        </div>
+    <?php endif;?>
+</div>
+</li>
+        <?php endforeach;?>
+</ul>
+<?php endif;?>

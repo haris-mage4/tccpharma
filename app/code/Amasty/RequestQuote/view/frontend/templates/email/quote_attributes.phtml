@@ -1,0 +1,107 @@
+<?php
+$sales_rep_for_all_quote = '';
+$facility_name = '';
+$viewModel = $block->getData('viewModel');
+$quickorder = '';
+
+$attribute_html = '';
+$additional_feedback = '';
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+if ($block->getData('quoteid') !== null) {
+    $quoteEntityRepository = $objectManager->create(\Amasty\QuoteAttributes\Api\QuoteEntityRepositoryInterface::class)->getByQuoteId($block->getData('quoteid'));
+    $customerInfo = $viewModel->getCustomerInfoByQuoteId($block->getData('quoteid'));
+} else {
+    $quoteEntityRepository = $objectManager->create(\Amasty\QuoteAttributes\Api\QuoteEntityRepositoryInterface::class)->getByQuoteId($block->getId());
+}
+
+$eavConfig = $objectManager->create(\Magento\Eav\Model\Config::class);
+$model = $objectManager->create(\Amasty\QuoteAttributes\Model\QuoteEntity::class)->load($quoteEntityRepository->getEntityId());
+$quote_attribute_data = $model->getData();
+unset($quote_attribute_data['entity_id']);
+unset($quote_attribute_data['quote_id']);
+foreach ($quote_attribute_data as $key => $value) {
+    $attributeCode = $key;
+    $attributeValue = $value;
+    $attributeOptions = $model->getResource()->getAttribute($attributeCode)->getSource()->getAllOptions();
+    $attribute = $model->getResource()->getAttribute($attributeCode);
+    $attributeLabel = $attribute->getDefaultFrontendLabel();
+    if ($attributeCode == 'select_sales_rep') {
+        foreach ($attributeOptions as $option) {
+            if ($option['value'] == $attributeValue) {
+                $sales_rep_for_all_quote = $option['label'];
+                break;
+            }
+        }
+    } else {
+        if ($attribute) {
+            $attributeLabel = $attribute->getDefaultFrontendLabel();
+            foreach ($attributeOptions as $option) {
+                if ($option['value'] == $attributeValue) {
+                    $attribute_html = $option['label'];
+                    break;
+                }
+            }
+            if ($attributeCode == 'additional_feedback') {
+                foreach ($attributeOptions as $option) {
+                    if ($option['value'] == $attributeValue) {
+                        $additional_feedback = $option['label'];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    if ($attributeCode == 'facility') {
+        $facility = $attribute->getDefaultFrontendLabel();
+        $facility_name = $attributeValue;
+    }
+    if ($attributeCode == 'quickorder') {
+        foreach ($attributeOptions as $option) {
+            if ($option['value'] == $attributeValue) {
+                $quickorder = $option['label'];
+            }
+        }
+    }
+}
+?>
+<?php
+// $autoProcessValues = '';
+// if ($attributeCode == 'autoprocess') :
+//     $data = explode(',', $attributeValue);
+
+//     foreach ($data as $value) :
+//         $attr = $eavConfig->getAttribute('amasty_quote', 'autoprocess');
+//         $autoProcess = $attr->getSource()->getOptionText($value);
+//         $autoProcessValues .= $autoProcess . '<br>';
+//     endforeach;
+// endif;
+?>
+
+<table style="border-collapse: collapse; width: 100%;">
+    <h2 style="font-weight: bold;">Additional Information</h2>
+    <tr>
+        <th style="text-align: left; padding: 8px;">Facility Name</th>
+        <th style="text-align: left; padding: 8px;">Select Your Sales Rep</th>
+    </tr>
+    <tr>
+        <td style="text-align: left; padding: 8px;"><?= $facility_name ?></td>
+        <td style="text-align: left; padding: 8px;"><?= $sales_rep_for_all_quote ?></td>
+    </tr>
+    <tr>
+        <th style="text-align: left; padding: 8px;">Additional Feedback on Need</th>
+        <th style="text-align: left; padding: 8px;">Quick-Order (optional): Process order for requested quantity if...</th>
+        <?php if ($block->getData('quoteid') !== null) : ?>
+            <th style="text-align: left; padding: 8px;">Customer Name</th>
+            <th style="text-align: left; padding: 8px;">Customer Email</th>
+        <?php endif; ?>
+    </tr>
+    <tr>
+        <td style="text-align: left; padding: 8px;"><?= $additional_feedback ?></td>
+        <td style="text-align: left; padding: 8px;"><?= $quickorder ?></td>
+
+        <?php if ($block->getData('quoteid') !== null) : ?>
+            <td style="text-align: left; padding: 8px;"><?= $customerInfo['customer_name'] ?></td>
+            <td style="text-align: left; padding: 8px;"><?= $customerInfo['customer_email']; ?> </td>
+        <?php endif; ?>
+    </tr>
+</table>

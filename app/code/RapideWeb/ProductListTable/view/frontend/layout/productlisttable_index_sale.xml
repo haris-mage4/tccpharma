@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<head>
+		<css src="Magento_Swatches::css/swatches.css"/>
+		<css src="RapideWeb_ProductListTable::css/listtable.css"/>
+		<css src="RapideWeb_ProductListTable::css/font-awesome.min.css" />
+	</head>
+	<body>
+		<referenceContainer name="content">
+			<block as="productlisttable_sale" class="RapideWeb\ProductListTable\Block\ProductListSale" name="productlisttable_sale" template="RapideWeb_ProductListTable::productlisttable_sale.phtml" >
+				<!-- <block class="RapideWeb\ProductListTable\Block\ProductList" name="productlisttable.navigation" as="additional" template="RapideWeb_ProductListTable::productlisttable_navigation.phtml" ifconfig="productlisttable/general/navigation"/> -->
+			</block>
+		</referenceContainer>
+	</body>
+</page>

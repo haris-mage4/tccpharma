@@ -1,0 +1,131 @@
+<?php
+
+/**
+ * Copyright © 2016 MageWorx. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+$helper = $this->helper('Eagle\CustomSearchBlock\Helper\Data');
+?>
+
+<div data-bind="scope: 'searchsuiteautocomplete_form'">
+    <!-- ko template: getTemplate() --><!-- /ko -->
+</div>
+
+<script type="text/javascript">
+    require(['jquery'], function($) {
+            var isHtmlAppended = false;
+
+            function appendHtmlIfVisible() {
+                if ($('#search').is(':focus')) {
+                    var inputValue = $('#search').val();
+                    console.log(isHtmlAppended);
+
+                    $.ajax({
+                        url: '<?php echo $this->getUrl('searchblock/index/ajax'); ?>',
+                        method: 'POST',
+                        data: {
+                            inputValue: inputValue
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.message === true) {
+                                var customHtml = `
+                                    <div class="cms-page-sugg">
+                                        <span>Result for your search term in our</span>
+                                        <a href="https://shop.tccpharma.com/short-dated-discounted-inventory">
+                                            <span style="color: #0094c6;" class="qs-option-name">Short Dated Discounted Inventory</span>
+                                        </a>
+                                    </div>
+                                `;
+                                if (!isHtmlAppended) {
+                                    $('#searchsuite-autocomplete').append(customHtml);
+                                    isHtmlAppended = true;
+                                }
+
+                            } else if(response.message === 'medical') {
+                                var customHtml = `
+                                    <div class="cms-page-sugg">
+                                        <span>Result for your search term in our</span>
+                                        <a href="https://shop.tccpharma.com/medical-supply-special-offerings">
+                                            <span style="color: #0094c6;" class="qs-option-name">Medical Supply Special Offerings</span>
+                                        </a>
+                                    </div>
+                                `;
+                                if (!isHtmlAppended) {
+                                    $('#searchsuite-autocomplete').append(customHtml);
+                                    isHtmlAppended = true;
+                                }
+                            } else {
+                                isHtmlAppended = false;
+                                if ($('#searchsuite-autocomplete .cms-page-sugg').length) {
+                                    $('#searchsuite-autocomplete .cms-page-sugg').remove();
+                                }
+                            }
+                        }
+                    });
+                } else if (!isHtmlAppended) {
+                    isHtmlAppended = false;
+                    if ($('#searchsuite-autocomplete .cms-page-sugg').length) {
+                        $('#searchsuite-autocomplete .cms-page-sugg').remove();
+                    }
+                    setTimeout(appendHtmlIfVisible, 2);
+                }
+            }
+
+            $('#search').on('input focus keyup keydown click', function() {
+                appendHtmlIfVisible();
+            });
+    });
+</script>
+
+
+
+<style>
+    .cms-page-sugg {
+        padding: 28px 0px 23px 20px;
+        font-size: 20px;
+    }
+
+    #searchsuite-autocomplete {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .searchsuite-autocomplete>div {
+        order: 1;
+    }
+
+    .searchsuite-autocomplete>div.cms-page-sugg {
+        order: 0;
+    }
+</style>
+
+
+<script type="text/x-magento-init">
+    {
+    "*": {
+        "Magento_Ui/js/core/app": {
+            "components": {
+                "searchsuiteautocomplete_form": {
+                    "component": "MageWorx_SearchSuiteAutocomplete/js/autocomplete"
+                },
+                "searchsuiteautocompleteBindEvents": {
+                    "component": "MageWorx_SearchSuiteAutocomplete/js/bindEvents",
+                    "config": {
+                        "searchFormSelector": "#search_mini_form",
+                        "searchButtonSelector": "button.search",
+                        "inputSelector": "#search, #mobile_search, .minisearch input[type=\"text\"]",
+                        "searchDelay": "<?php echo $block->getSearchDelay() ?>"
+                    }
+                },
+                "searchsuiteautocompleteDataProvider": {
+                    "component": "MageWorx_SearchSuiteAutocomplete/js/dataProvider",
+                    "config": {
+                        "url": "<?php echo $block->getSearchUrl() ?>"
+                    }
+                }
+            }
+        }
+    }
+}
+</script>

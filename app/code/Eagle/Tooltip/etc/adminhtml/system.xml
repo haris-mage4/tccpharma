@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+	<system>
+		<tab id="eagle_tooltip" translate="label" sortOrder="100">
+			<label>Eagle Config</label>
+		</tab>
+		<section id="tooltip" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+			<label>Tooltip</label>
+			<tab>eagle_tooltip</tab>
+			<resource>Eagle_Tooltip::config_eagle_tooltip</resource>
+			<group id="general" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+				<label>General</label>
+				<field id="enable_tooltip" type="select" sortOrder="10" showInWebsite="0" showInStore="0" showInDefault="0" translate="label">
+					<label>Enable</label>
+					<comment>Enable Tooltip on Product</comment>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+                <field id="regular_price_tooltip" type="textarea" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <label>Regular Price Tooltip Text</label>
+                    <comment>Regular Price Tooltip Text</comment>
+                </field>
+                <field id="special_price_tooltip" type="textarea" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <label>Special Price Text</label>
+                    <comment>Special Price Text</comment>
+                </field>
+			</group>
+		</section>
+	</system>
+</config>

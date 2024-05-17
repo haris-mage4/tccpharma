@@ -1,0 +1,523 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_MassProductActions
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var Result $block */
+/** @var Data $helper */
+$helper           = $block->getHelperData();
+$optionFormUi     = $block->getUrl("mui/index/render", ['_query' => ['namespace' => 'mp_option_form']]);
+$saveAddOptionUrl = $block->getUrl("mpmassproductactions/option/save");
+$removeOptionUrl  = $block->getUrl("mpmassproductactions/option/remove");
+
+use Mageplaza\MassProductActions\Block\Adminhtml\Result;
+use Mageplaza\MassProductActions\Helper\Data; ?>
+<style>
+    <?php if ($helper->versionCompare('2.3.0')): ?>
+    .mp-inventory-value-source {
+        display: none;
+    }
+    <?php endif;?>
+</style>
+<script type="text/javascript">
+    require([
+        'jquery',
+        'uiRegistry'
+    ], function ($, registry) {
+        mpMassProductAction = {
+            /** Mass update product attribute set */
+            saveAttributeSet: function () {
+                var attrSetForm = $('#mp-massproductactions-attribute-set-form form'),
+                    attrSetPopup = $('#mp-massproductactions-attribute-set-form');
+
+                this.massActionAjax(attrSetPopup, attrSetForm);
+            },
+
+            /** Mass update product category */
+            saveCategory: function () {
+                var categoryForm = $('#mp-massproductactions-category-form form'),
+                    categoryPopup = $('#mp-massproductactions-category-form');
+
+                this.massActionAjax(categoryPopup, categoryForm);
+            },
+
+            /** Mass update product website */
+            saveWebsite: function () {
+                var websiteForm = $('#mp-massproductactions-website-form form'),
+                    websitePopup = $('#mp-massproductactions-website-form');
+
+                this.massActionAjax(websitePopup, websiteForm);
+            },
+
+            /** Mass copy product custom options */
+            saveOption: function () {
+                var optionForm = $('#mp-massproductactions-option-form form'),
+                    optionPopup = $('#mp-massproductactions-option-form');
+
+                this.massActionAjax(optionPopup, optionForm);
+            },
+
+            /** Mass update product images */
+            saveImage: function () {
+                var imageForm = $('#mp-massproductactions-image-form form'),
+                    imagePopup = $('#mp-massproductactions-image-form');
+
+                this.massActionAjax(imagePopup, imageForm);
+            },
+
+            /** Mass update related products */
+            saveRelated: function () {
+                var relatedForm = $('#mp-massproductactions-related-form form'),
+                    relatedPopup = $('#mp-massproductactions-related-form');
+
+                this.massActionAjax(relatedPopup, relatedForm);
+            },
+
+            /** Mass update up-sell products */
+            saveUpSell: function () {
+                var upSellForm = $('#mp-massproductactions-up-sell-form form'),
+                    upSellPopup = $('#mp-massproductactions-up-sell-form');
+
+                this.massActionAjax(upSellPopup, upSellForm);
+            },
+
+            /** Mass update cross-sell products */
+            saveCrossSell: function () {
+                var crossSellForm = $('#mp-massproductactions-cross-sell-form form'),
+                    crossSellPopup = $('#mp-massproductactions-cross-sell-form');
+
+                this.massActionAjax(crossSellPopup, crossSellForm);
+            },
+
+            /** Mass update attribute products */
+            saveAttribute: function () {
+                var attributeForm = $('#mp-massproductactions-attribute-form form'),
+                    attributePopup = $('#mp-massproductactions-attribute-form');
+                if (attributeForm.valid()) {
+                    this.massActionAjax(attributePopup, attributeForm);
+                }
+            },
+
+            /** Mass update inventory products */
+            saveInventory: function () {
+                var inventoryForm = $('#mp-massproductactions-inventory-form form'),
+                    inventoryPopup = $('#mp-massproductactions-inventory-form');
+                if (inventoryForm.valid()) {
+                    this.massActionAjax(inventoryPopup, inventoryForm);
+                }
+            },
+
+            /** Mass update product price */
+            savePrice: function () {
+                var priceForm = $('#mp-massproductactions-price-form form'),
+                    pricePopup = $('#mp-massproductactions-price-form');
+                if (priceForm.valid()) {
+                    this.massActionAjax(pricePopup, priceForm);
+                }
+            },
+
+            /** Load image product grid */
+            loadProductsGrid: function (event, url) {
+                var productInput = $(event.target).parents('.admin__field-control.control').find('input'),
+                    submitBtn = $(event.target).parents('.admin__field-control.control')
+                        .find('.mp_submit_products_grid'),
+                    formName = $(event.target).parents('.mp-massproductactions-grid-form'),
+                    data = {product_sku: productInput.val()};
+                submitBtn.show();
+                formName.find('.mp_load_products_grid').prop('disabled', true);
+                formName.find('.mp-massproductactions-message.submit-message').html('');
+                /** Init product grid when selecting product sku */
+                this.initProductGrid(formName, url, data);
+            },
+
+            /** Mass action ajax submit function */
+            massActionAjax: function (popup, form) {
+                var storeId = popup.find('#store_switcher').val();
+                var data = '',
+                    el = this;
+                if ((typeof storeId) !== 'undefined') {
+                    data = form.serialize() + '&' + $.param(mpmassproductactions_Selections) + '&store=' + storeId;
+                } else {
+                    data = form.serialize() + '&' + $.param(mpmassproductactions_Selections);
+                }
+
+                $('body').loader('show');
+                $.ajax({
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: data,
+                    success: function (response) {
+                        if (response.ajaxRedirect) {
+                            window.location.href = response.ajaxRedirect;
+                        }
+                        if (response.status) {
+                            popup.trigger('closeModal');
+                            $('.mp-massproductactions-message.action-message').html(response.result_html);
+                            el.updateGrid();
+                            form[0].reset();
+                        } else {
+                            popup.trigger('closeModal');
+                            $('.mp-massproductactions-message.action-message').html(response.result_html);
+                            form[0].reset();
+                        }
+                    },
+                    error: function (e) {
+                        popup.trigger('closeModal');
+                        $('.mp-massproductactions-message.action-message').html(e.responseText);
+                        form[0].reset();
+                    },
+                    complete: function () {
+                        $('body').loader('hide');
+                    }
+                });
+            },
+
+            /**
+             * Reload current grid
+             */
+            updateGrid: function () {
+                var grid = 'product_listing.product_listing_data_source';
+                var target = registry.get(grid);
+                if (target && typeof target === 'object') {
+                    target.set('params.t ', Date.now());
+                }
+            },
+
+            /**
+             * Init product grid function
+             *
+             * @param {Object} formName
+             * @param {string} url
+             * @param {Object} data
+             */
+            initProductGrid: function (formName, url, data) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: data,
+                    showLoader: true,
+                    success: function (res) {
+                        var productListEl = formName.find('.mpmassproductactions_products_grid');
+                        productListEl.html(res);
+                        productListEl.trigger('contentUpdated')
+                    },
+                    error: function (e) {
+                        formName.find('.mp-massproductactions-message.submit-message').html(e.responseText);
+                    }
+                });
+            },
+
+            /**
+             * Init add option form
+             */
+            initOptionForm: function () {
+                $.get('<?= $optionFormUi ?>', function (data) {
+                    $('#option-form').empty().append(data);
+                    $('#option-form').trigger('contentUpdated');
+                    $('#option-form .form-inline').applyBindings();
+                });
+            },
+
+            /**
+             * Save custom options
+             */
+            saveAddOption: function () {
+                var popup   = $('#mp-massproductactions-add-option-form'),
+                    options = requirejs('uiRegistry').get('mp_option_form.product_form_data_source').data.product.options;
+
+                requirejs('uiRegistry').get('mp_option_form.product_form_data_source').trigger('data.validate');
+
+                mpmassproductactions_Selections.options = options;
+
+                if (!$('#option-form .admin__field-error').length) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '<?= $saveAddOptionUrl ?>',
+                        data: $.param(mpmassproductactions_Selections),
+                        showLoader: true,
+                        success: function (response) {
+                            if (response.empty) {
+                                $('.option-form-message').html(response.result_html);
+                            } else {
+                                popup.trigger('closeModal');
+                                $('.mp-massproductactions-message.action-message').html(response.result_html);
+                                $('#option-form .action-delete').trigger('click');
+                            }
+                        }
+                    })
+                }
+            },
+
+            /**
+             * Remove custom options
+             */
+            removeCustomOption: function() {
+                $.ajax({
+                    type: 'POST',
+                    url: '<?= $removeOptionUrl ?>',
+                    data: $.param(mpmassproductactions_Selections),
+                    showLoader: true,
+                    success: function (response) {
+                        $('.mp-massproductactions-message.action-message').html(response.result_html);
+                    }
+                })
+            },
+
+            /**
+             * Init attributes form function
+             *
+             * @param {Object} formName
+             * @param {string} url
+             * @param {string} tab
+             * @param {string} store
+             * @param {string} scopeParams
+             */
+            initAttributesForm: function (formName, url, tab, store, scopeParams = '') {
+                $.ajax({
+                    type: "POST",
+                    url: url + scopeParams,
+                    data: mpmassproductactions_Selections,
+                    showLoader: true,
+                    success: function (response) {
+                        if (response.ajaxRedirect) {
+                            window.location.href = response.ajaxRedirect;
+                        }
+                        if (response.status) {
+                            var attributesEdit = formName.find(tab),
+                                storeSwitcher = formName.find(store);
+                            attributesEdit.html(response.result_html);
+                            storeSwitcher.html(response.store_html);
+                            attributesEdit.trigger('contentUpdated');
+                            storeSwitcher.trigger('contentUpdated');
+                        } else {
+                            window.location.href = response.redirect_url;
+                        }
+                    }
+                });
+            },
+
+            /** Submit product grid */
+            submitProductsGrid: function (event) {
+                var productInput = $(event.target).parents('.admin__field-control.control').find('input'),
+                    selectBtn = $(event.target).parents('.admin__field-control.control').find('.mp_load_products_grid'),
+                    formName = $(event.target).parents('.mp-massproductactions-grid-form');
+                var productGrid = formName.find('.mpmassproductactions_products_grid'),
+                    selectedProducts = productGrid.find('input[name=products]').val();
+                var imgLoader = $(event.target).parents('.admin__field-control.control')
+                    .find('.mpmassproductactions_image_loader img');
+
+                imgLoader.show();
+                $.ajax({
+                    type: "POST",
+                    url: '<?= /* @noEscape */ $block->getUrl('mpmassproductactions/product_grid/submitProducts', [
+                        'form_key' => $block->getFormKey()
+                    ]) ?>',
+                    data: {products: selectedProducts},
+                    success:
+                        function (response) {
+                            if (response.ajaxRedirect) {
+                                window.location.href = response.ajaxRedirect;
+                            }
+                            if (response.status) {
+                                formName.find('.mp-massproductactions-message.submit-message')
+                                    .html(response.result_html);
+                                var oldValue = (productInput.val() && response.products)
+                                    ? productInput.val() + ',' : productInput.val();
+                                productInput.val(oldValue + response.products);
+                            }
+                        },
+                    complete: function () {
+                        imgLoader.hide();
+                        selectBtn.show();
+                        formName.find('.mpmassproductactions_products_grid').html('');
+                        formName.find('.mp_load_products_grid').prop('disabled', false);
+                    }
+                });
+            },
+
+            /** Show or Hide specific attributes */
+            showAttributeField: function (event) {
+                var attrCode = $(event.target).attr('data-attr-code'),
+                    attrField = $(event.target).parents('form').find('#base_fieldset .field-' + attrCode);
+                if ($(event.target).is(':checked')) {
+                    attrField.show();
+                    attrField.effect('highlight', 'slow');
+                    attrField.find('.mp-attribute-value').prop('disabled', false);
+                    attrField.find('input.checkbox').prop('checked', false);
+                    attrField.find('.mp-attribute-filter').prop('disabled', false);
+                    if (attrField.find('input[type=hidden]').length) {
+                        attrField.find('input[type=hidden]').prop('disabled', false);
+                    }
+                } else {
+                    attrField.hide();
+                    attrField.find('.mp-attribute-value').prop('disabled', true);
+                    attrField.find('.mp-attribute-filter').prop('disabled', true);
+                    if (attrField.find('input[type=hidden]').length) {
+                        attrField.find('input[type=hidden]').prop('disabled', true);
+                    }
+                }
+            },
+
+            /** Attribute value filter processor */
+            applyAttributeTextFilter: function (event) {
+                var attrFieldControl = $(event.target).parents('.admin__field-control');
+                if ($(event.target).val() !== '0') {
+                    attrFieldControl.find('.mp-attribute-value').addClass('hidden');
+                    attrFieldControl.find('.mp-attribute-value').removeClass('required-entry', true);
+                } else {
+                    attrFieldControl.find('.mp-attribute-value').removeClass('hidden');
+                    attrFieldControl.find('.mp-attribute-value').addClass('required-entry', false);
+                }
+                attrFieldControl.find('label.mage-error').remove();
+            },
+
+            /** Is change the inventory value */
+            inventoryIsChange: function (event) {
+                var fieldControl = $(event.target).parents('div.admin__field-control.control'),
+                    useConfigElement = fieldControl.find('.mp-inventory-use-config');
+                if ($(event.target).val() === '1') {
+                    this.enableInventoryField(useConfigElement);
+                    if (!useConfigElement.length) {
+                        fieldControl.find('.mp-inventory-value').prop('disabled', false);
+                        fieldControl.find('.mp-inventory-calculation').prop('disabled', false);
+                    }
+                    useConfigElement.prop('disabled', false);
+                } else {
+                    this.enableInventoryField(useConfigElement);
+                    fieldControl.find('.mp-inventory-value').prop('disabled', true);
+                    fieldControl.find('.mp-inventory-calculation').prop('disabled', true);
+                    useConfigElement.prop('disabled', true);
+                }
+            },
+
+            /** Inventory value use config or not */
+            enableInventoryField: function (useConfigElement) {
+                var fieldControl = $(useConfigElement).parents('div.admin__field-control.control');
+                if ($(useConfigElement).val() === '1') {
+                    fieldControl.find('.mp-inventory-value').prop('disabled', true);
+                    fieldControl.find('.mp-inventory-calculation').prop('disabled', true);
+                } else {
+                    fieldControl.find('.mp-inventory-value').prop('disabled', false);
+                    fieldControl.find('.mp-inventory-calculation').prop('disabled', false);
+                }
+            }
+        };
+
+        window.mpOptionProductsGridUrl = '<?= /* @noEscape */
+            $block->getUrl(
+                'mpmassproductactions/product_grid/optionProducts',
+                [
+                    'form_key' => $block->getFormKey(),
+                    'loadGrid' => 1
+                ]
+            )?>';
+        window.mpImageProductsGridUrl = '<?= /* @noEscape */
+            $block->getUrl(
+                'mpmassproductactions/product_grid/imageProducts',
+                [
+                    'form_key' => $block->getFormKey(),
+                    'loadGrid' => 1
+                ]
+            )?>';
+        window.mpRelatedProductsGridUrl = '<?= /* @noEscape */
+            $block->getUrl(
+                'mpmassproductactions/product_grid/relatedProducts',
+                [
+                    'form_key' => $block->getFormKey(),
+                    'loadGrid' => 1
+                ]
+            )?>';
+        window.mpUpSellProductsGridUrl = '<?= /* @noEscape */
+            $block->getUrl(
+                'mpmassproductactions/product_grid/upSellProducts',
+                [
+                    'form_key' => $block->getFormKey(),
+                    'loadGrid' => 1
+                ]
+            )?>';
+        window.mpCrossSellProductsGridUrl = '<?= /* @noEscape */
+            $block->getUrl(
+                'mpmassproductactions/product_grid/crossSellProducts',
+                [
+                    'form_key' => $block->getFormKey(),
+                    'loadGrid' => 1
+                ]
+            )?>';
+        window.mpAttributeLoadUrl = '<?= /* @noEscape */
+            $block->getUrl(
+                'mpmassproductactions/product_attribute/load',
+                [
+                    'form_key' => $block->getFormKey()
+                ]
+            )?>';
+        window.mpInventoryLoadUrl = '<?= /* @noEscape */
+            $block->getUrl(
+                'mpmassproductactions/product_inventory/load',
+                [
+                    'form_key' => $block->getFormKey()
+                ]
+            )?>';
+        window.mpPriceLoadUrl = '<?= /* @noEscape */
+            $block->getUrl(
+                'mpmassproductactions/product_price/load',
+                [
+                    'form_key' => $block->getFormKey()
+                ]
+            )?>';
+
+        /** Catch enter key on update image form */
+        $('#image_product_sku').keypress(function (e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                mpMassProductAction.saveImage();
+            }
+        });
+
+        /** Catch enter key on related-products form */
+        $('#related_base_fieldset input.mp_products_input_text').each(function () {
+            $(this).keypress(function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    mpMassProductAction.saveRelated();
+                }
+            });
+        });
+
+        /** Catch enter key on up-sell products form */
+        $('#up_sell_base_fieldset input.mp_products_input_text').each(function () {
+            $(this).keypress(function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    mpMassProductAction.saveUpSell();
+                }
+            });
+        });
+
+        /** Catch enter key on cross-sell products form */
+        $('#cross_sell_base_fieldset input.mp_products_input_text').each(function () {
+            $(this).keypress(function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    mpMassProductAction.saveCrossSell();
+                }
+            });
+        });
+    });
+</script>
+<div class="mp-massproductactions-message action-message"></div>

@@ -1,0 +1,20 @@
+<?php
+$blockObj = $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Customerinfo');
+$customerGroupId = $blockObj->getGroupId();
+$_product = $block->getCurrentProduct();
+$toolTipHelper = $this->helper('Eagle\Tooltip\Helper\Config\TooltipConfig');
+?>
+<?php if ($block->isLoggedIn()) : ?>
+    <?php if ($customerGroupId != 9) : ?>
+        <?php if (!$toolTipHelper->hasAdvancedPrice($_product)) : ?>
+            <?php if ($_product->getPrice() > 0.01) : ?>
+             <div class="tooltip-container">
+                <div class="tooltip-icon">
+                    <span class="tooltip-question-mark">?</span>
+                </div>
+                <div class="tooltip-content"><?= $block->getRegularTooltipText(); ?></div>
+            </div>
+            <?php endif; ?>
+        <?php endif; ?>
+    <?php endif; ?>
+<?php endif; ?>

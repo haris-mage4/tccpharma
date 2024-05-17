@@ -1,0 +1,29 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** @var \Magento\Customer\Block\Account\AuthorizationLink $block */
+
+$dataPostParam = '';
+if ($block->isLoggedIn()) {
+    $dataPostParam = sprintf(" data-post='%s'", $block->getPostParams());
+?>
+<li class="order-history">
+    <a href="<?php echo $this->getUrl('sales/order/history') ?>" id="idJw4JvO4X" class="order-history"><?= $block->escapeHtml("My Order") ?></a>
+</li>
+
+<li class="quote-history">
+    <a href="<?php echo $this->getUrl('amasty_quote/account/index') ?>" id="idJw4JvO4X" class="quote-history"><?= $block->escapeHtml("My Quotes") ?></a>
+</li>
+
+<li class="quote-history">
+    <a href="<?php echo $this->getUrl('customize/index/view') ?>" id="idJw4JvO4X" class="quote-history"><?= $block->escapeHtml("My Items") ?></a>
+</li>
+
+<li class="wishlist">
+    <a href="<?php echo $this->getUrl('wishlist') ?>" id="idJw4JvO4X" class="wishlist"><?= $block->escapeHtml($block->getLabel()) ?></a>
+</li>
+<?php } ?>
+

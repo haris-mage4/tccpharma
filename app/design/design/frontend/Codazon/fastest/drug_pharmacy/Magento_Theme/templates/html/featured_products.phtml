@@ -1,0 +1,108 @@
+<?php
+/**
+* Copyright © 2015 Magento. All rights reserved.
+* See COPYING.txt for license details.
+*/
+
+// @codingStandardsIgnoreFile
+
+?>
+
+<?php 
+$mediaUrl = $this->helper('\Magento\Cms\Helper\Wysiwyg\Images')->getBaseUrl();
+$baseUrl = $block->getBaseUrl();
+
+$blockObj= $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Customerinfo');
+$customerGroupId = $blockObj->getGroupId();
+?>		  
+<div class="categories-deals cdz-block-title02 coltitle02">
+	<div class="row">
+		<div class="col-sm-24">
+			<div class="block-title"><strong>Featured Products</strong><a class="view-all" href="/search-terms">view all categories</a></div>
+		</div>
+	</div>
+	<div class="custom-featured col-md-12 col-lg-12">
+		<?php
+		$blockObj= $block->getLayout()->createBlock('Magemonkeys\FeaturedProduct\Block\Featuredproducts');
+		$collection = $blockObj->getProducts();
+
+		// $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+		/** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection */
+		// $productCollection = $objectManager->create('Magento\Catalog\Model\ResourceModel\Product\CollectionFactory')->create();
+		/** Apply filters here */
+		// $skus = ['220100','331601','025110','318201','751716E','093705','001103','071100'];
+		// $collection = $productCollection->addAttributeToSelect('*')->addAttributeToFilter('sku', ['in' => $skus])
+		// 			->load();
+		// $collection = $productCollection->addAttributeToSelect('*')->setPageSize(8)
+		// 			->load();
+		
+		$totalProducts = count($collection);
+		// var_dump($collection->getData());
+		if($totalProducts > 0){
+			$pcounter = 0;
+			foreach($collection as $product){
+				$pcustomerGroupId = $product->getCustomerGroup();
+				$pcustomergroup_id = explode(",", $pcustomerGroupId);
+				if (in_array($customerGroupId, $pcustomergroup_id)) {
+					?>
+					<div class="item-custom col-md-3 col-lg-3">
+						<div class="banner-wrapper color01">
+							<div class="top-deal-info">
+								<!-- <div class="product-name"><a href="<?php //echo $product->getProductUrl(); ?>"><?php //echo $product->getName(); ?></a></div> -->
+								<div class="image-shell-wrapper">
+									<?php
+									$imageUrl = $this->helper('Magento\Catalog\Helper\Image')
+									->init($product, 'product_base_image')
+									->constrainOnly(true)
+									->keepAspectRatio(true)
+									->keepTransparency(true)
+									->keepFrame(false)
+									->resize(350, 350)->getUrl();
+									?>
+									<a href="<?php /* @escapeNotVerified */ echo $product->getProductUrl() ?>" class="product-item-photo">
+										<img src="<?php echo  $imageUrl;?>" alt="<?php echo $this->escapeHtml($product->getName()) ?>" />
+									</a>
+								</div>
+							</div>
+							<div class="bottom-deal-info">
+								<div class="info-block">
+									<div class="custom-info-block">
+										<p><?php echo $product->getName(); ?></p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php	
+				//if (++$pcounter == 16) break;
+				}				
+			}
+		}
+		?>
+	</div>
+</div>
+<!-- <script>
+	require(['jquery', 'mageplaza/core/owl.carousel'], function ($) {
+		$('.custom-featured').owlCarousel({
+			"loop":0,
+			"autoHeight":0,
+			"nav":0,
+			"dots":1,
+			"lazyLoad":0,
+			"autoplay":0,
+			"items":4,
+			 "responsiveClass": true,
+		    "responsive": {
+		        0:{
+		          "items": 1
+		        },
+		        480:{
+		          "items": 3
+		        },
+		        769:{
+		          "items": 4
+		        }
+		    }
+		});
+	});
+</script> -->

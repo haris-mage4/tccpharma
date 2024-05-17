@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Ulmod. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
+    <template id="ulmod_ordernotes_notifications_admin_template"
+              label="Order Notes - Email Template To Admin"
+              file="template2adm.html"
+              type="html"
+              module="Ulmod_Ordernotes"
+              area="frontend"/>
+
+    <template id="ulmod_ordernotes_notifications_customer_template"
+              label="Order Notes - Email Template To Customer"
+              file="template2customer.html"
+              type="html"
+              module="Ulmod_Ordernotes"
+              area="frontend"/>
+</config>

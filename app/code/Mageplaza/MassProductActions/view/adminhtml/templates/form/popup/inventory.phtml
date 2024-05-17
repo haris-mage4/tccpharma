@@ -1,0 +1,44 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_MassProductActions
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var Template $block */
+
+use Magento\Backend\Block\Template; ?>
+<div id="mp-massproductactions-inventory-form" class="mp-massproductactions-action-form">
+    <div class="page-main-actions">
+        <div id="mp-inventory-form-store-switcher"></div>
+        <div class="page-actions" data-ui-id="page-actions-toolbar-content-header">
+            <div class="page-actions-inner" data-title="<?= /* @noEscape */ __('Submit') ?>">
+                <div class="page-actions-buttons">
+                    <button id="submit_inventory" title="<?= /* @noEscape */ __('Submit') ?>" type="button"
+                            class="scalable primary"
+                            data-ui-id="mp-massproductactions-inventory-form-container-button"
+                            onclick="mpMassProductAction.saveInventory();">
+                        <span><?= /* @noEscape */ __('Submit') ?></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="page:main-container" class="page-columns">
+        <div id="mp-inventory-form-container"></div>
+    </div>
+</div>

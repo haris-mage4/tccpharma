@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<config>
+   <preference for="Magento\Wishlist\Block\Customer\Sharing" type="Magemonkeys\Customerinfo\Block\Customer\Sharing" />
+</config>

@@ -1,0 +1,22 @@
+{
+    "name": "magemonkeys/module-quote",
+    "description": "Quote Price and  NDC in email",
+    "type": "magento2-module",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "MageMonkeys",
+            "email": ""
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Magemonkeys\\Quote\\": ""
+        }
+    }
+}

@@ -1,0 +1,16 @@
+<!--@subject {{trans '[Order Notes] Customer added new note to order'}} #{{var order.getRealOrderId()}} @-->
+{{template config_path="design/email/header_template"}}
+
+<b>{{trans 'New note has been added to order'}} #{{var order.getRealOrderId()}}:</b>
+<p>&nbsp;</p>
+<p>Store Name:</p>
+<p><i>{{var note.store_name}}</i></p>
+<p>Customer Name:</p>
+<p><i>{{var order.getCustomerName()}}</i></p>
+<p>Customer Email:</p>
+<p><i>{{var order.getCustomerEmail()}}</i></p>
+<p>&nbsp;</p>
+<p>Note:</p>
+<p><i>{{var note.note}}</i></p>
+
+{{template config_path="design/email/footer_template"}}

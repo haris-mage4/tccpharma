@@ -1,0 +1,73 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
+ * @package Amasty_RequestQuote
+ */
+?>
+<?php $quote = $block->getQuote() ?>
+<?php
+$viewModel = $block->getData('viewModel');
+$quote_data = $viewModel->getAdminRemark($quote->getId());
+?>
+<?php
+$customerGroupId = $block->getQuote()->getCustomer()->getGroupId();
+?>
+
+<?php if ($quote) : ?>
+    <?php $items = $quote->getAllItems(); ?>
+    <table class="email-items">
+        <thead>
+        <tr>
+            <th style="vertical-align: top; width: 61px;" class="item-serial-no">
+                <?= /* @noEscape */ __('Line #') ?>
+            </th>
+            <th style="vertical-align: top;" class="item-info">
+                <?= /* @noEscape */ __('Items') ?>
+            </th>
+            <th style="vertical-align: top;" class="item-available_qty" style="background: yellow;">
+                <?= /* @noEscape */ __('Available QTY') ?>
+            </th>
+            <?php if ($customerGroupId != 9) : ?>
+                <th style="vertical-align: top;" class="item-price">
+                    <?= /* @noEscape */ __('List Price ') ?>
+                </th>
+            <?php endif; ?>
+            <th style="vertical-align: top;" class="item-approved-price" style="background-color:yellow;">
+                <span><?= /* @noEscape */ __('Approved Price') ?></span>
+            </th>
+            <th style="vertical-align: top;" class="item-uom" style="background-color:yellow;">
+                <span><?= /* @noEscape */ __('Per UOM') ?></span>
+            </th>
+        </tr>
+        </thead>
+        <?php $serialNumber = 1; ?>
+        <?php foreach ($items as $item) : ?>
+            <?php if (!$item->getParentItem()) : ?>
+
+                <tbody>
+                <tr style="display: block; width: 60px; height: 0;">
+                    <td style="border: none;" class="item-serial-no"><?= $serialNumber ?></td>
+                    <?= $block->getItemHtml($item); ?>
+                </tr>
+                </tbody>
+                <tbody class="quote-item-notes">
+
+                <?php if ($item->getNotes()) : ?>
+                    <tr>
+                        <td>
+                            <?php if ($item->getNotes()->getAdminNote()) : ?>
+                                <?= $escaper->escapeHtml(__('Administrator Note:')) ?>
+                                <div class="item-note amquote-note">
+                                    <?= /* @noEscape */ nl2br($item->getNotes()->getAdminNote()) ?>
+                                </div>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+                </tbody>
+                <?php $serialNumber++; ?>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </table>
+<?php endif; ?>

@@ -1,0 +1,72 @@
+<?php
+
+$quoteRemarkCollection = $this->getRemarkCommentCollection();
+?>
+<div class="quote-details-items ordered">
+	<div class="quote-title" style="font-size: larger;">
+		<strong style="font-weight: bold; font-size: 25px;">Add / View Quote Remarks Below</strong>
+	</div>
+
+	<div id="notes-on-quote-container">
+		<ul class="um-notes remark">
+			<?php if ($quoteRemarkCollection && count($quoteRemarkCollection) > 0) : ?>
+				<?php foreach ($quoteRemarkCollection as $remark) : ?>
+					<li class="quote-remark-customer">
+						<div class="quote-remark-header">
+							<?php if ($remark->getAdminUserId() !== null || !empty($remark->getAdminUserId())) : ?>
+								<div class="admin-quote-remark-block">
+									<div class="admin-quote-remark-header">
+										<strong>
+											<?php if ($remark->getAdminUserName()) : ?>
+												<?php echo $remark->getAdminUserName(); ?>
+											<?php else : ?>
+												<?php echo $remark->getCustomerName(); ?>
+											<?php endif; ?>
+										</strong><span>Added: <?= __(date('Y-m-d H:i:s', strtotime($remark->getUpdatedAt() . " -7 hours"))); ?></span>
+									</div>
+									<div class="admin-remark-message-content">
+										<p class="admin-msg"><?= __($remark->getRemarkComment()); ?></p>
+									</div>
+								</div>
+							<?php else : ?>
+								<div class="user-quote-remark-block">
+									<strong>
+										<?php if ($remark->getAdminUserName()) : ?>
+											<?php echo $remark->getAdminUserName(); ?>
+										<?php else : ?>
+											<?php echo $remark->getCustomerName(); ?>
+										<?php endif; ?>
+									</strong><span>Added: <?= __(date('Y-m-d H:i:s', strtotime($remark->getUpdatedAt() . " -7 hours"))); ?></span>
+									<div class="remark-message-content">
+										<p class="msg"><?= nl2br(__($remark->getRemarkComment())); ?></p>
+									</div>
+								</div>
+						</div>
+					<?php endif; ?>
+					</li>
+				<?php endforeach; ?>
+			<?php else : ?>
+				<li class="quote-remark-customer">
+					<div class="remark-message-content">
+						<p class="msg"><?= __('Quote Remark Not Found'); ?></p>
+					</div>
+				</li>
+			<?php endif; ?>
+		</ul>
+	</div>
+	<div class="ulmod-cnote">
+		<form name="quote-remark-form" id="quote-notes-form" method="post" action="<?= $this->getFormAction(); ?>">
+			<input type="hidden" name="form_key" value="<?= $block->getFormKey() ?>" />
+			<input type="hidden" name="quote_id" value="<?= $this->getQuoteId(); ?>" />
+			<textarea name="remark_comment" id="notes-order-reply" rows="8"></textarea>
+			<button type="submit" class="action primary">
+				<span>Add Remark</span>
+			</button>
+		</form>
+	</div>
+</div>
+
+<div style="padding: 20px;">
+    <span style="color: red; font-weight: bold;">Your representative will be notified when you add a remark. If you are using the place-order functionality, you can expect to receive an email confirmation once your order has been processed.</span>
+</div>
+

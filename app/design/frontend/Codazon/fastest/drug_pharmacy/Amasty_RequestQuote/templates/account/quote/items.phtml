@@ -1,0 +1,100 @@
+<?php
+
+/**
+ * @package Request a Quote Base for Magento 2
+ */
+/**
+ * @var \Amasty\RequestQuote\Block\Account\Quote\Items $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+$blockObj = $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Customerinfo');
+$customerGroupId = $blockObj->getGroupId();
+?>
+<div class="order-details-items ordered">
+    <div class="table-wrapper order-items">
+        <table class="data table table-order-items" id="my-orders-table" summary="<?= $escaper->escapeHtml(__('Items Ordered')) ?>">
+            <caption class="table-caption"><?= $escaper->escapeHtml(__('Items Ordered')) ?></caption>
+            <thead>
+                <?php if ($block->isPagerDisplayed()) : ?>
+                    <tr>
+                        <td colspan="5" data-block="order-items-pager-top" class="order-pager-wrapper order-pager-wrapper-top">
+                            <?= $block->getPagerHtml() ?>
+                        </td>
+                    </tr>
+                <?php endif ?>
+                <tr class="am-quotes-head">
+                    <th class="col serial-number"><?= $escaper->escapeHtml('Line#') ?></th>
+                    <th class="col name"><?= $escaper->escapeHtml(__('Items')) ?></th>
+                    <?php if ($customerGroupId != 9) : ?>
+                        <th class="col price"><?= $escaper->escapeHtml(__('Original Price')) ?></th>
+                    <?php endif; ?>
+                    <th class="col qty"><?= $escaper->escapeHtml(__('Requested QTY')) ?></th>
+                    <th class="col qty available"><?= $escaper->escapeHtml(__('Available QTY')) ?></th>
+                    <th class="col price"><?= $escaper->escapeHtml(__('Requested Price')) ?></th>
+                    <th class="col price approved"><?= $escaper->escapeHtml(__('Approved Price')) ?></th>
+                    <?php if ($customerGroupId != 9) : ?>
+                        <th class="col discount"><?= $escaper->escapeHtml(__('Discount Amount')) ?></th>
+                    <?php endif; ?>
+                </tr>
+            </thead>
+            <?php $items = $block->getItems(); ?>
+            <?php $counter = 1; ?>
+            <?php foreach ($items as $item) : ?>
+                <?php if ($item->getParentItem()) {
+                    continue;
+                } ?>
+                <tbody>
+                    <tr>
+                        <?= $block->getItemHtml($item) ?>
+                    </tr>
+                </tbody>
+                <tbody class="quote-item-notes">
+                    <?php if ($item->getNotes()) : ?>
+                        <tr>
+                            <td colspan="3" class="amquote-cell-container">
+                                <?php if ($item->getNotes()->getCustomerNote()) : ?>
+                                    <?= $escaper->escapeHtml(__('Customer Note:')) ?>
+                                    <div class="item-note amquote-note">
+                                        <?= /* @noEscape */ nl2br($escaper->escapeHtml($item->getNotes()->getCustomerNote())) ?>
+                                    </div>
+                                <?php endif; ?>
+                            </td>
+                            <td colspan="3" class="amquote-cell-container">
+                                <?php if ($item->getNotes()->getAdminNote()) : ?>
+                                    <?= $escaper->escapeHtml(__('Administrator Note:')) ?>
+                                    <div class="item-note amquote-note">
+                                        <?= /* @noEscape */ nl2br($escaper->escapeHtml($item->getNotes()->getAdminNote())) ?>
+                                    </div>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+                <?php $counter++; ?>
+            <?php endforeach; ?>
+            <tfoot>
+                <?php if ($block->isPagerDisplayed()) : ?>
+                    <tr>
+                        <td colspan="5" data-block="order-items-pager-bottom" class="order-pager-wrapper order-pager-wrapper-bottom">
+                            <?= $block->getPagerHtml() ?>
+                        </td>
+                    </tr>
+                <?php endif ?>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<div class="account-quote-buttons">
+    <?php if ($block->isQuoteComplete()) : ?>
+        <?= $escaper->escapeHtml(__('Order ID')) ?>:
+        <a href="<?= $escaper->escapeHtml($block->getOrderViewUrl()) ?>">
+            <?= $escaper->escapeHtml(__('# %1', $block->getQuote()->getReservedOrderId())) ?>
+        </a>
+    <?php endif; ?>
+    <?php if ($customerGroupId != 9 && $customerGroupId != 10 && $customerGroupId != 11) : ?>
+        <?php if ($block->isMoveShowed()) : ?>
+            <button type="submit" title="<?= $escaper->escapeHtml(__('Move to Shopping Cart')) ?>" class="action tocart primary" amcart-observed="true" data-post='<?= $escaper->escapeHtml($block->getPostData($block->getMoveUrl())) ?>'><span><?= $escaper->escapeHtml(__('Move to Shopping Cart')) ?></span></button>
+            <button type="submit" title="<?= $escaper->escapeHtml(__('Move to Checkout')) ?>" class="action tocart primary" amcart-observed="true" data-post='<?= $escaper->escapeHtml($block->getPostData($block->getMoveUrl(['redirect_url' => 'checkout']))) ?>'><span><?= $escaper->escapeHtml(__('Move to Checkout')) ?></span></button>
+        <?php endif; ?>
+    <?php endif; ?>
+</div>

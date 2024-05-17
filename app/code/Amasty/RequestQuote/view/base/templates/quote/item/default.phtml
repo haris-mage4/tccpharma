@@ -1,0 +1,264 @@
+<?php
+
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Request a Quote Base for Magento 2
+ */
+/** @var \Magento\Checkout\Block\Cart\Item\Renderer $block */
+$item = $block->getItem();
+$product = $item->getProduct();
+$blockObj = $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Customerinfo');
+$customerGroupId = $blockObj->getGroupId();
+$toolTipHelper = $this->helper('Eagle\Tooltip\Helper\Config\TooltipConfig');
+$helper = $this->helper('Magemonkeys\Quote\Helper\Data');
+$ndc = $helper->getProductNdc($item->getSku());
+$uom = $helper->getProductSize($item->getSku());
+?>
+<tr id="order-item-row-<?= $escaper->escapeHtml($item->getId()) ?>">
+    <td class="col serial-no" data-serial=""></td>
+    <td class="col name" data-th="<?= $escaper->escapeHtml(__('Product Name')) ?>">
+        <strong class="product name product-item-name"><?= $escaper->escapeHtml($item->getName()) ?></strong>
+        <p class="sku"><strong><?= /* @noEscape */ __('SKU') ?>:</strong> <?= $escaper->escapeHtml($item->getSku()) ?></p>
+        <p class="ndc"><strong><?= /* @noEscape */ __('NDC') ?>:</strong> <?= $escaper->escapeHtml($ndc) ?></p>
+        <p class="uom"><strong><?= /* @noEscape */ __('UOM') ?>:</strong> <?= $escaper->escapeHtml($uom) ?></p>
+        <?php if ($options = $block->getOptionList()) : ?>
+            <dl class="item-options">
+                <?php foreach ($options as $option) : ?>
+                    <?php $_formatedOptionValue = $block->getFormatedOptionValue($option) ?>
+                    <dt><?= $escaper->escapeHtml($option['label']) ?></dt>
+                    <dd>
+                        <?php if (isset($_formatedOptionValue['full_view'])) : ?>
+                            <?= /* @noEscape */ $_formatedOptionValue['full_view'] ?>
+                        <?php else : ?>
+                            <?= /* @noEscape */ $_formatedOptionValue['value'] ?>
+                        <?php endif; ?>
+                    </dd>
+                <?php endforeach; ?>
+            </dl>
+        <?php endif; ?>
+        <?php $addtInfoBlock = $block->getProductAdditionalInformationBlock(); ?>
+        <?php if ($addtInfoBlock) : ?>
+            <?= $addtInfoBlock->setItem($item)->toHtml() ?>
+        <?php endif; ?>
+        <?= $escaper->escapeHtml($item->getDescription()) ?>
+    </td>
+    <?php if ($customerGroupId != 9) : ?>
+        <td class="col price qty" data-th="<?= $escaper->escapeHtml(__('Original Price')) ?>">
+            <span class="price-excluding-tax">
+                <span class="cart-price">
+                    <span class="price">
+                        <?php if ($product->getPrice() > 0.01) : ?>
+                            <?php if ($toolTipHelper->tierPriceByCustomerId($product->getSku(), $customerGroupId) != null) : ?>
+                                <?= '$' . $toolTipHelper->tierPriceByCustomerId($item->getSku(), $customerGroupId) ?>
+                            <?php else : ?>
+                                <?= $block->getOriginalPriceHtml($item) ?>
+                            <?php endif; ?>
+                        <?php else : ?>
+                            <?= $escaper->escapeHtml('N/A') ?>
+                        <?php endif; ?>
+                    </span>
+                </span>
+            </span>
+        </td>
+    <?php endif; ?>
+
+    <td class="col qty" data-th="<?= $escaper->escapeHtml(__('Qty')) ?>">
+        <span class="quo-it-qty kailash"><?= $escaper->escapeHtml($block->getQty()) ?></span>
+    </td>
+
+    <td class="col qty available" data-th="<?= $escaper->escapeHtml(__('Available Qty')) ?>">
+        <?php if ($item->getApprovalStatus() == 0) : ?>
+            <span><strong> <?= /* @noEscape */ __('Pending') ?></strong></span>
+        <?php elseif ($item->getApprovalStatus() == 2) : ?>
+            <span><strong> <?= /* @noEscape */ __('Cancelled') ?></strong></span>
+        <?php else : ?>
+            <?php
+            $availableQty = intval($item->getAvailableQty());
+            ?>
+            <span class="quo-it-qty available">
+                <strong><?= ($availableQty > 0) ? $availableQty : '-' ?></strong>
+            </span>
+        <?php endif; ?>
+    </td>
+
+    <td class="col price qty" data-th="<?= $escaper->escapeHtml(__('Requested Price')) ?>">
+        <span class="price-excluding-tax">
+            <span class="cart-price">
+                <?= $block->getRequestedPriceHtml($item) ?>
+            </span>
+        </span>
+    </td>
+
+    <?php
+    $approvedPrice = $block->getIsApprovedPriceShowed()
+        ? $block->getUnitPriceHtml($item)
+        : $escaper->escapeHtml(__('pending'));
+    ?>
+    <td class="col price approved" data-th="<?= $escaper->escapeHtml(__('Approved Price')) ?>">
+        <span class="price-excluding-tax">
+            <span class="cart-price">
+                <span class="price">
+                    <?php if ($item->getApprovalStatus() == 0) : ?>
+                        <?= /* @noEscape */ __('Pending') ?>
+                    <?php elseif ($item->getApprovalStatus() == 2) : ?>
+                        <?= /* @noEscape */ __('Cancelled') ?>
+                    <?php else : ?>
+                        <?= /* @noEscape */ $approvedPrice ?>
+                    <?php endif; ?>
+                </span>
+            </span>
+        </span>
+    </td>
+    <?php if ($block->getRequestedPriceHtml($item) != "N/A") : ?>
+        <?php if ($customerGroupId != 9) : ?>
+            <td class="col price qty" data-th="<?= $escaper->escapeHtml(__('Discount Amount')) ?>">
+                <span class="price-excluding-tax">
+                    <span class="cart-price">
+                        <span class="price">
+                            <?php if ($item->getApprovalStatus() == 0) : ?>
+                                <span><?= /* @noEscape */ __('Pending') ?></span>
+                            <?php else : ?>
+                                <?php if ($block->getRequestedPriceHtml($item) == '$0.01' || $block->getRequestedPriceHtml($item) == 'N/A') : ?>
+                                    N/A
+                                <?php else : ?>
+                                    <?php
+                                    $discountPercent = '';
+                                    $originalPrice = round((float)preg_replace('/[^0-9\.]/', '', $block->getOriginalPriceHtml($item)), 2);
+                                    $approvedPriceByAdmin = round((float)preg_replace('/[^0-9\.]/', '', $approvedPrice), 2);
+                                    $priceDifference = $originalPrice - $approvedPriceByAdmin;
+
+                                    if ($priceDifference >= 0.01) {
+                                        $discountAmount = $originalPrice - $approvedPriceByAdmin;
+                                        $discountPercent = round(($discountAmount / $originalPrice) * 100, 2) . '%';
+                                    } else {
+                                        $discountPercent = "N/A";
+                                    }
+                                    ?>
+                                    <?= $discountPercent ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </span>
+                    </span>
+                </span>
+            </td>
+        <?php endif; ?>
+    <?php endif; ?>
+
+    <?php if ($item->getApprovalStatus() == 0) : ?>
+        <td class="cancel-quote" data-th="<?= $escaper->escapeHtml(__('Cancel Quote')) ?>">
+            <button class="cancel-quote-button-<?= $escaper->escapeHtml($item->getId()) ?> cancel-quote" data-item-id="<?= $escaper->escapeHtml($item->getId()) ?>">
+                Cancel Quote
+            </button>
+        </td>
+    <?php elseif ($item->getApprovalStatus() == 1) : ?>
+        <td class="place-order" data-th="<?= $escaper->escapeHtml(__('Place Order')) ?>">
+            <button class="place-order-button" data-item-id="<?= $escaper->escapeHtml($item->getId()) ?>">
+                Place Order
+            </button>
+        </td>
+    <?php elseif ($item->getApprovalStatus() == 2) : ?>
+        <td class="cancelled-quote" data-th="<?= $escaper->escapeHtml(__('Cancelled')) ?>">
+            <?php if ($item->getIsCancelByAdmin() == 3) : ?>
+                <span class="button-like cancelled-quote-<?= $escaper->escapeHtml($item->getId()) ?>" data-item-id="<?= $escaper->escapeHtml($item->getId()) ?>">
+                    <?= /* @noEscape */ __('Cancelled By Admin') ?>
+                </span>
+            <?php else : ?>
+                <span class="button-like cancelled-quote-<?= $escaper->escapeHtml($item->getId()) ?>" data-item-id="<?= $escaper->escapeHtml($item->getId()) ?>">
+                    <?= /* @noEscape */ __('Cancelled') ?>
+                </span>
+            <?php endif; ?>
+            <?php if ($item->getCancelledDate()) : ?>
+                <span class="button-like cancelled-quote-<?= $escaper->escapeHtml($item->getId()) ?>" data-item-id="<?= $escaper->escapeHtml($item->getId()) ?>">
+                    <?=  /* @noEscape */ $item->getCancelledDate() ?>
+                </span>
+            <?php endif; ?>
+        </td>
+    <?php endif; ?>
+</tr>
+
+<?php if ($item->getQuoteNote()) : ?>
+    <tr>
+        <td colspan="10">
+            <p class="note" style="background-color: #fdf0d5; color: #333; padding: 10px; border-radius: 5px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
+                <strong><?= /* @noEscape */ __('Product Note') ?>:</strong> <?= $escaper->escapeHtml($item->getQuoteNote()) ?>
+            </p>
+        </td>
+    </tr>
+<?php endif; ?>
+
+<script type="text/javascript">
+    require(['jquery', 'jquery/ui'], function($) {
+        $(document).ready(function() {
+            let customText = '';
+            const serialNumber = document.querySelectorAll('.col.qty .kailash');
+            serialNumber.forEach(function(name, index) {
+                const $parentRow = $(name).closest('tr');
+                const $serialNo = $parentRow.find('.col.serial-no');
+                $serialNo.attr('data-serial', index + 1);
+                $serialNo.text(index + 1);
+            });
+            $('.place-order-button').on('click', function() {
+                const $parentRow = $(this).closest('tr');
+                const approvedPrice = $parentRow.find('.col.price.approved .price').text().trim();
+                const dataLine = $parentRow.find('.col.serial-no').text().trim();
+                const sku = $parentRow.find('.sku').text().trim();
+                const availableQty = $parentRow.find('.col.qty.available strong').text().trim();
+
+                $(this).prop('disabled', true);
+
+                customText +=
+                    "Line Item #: " + dataLine + " | " + sku + " | Approved Price: " + approvedPrice + " | Available QTY: " + availableQty + "\n\n" +
+                    "FILL OUT BELOW AND CLICK ADD REMARK TO PLACE YOUR ORDER:\n" +
+                    "Order Quantity:\n" +
+                    "Purchase Order #:\n" +
+                    "Shipping Preference/Special Instructions:\n\n";
+
+                $('#notes-order-reply').css('font-weight', '60px');
+
+                $('#notes-order-reply').val(customText);
+                $('#notes-order-reply').addClass('highlighted');
+
+                if (!$('html, body').is(':animated')) {
+                    const textareaOffset = $('#notes-order-reply').offset().top;
+                    const textareaHeight = $('#notes-order-reply').outerHeight();
+                    const windowHeight = $(window).height();
+                    const middleOffset = textareaOffset - ((windowHeight - textareaHeight) / 2);
+
+                    $('html, body').animate({
+                        scrollTop: middleOffset
+                    }, 500);
+                }
+            });
+
+
+            $('.cancel-quote-button-<?= $escaper->escapeHtml($item->getId()) ?>').on('click', function() {
+                const $clickedButton = $(this);
+                const itemId = $clickedButton.data('item-id');
+                const buttonLabel = 'Cancelled';
+                const quote_id = '<?= $escaper->escapeHtml($item->getQuoteId()) ?>';
+
+                $.ajax({
+                    url: '<?= $escaper->escapeUrl($block->getUrl('amasty_quote/quote/cancelquote')) ?>',
+                    type: 'post',
+                    data: {
+                        item_id: itemId,
+                        quote_id: quote_id
+                    },
+                    showLoader: true,
+                    success: function(response) {
+                        $clickedButton.text(buttonLabel).prop('disabled', true);
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+    });
+</script>
+<?php if ($block->getRequestedPriceHtml($item) == "N/A") : ?>
+    <style>
+        th.col.discount {
+            display: none;
+        }
+    </style>
+<?php endif; ?>

@@ -1,0 +1,279 @@
+<?php
+
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Request a Quote Base for Magento 2
+ */
+/**
+ * @var \Amasty\RequestQuote\Block\Account\Quote\History $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+
+$quotes = $block->getQuotes();
+?>
+<?php
+$stathmosHelper = $this->helper('Stathmos\Customize\Helper\Data');
+$amastyCartHelper = $this->helper('Amasty\RequestQuote\Helper\Cart');
+$catalogImageHelper = $this->helper('Magento\Catalog\Helper\Image');
+$priceFormateHelper = $this->helper('Magento\Framework\Pricing\Helper\Data');
+$productListBlock = $block->getLayout()->createBlock('Magento\Catalog\Block\Product\ListProduct');
+$Magemonkeyshelper = $this->helper('Magemonkeys\Quote\Helper\Data');
+$blockObj = $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Customerinfo');
+$customerGroupId = $blockObj->getGroupId();
+$statusParam = $this->getRequest()->getParam('status');
+$statusFor = ($statusParam === '') ? '' : 'status';
+?>
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$request = $objectManager->get('\Magento\Framework\App\Request\Http');
+$refererUrl = $request->getServer('HTTP_REFERER');    ?>
+<?= $block->getChildHtml('info') ?>
+<?php if ($quotes && $quotes->getSize()) : ?>
+    <div class="quotes-history">
+        <div class="history">
+            <div class="row">
+                <form method='get'>
+                    <div class="filter-row col-lg-8">
+                        <div scope="col" class="col id" style="font-size: 14px;"><?= $block->escapeHtml(__('Quote #')) ?></div>
+                        <div scope="col" class="col item-id">
+                            <input type="text" name="quote_id" placeholder="Search Quote No" value="<?= $this->getRequest()->getParam('quote_id') ?>" style="border-radius: 3px;" />
+                        </div>
+                    </div>
+
+                    <div class="filter-row col-lg-8">
+                        <div scope="col" class="col id" style="font-size: 14px;"><?= /* @escapeNotVerified */ __('Item Name') ?></div>
+                        <div scope="col" class="col item-name">
+                            <input type="text" placeholder="Search Name" name="name" value="<?= $this->getRequest()->getParam('name') ?>" style="border-radius: 3px;" />
+                        </div>
+                    </div>
+
+                    <div class="filter-row col-lg-8">
+                        <div scope="col" class="col id" style="font-size: 14px;"><?= /* @escapeNotVerified */ __('SKU') ?></div>
+                        <div scope="col" class="col item-sku">
+                            <input type="text" placeholder="Search SKU" name="sku" value="<?= $this->getRequest()->getParam('sku') ?>" style="border-radius: 3px;" />
+                        </div>
+                    </div>
+
+                    <div class="filter-row col-lg-16" style="padding-top: 10px;padding-bottom: 10px;">
+                        <div scope="col" class="col date" style="font-size: 14px;"><?= $block->escapeHtml(__('Date')) ?></div>
+                        <div scope="col" class="col date" id="calendar_inputField">
+                            <div class="col-lg-12">
+                                <input type="text" placeholder="From" id="date-from" name="from_date" value="<?= $this->getRequest()->getParam('from_date') ?>" style="border-radius: 3px;" />
+                            </div>
+                            <div class="col-lg-12">
+                                <input type="text" id="date-to" name="to_date" placeholder="To" value="<?= $this->getRequest()->getParam('to_date') ?>" style="border-radius: 3px;" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-row col-lg-8" style="padding-top: 10px; padding-bottom: 10px;">
+                        <div scope="col" class="col status" style="font-size: 14px;"><?= $block->escapeHtml(__('Status')) ?></div>
+                        <div scope="col" class="col status">
+                            <select name="status">
+                                <option value="" disabled selected>-- Select Status --</option>
+                                <option value="0" <?= $this->getRequest()->getParam('status') === '0' ? 'selected="selected"' : '' ?>>Pending</option>
+                                <option value="1" <?= $this->getRequest()->getParam('status') === '1' ? 'selected="selected"' : '' ?>>Approved</option>
+                                <option value="2" <?= $this->getRequest()->getParam('status') === '2' ? 'selected="selected"' : '' ?>>Cancelled</option>
+                                <option value="3" <?= $this->getRequest()->getParam('status') === '3' ? 'selected="selected"' : '' ?>>Cancelled By Admin</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="filter-row col-lg-8">
+                        <div scope="col" class="col actions" style="font-size: 14px;"><?= $block->escapeHtml(__('Action')) ?></div>
+                        <div scope="col" class="col actions">
+                            <input class="action primary" type="submit" value="Filter" style="width: 100%;border-radius: 3px;" />
+                        </div>
+                    </div>
+
+                </form>
+
+                <div class="filter-row col-lg-8">
+                    <div scope="col" class="col actions" style="font-size: 14px;"><?= $block->escapeHtml(__('Reset')) ?></div>
+
+                    <button style="width: 100%;" class="reset-filter" onclick="window.location.href='<?php echo $block->getUrl('amasty_quote/account/index') ?>';">
+                        <?php echo __('Reset all Filters'); ?>
+                    </button>
+
+                </div>
+            </div>
+            <br />
+            <!-- Quote Filters -->
+            <?php foreach ($quotes as $quote) : ?>
+                <div class="hallcontent">
+                    <div class="order_col">
+                        <h4><b><?= $escaper->escapeHtml(__('Quote #')) ?></b></h4>
+                        <p><?= $escaper->escapeHtml($quote->getIncrementId()) ?></p>
+                        <h4><b><?= $escaper->escapeHtml(__('Date')) ?></b></h4>
+                        <p><?= $escaper->escapeHtml($block->formatDate($quote->getSubmitedDate())) ?></p>
+                        <h4><b><?= $escaper->escapeHtml(__('Action')) ?></b></h4>
+                        <a href="<?= $escaper->escapeUrl($block->getViewUrl($quote)) ?>" class="action view">
+                            <span class="action-view-history"><?= $escaper->escapeHtml(__('Click Here to Manage Quote (Order Approved Items, Communicate with Rep, Manage Pending Items)')) ?></span>
+                        </a>
+                    </div>
+                    <div class="order_data">
+                        <?php if ($block->isExpiryColumnShow()) : ?>
+                            <h4><b><?= $escaper->escapeHtml(__('Expiry Date')) ?></b></h4>
+                        <?php endif; ?>
+                        <?php if ($block->isExpiryColumnShow()) : ?>
+                            <p><?= $escaper->escapeHtml($block->getExpiredDate($quote)) ?></p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="quote_over">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th style="width: 200px">Line #</th>
+                                <th style="width: 100px;">Item Name</th>
+                                <th style="width: 80px">Requested Price</th>
+                                <th style="width: 80px; background: yellow;">Approved Price</th>
+                                <th style="width: 100px">Requested Qty</th>
+                                <th style="width: 100px; background: yellow;">Available Qty</th>
+                                <th style="width: 80px">Quoted On</th>
+                                <th></th>
+                            </tr>
+                            <?php $quoteItems = $quote->getAllItems();
+                            $productSrNo = 1;
+                            $approvalStatus = $this->getRequest()->getParam('status');
+                            foreach ($quoteItems as $key => $item) {
+                                $product = $stathmosHelper->getProduct($item->getProductId());
+                                $addToCartUrl =  $productListBlock->getAddToCartUrl($product);
+
+                                $imageUrl = $catalogImageHelper
+                                    ->init($product, 'product_base_image')
+                                    ->constrainOnly(true)
+                                    ->keepAspectRatio(true)
+                                    ->keepTransparency(true)
+                                    ->keepFrame(false)
+                                    ->resize(150, 150)->getUrl();
+                            ?>
+                                <?php
+                                $requestedCustomPrice = 'N/A';
+                                $data = json_decode($item->getAdditionalData(), true);
+                                if (isset($data['requested_custom_price'])) {
+                                    if ($data['requested_custom_price'] !== 0)
+                                        $requestedCustomPrice = '$' . $data['requested_custom_price'];
+                                }
+                                $product = $item->getProduct();
+                                $productUrl = $product->getProductUrl();
+                                ?>
+                                <tr>
+                                    <td>
+                                        <p><?= __($productSrNo); ?></p><img src="<?php echo $imageUrl; ?>" class="image_order">
+                                    </td>
+                                    <td>
+                                        <a href="<?= $productUrl; ?>"><?= __($item->getName()); ?></a>
+                                        <p class="sku"><strong><?= /* @noEscape */ __('SKU') ?>:</strong> <?= $escaper->escapeHtml($item->getSku()) ?></p>
+                                        <p class="ndc"><strong><?= /* @noEscape */ __('NDC') ?>:</strong> <?= $escaper->escapeHtml($Magemonkeyshelper->getProductNdc($item->getSku())) ?></p>
+                                        <p class="uom"><strong><?= /* @noEscape */ __('UOM') ?>:</strong> <?= $escaper->escapeHtml($Magemonkeyshelper->getProductSize($item->getSku())) ?></p>
+                                    </td>
+
+                                    <td><?= $requestedCustomPrice ?></td>
+
+                                    <?php if ($item->getApprovalStatus() == 0) : ?>
+                                        <td>
+                                            <p style="background: yellow;"><strong>Pending</strong></p>
+                                        </td>
+                                    <?php elseif ($item->getApprovalStatus() == 2) : ?>
+                                        <td>
+                                            <p style="background: yellow;"><strong>Cancelled</strong></p>
+                                        </td>
+                                    <?php else : ?>
+                                        <td>
+                                            <p style="background: yellow;"><strong><?= __($priceFormateHelper->currency($item->getCustomPrice(), true, false)); ?></strong></p>
+                                        </td>
+                                    <?php endif; ?>
+
+                                    <td>
+                                        <p class="quo-his-qty"><?= __(intval($item->getQty())); ?></p>
+                                    </td>
+                                    <td>
+                                        <?php if ($item->getApprovalStatus() == 0) : ?>
+                                            <p class="aval-qty" style="background: yellow;"><strong><?= 'Pending' ?></strong></p>
+                                        <?php elseif ($item->getApprovalStatus() == 2) : ?>
+                                            <p class="aval-qty" style="background: yellow;"><strong>Cancelled</strong></p>
+                                        <?php elseif (intval($item->getAvailableQty()) == 0) : ?>
+                                            <p class="aval-qty" style="background: yellow;"><strong><?= 'Pending' ?></strong></p>
+                                        <?php else : ?>
+                                            <p class="aval-qty" style="background: yellow;"><strong><?= __(intval($item->getAvailableQty())); ?></strong></p>
+                                        <?php endif; ?>
+                                    </td>
+
+                                    <td><?= $escaper->escapeHtml($block->formatDate($quote->getSubmitedDate())); ?></td>
+                                    <td>
+                                        <?php if ($block->isMoveShowed($quote) && $item->getApprovalStatus() == 1) : ?>
+                                            <?php
+                                            if ($customerGroupId != 9 && $customerGroupId != 10 && $customerGroupId != 11) {
+                                            ?>
+                                                <a href="#" data-post='<?= /* @noEscape  */ $block->getPostData($block->getMoveUrl($quote)) ?>' class="action quote moveto" title="<?= $escaper->escapeHtml(__('Move to Cart')) ?>">
+                                                    <span><?= $escaper->escapeHtml(__('Move to Cart')) ?></span>
+                                                </a>
+                                            <?php
+                                            }
+                                            ?>
+                                        <?php endif; ?>
+                                        <form data-role="tocart-form" action="<?php echo $amastyCartHelper->getAddUrl($product); ?>" method="post">
+                                            <?php echo $block->getBlockHtml('formkey') ?>
+                                            <button type="submit" title="Requote" class="requote_a">Requote</button>
+                                        </form>
+                                        <?php if ($customerGroupId == 9 || $customerGroupId == 10 || $customerGroupId == 11) : ?>
+                                            <?php if ($item->getApprovalStatus() == 1) : ?>
+                                                <a href="<?= $escaper->escapeUrl($block->getViewUrl($quote)) ?>">
+                                                    <button id="proceed-button" type="button" class="action primary">
+                                                        <span><?php echo __('Proceed to Order'); ?></span>
+                                                    </button>
+                                                </a>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+
+                                    </td>
+                                </tr>
+                                <?php if ($item->getQuoteNote()) : ?>
+                                    <tr>
+                                        <td colspan="10">
+                                            <p class="note" style="background-color: #fdf0d5; color: #333; padding: 10px; border-radius: 5px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
+                                                <strong><?= /* @noEscape */ __('Product Note') ?>:</strong> <?= $escaper->escapeHtml($item->getQuoteNote()) ?>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                                <?php $productSrNo++; ?>
+                            <?php  } ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php if ($block->getPagerHtml()) : ?>
+        <div class="quote-products-toolbar toolbar bottom"><?= $block->getPagerHtml() ?></div>
+    <?php endif ?>
+<?php else : ?>
+
+    <div class="message info empty"><span><?= $escaper->escapeHtml(__('No quotes match your search')) ?></span></div>
+    <button onclick="window.location.href='<?= $refererUrl; ?>';">
+        <?php echo __('Reset all Filters'); ?>
+    </button>
+<?php endif ?>
+
+<!-- Quote Filters -->
+<script>
+    require([
+        "jquery",
+        "mage/calendar"
+    ], function($) {
+        $("#calendar_inputField").dateRange({
+            buttonText: 'Select Date',
+            changeMonth: true,
+            changeYear: true,
+            from: {
+                id: 'date-from'
+            },
+            to: {
+                id: 'date-to'
+            }
+        });
+    });
+</script>

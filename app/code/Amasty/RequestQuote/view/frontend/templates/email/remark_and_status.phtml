@@ -1,0 +1,18 @@
+<?php
+$quote = $block->getQuote();
+$viewModel = $block->getData('viewModel');
+$quoteData = $viewModel->getAdminRemark($quote->getId());
+?>
+<?php if ($quote && is_array($quoteData) && array_key_exists('admin_note_remark', $quoteData)) : ?>
+    <?php if (!empty(nl2br(__($quoteData['admin_note_remark'])))) : ?>
+        <table class="message-info update" style="position: absolute; top: 533px; width: 100% !important;">
+            <!-- <tr>
+                <td><?php //echo "<strong>Status:</strong> ".$quote_data['status'];
+                    ?></td>
+            </tr> -->
+            <tr>
+                <td><?php echo "<strong>" . $viewModel->getCurrentAdminUserName() . ":</strong> " . nl2br(__($quoteData['admin_note_remark'])); ?></td>
+            </tr>
+        </table>
+    <?php endif; ?>
+<?php endif; ?>

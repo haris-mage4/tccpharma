@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Request a Quote Attribute Management for Magento 2 (System)
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\SelectOptionsContainer" type="Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\OptionsContainer">
+        <arguments>
+            <argument name="fieldsetName" xsi:type="string">attribute_options_select_container</argument>
+            <argument name="componentName" xsi:type="string">attribute_options_select</argument>
+            <argument name="inputType" xsi:type="const">Amasty\QuoteAttributesManagement\Model\Source\FrontendInput::SELECT</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\MultiselectOptionsContainer" type="Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\OptionsContainer">
+        <arguments>
+            <argument name="fieldsetName" xsi:type="string">attribute_options_multiselect_container</argument>
+            <argument name="componentName" xsi:type="string">attribute_options_multiselect</argument>
+            <argument name="inputType" xsi:type="const">Amasty\QuoteAttributesManagement\Model\Source\FrontendInput::MULTISELECT</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\Pool" type="Magento\Ui\DataProvider\Modifier\Pool">
+        <arguments>
+            <argument name="modifiers" xsi:type="array">
+                <item name="manage_titles" xsi:type="array">
+                    <item name="class" xsi:type="string">Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\ManageTitles</item>
+                    <item name="sortOrder" xsi:type="number">10</item>
+                </item>
+                <item name="input_filter" xsi:type="array">
+                    <item name="class" xsi:type="string">Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\InputFilter</item>
+                    <item name="sortOrder" xsi:type="number">20</item>
+                </item>
+                <item name="select_options" xsi:type="array">
+                    <item name="class" xsi:type="string">Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\SelectOptionsContainer</item>
+                    <item name="sortOrder" xsi:type="number">30</item>
+                </item>
+                <item name="multiselect_options" xsi:type="array">
+                    <item name="class" xsi:type="string">Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\MultiselectOptionsContainer</item>
+                    <item name="sortOrder" xsi:type="number">30</item>
+                </item>
+                <item name="default_value" xsi:type="array">
+                    <item name="class" xsi:type="string">Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\DefaultValue</item>
+                    <item name="sortOrder" xsi:type="number">40</item>
+                </item>
+                <item name="stores" xsi:type="array">
+                    <item name="class" xsi:type="string">Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\Stores</item>
+                    <item name="sortOrder" xsi:type="number">50</item>
+                </item>
+                <item name="frontend_class" xsi:type="array">
+                    <item name="class"
+                          xsi:type="string">Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\FrontendClass</item>
+                    <item name="sortOrder" xsi:type="number">60</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\DataProvider">
+        <arguments>
+            <argument name="pool" xsi:type="object">Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\Modifier\Pool</argument>
+        </arguments>
+    </type>
+</config>

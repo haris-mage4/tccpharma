@@ -1,0 +1,69 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
+ * @package Amasty_RequestQuote
+ */
+?>
+<?php $quote = $block->getQuote() ?>
+<?php
+$viewModel = $block->getData('viewModel');
+$quote_data = $viewModel->getAdminRemark($quote->getId());
+?>
+<?php if ($quote): ?>
+    <?php $items = $quote->getAllItems(); ?>
+    <table class="email-items">
+        <thead>
+        <tr>
+            <th class="item-info">
+                <?= /* @noEscape */  __('Items') ?>
+            </th>
+            <th class="item-qty">
+                <?= /* @noEscape */  __('Qty') ?>
+            </th>
+            <th class="item-price">
+                <?= /* @noEscape */  __('Quote Price') ?>
+            </th>
+            <th class="item-price">
+                <?= /* @noEscape */  __('Original Price') ?>
+            </th>
+        </tr>
+        </thead>
+        <?php foreach ($items as $item): ?>
+            <?php if (!$item->getParentItem()): ?>
+                <tbody>
+                <?= $block->getItemHtml($item) ?>
+                </tbody>
+                <tbody class="quote-item-notes">
+
+                <?php if(@$quote_data['admin_note_remark'] != null && !empty(@$quote_data['admin_note_remark']) ): ?>
+                <table class="message-info">
+                <tr>
+                    <td><?php echo "Status: ".$quote_data['status']; ?></td>
+                </tr>
+                <tr>                    
+                    <td><?php echo "Remark: ".$quote_data['admin_note_remark']; ?></td>
+                </tr>
+                </table> 
+   
+                <?php endif; ?>              
+                <?php if ($item->getNotes()): ?>
+                    <tr>
+                        <td>
+                            <?php if ($item->getNotes()->getAdminNote()): ?>
+                                <?= $escaper->escapeHtml(__('Administrator Note:')) ?>
+                                <div class="item-note amquote-note">
+                                    <?= /* @noEscape */ nl2br($item->getNotes()->getAdminNote()) ?>
+                                </div>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+                </tbody>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        <tfoot class="order-totals">
+        <?= $block->getChildHtml('quote_totals') ?>
+        </tfoot>
+    </table>
+<?php endif; ?>

@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<head>
+		<css src="Magento_Swatches::css/swatches.css"/>
+		<css src="RapideWeb_ProductListTable::css/listtable.css"/>
+		<css src="RapideWeb_ProductListTable::css/font-awesome.min.css" />
+	</head>
+	<body>
+		<referenceContainer name="content">
+			<block as="productlisttable" class="RapideWeb\ProductListTable\Block\ProductList" name="productlisttable" template="RapideWeb_ProductListTable::productlisttable.phtml" ifconfig="productlisttable/general/enabled">
+				<!-- <block class="RapideWeb\ProductListTable\Block\ProductList" name="productlisttable.navigation" as="additional" template="RapideWeb_ProductListTable::productlisttable_navigation.phtml" ifconfig="productlisttable/general/navigation"/>
+				<block class="Magento\Framework\View\Element\RendererList" name="category.product.type.details.renderers" as="details.renderers">
+					<block class="Magento\Framework\View\Element\Template" name="category.product.type.details.renderers.default" as="default"/>
+					<block class="Magento\Swatches\Block\Product\Renderer\Listing\Configurable" name="category.product.type.details.renderers.configurable" as="configurable" template="Magento_Swatches::product/listing/renderer.phtml" ifconfig="catalog/frontend/show_swatches_in_product_list" />
+				</block> -->
+			</block>
+		</referenceContainer>
+	</body>
+</page>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+   <type name="Magento\Catalog\Model\Config">
+       <plugin name="catalog_config_plugin" type="Eagle\Sorting\Plugin\Config"/>
+   </type>
+
+    <type name="Magento\CatalogSearch\Block\Result">
+        <plugin name="remove_relevance_search"
+                type="Eagle\Sorting\Plugin\CatalogSearch\Block\ResultPlugin" />
+    </type>
+</config>

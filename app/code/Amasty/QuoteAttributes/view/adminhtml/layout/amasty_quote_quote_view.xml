@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Request a Quote Attributes for Magento 2 (System)
+ */-->
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="left">
+            <referenceBlock name="amasty_quote_tabs">
+                <referenceBlock name="quote_tab_info">
+                    <block class="Amasty\QuoteAttributes\Block\Adminhtml\Quote\View\Attributes"
+                           name="quote_attributes"
+                           template="Amasty_QuoteAttributes::quote/view/attributes.phtml" />
+                </referenceBlock>
+            </referenceBlock>
+        </referenceContainer>
+    </body>
+</page>

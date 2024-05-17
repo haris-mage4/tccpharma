@@ -1,0 +1,159 @@
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ *
+ * @company RapideWeb
+ * @package RapideWeb_ProductListTable
+ * @author James Wu <james4u.boda@gmail.com>
+ * @date Mar 30, 2018
+ *
+ */
+
+/* Common Style */
+.product-list-table-wrapper * {
+    box-sizing: border-box;
+}
+
+/* Page Title */
+.productlisttable-index-index .page-title-wrapper {
+    text-align: center;
+}
+.productlisttable-index-index .page-title-wrapper .page-title {
+    margin: 20px 0;
+}
+
+/* Top Navigation */
+.products-table-navigation {
+    text-align: center;
+    margin: 20px 0 40px;
+    font-size: 1.4rem;
+}
+.products-table-navigation .navigation-item {
+    display: inline-block;
+}
+.products-table-navigation .navigation-item .navigation-link {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    padding: 0 3px;
+    line-height: 29px;
+    background-color: #1a3b33;
+    border: solid 1px #1a3b33;
+    color: #fff;
+    text-transform: uppercase;
+}
+.products-table-navigation .navigation-item .navigation-link:hover,
+.products-table-navigation .navigation-item .navigation-link.selected {
+    /*background-color: #0053b3;*/
+    /*border-color: #0053b3;*/
+    background-color: #fff;
+    border-color: #1a3b33;
+    color: #1a3b33;
+}
+.products-table-navigation .navigation-item .navigation-link.all {
+    width: 35px;
+}
+
+/* Top Pager */
+.pager {
+    display: inline-block;
+    width: 100%;
+}
+.pager .toolbar-amount {
+    margin-right: 20px;
+}
+.pager .pages {
+    float: right;
+}
+.pager .pages a.page:not(.jump) {
+    width: 28px;
+    border: solid 1px #d1d1d1;
+    color: #c01c00;
+    text-align: center;
+}
+.pager .pages a.page.jump {
+    border: none;
+    text-align: center;
+}
+.pager .pages strong.page {
+    width: 28px;
+    border: solid 1px #d1d1d1;
+    background-color: #f0f0f0;
+    text-align: center;
+}
+.pager .limiter {
+    float: left;
+}
+
+/* Product Table */
+.products-table-list {
+    font-size: 1.4rem;
+}
+.products-table-list tr {
+    border-bottom: solid 1px #ccc;
+}
+.products-table-list .product-table-name a.product-item-link {
+    color: #c01c00;
+}
+.products-table-list .product-table-image a {
+    display: inline-block;
+}
+.products-table-list .product-table-option .swatch-option {
+    width: 40px;
+    height: 28px;
+    padding: 0;
+    line-height: 28px;
+    text-align: center;
+    float: left;
+    margin: 0 10px 5px 0;
+    cursor: pointer;
+    position: relative;
+    border: 1px solid rgb(218, 218, 218);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.products-table-list .product-table-qty {
+
+}
+.products-table-list .product-table-qty input {
+    height: 40px;
+    width: 50px;
+    text-align: center;
+}
+.products-table-list .product-table-price .price-box {
+    margin: 0;
+    line-height: 40px;
+}
+.products-table-list .product-table-btn .input-text.qty,
+.products-table-list .product-table-btn .custom-options {
+    display: none;
+}
+.products-table-list .product-table-btn .action.primary {
+    position: relative;
+    line-height: 20px;
+    height: auto;
+    padding: 8px 15px 8px 40px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    background: #c00c00;
+    border: solid 2px #c00c00;
+    color: #ffffff;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    -ms-transition: all 0.2s;
+    -o-transition: all 0.2s;
+    transition: all 0.2s;
+}
+.products-table-list .product-table-btn .action.primary:before {
+    display: none;
+}
+.products-table-list .product-table-btn .action.primary > .fa {
+    position: absolute;
+    font-size: 20px;
+    left: 15px;
+    top: 7px;
+}
+.products-table-list .product-table-btn .action.primary:hover {
+    background: #ffffff;
+    color: #c00c00;
+}

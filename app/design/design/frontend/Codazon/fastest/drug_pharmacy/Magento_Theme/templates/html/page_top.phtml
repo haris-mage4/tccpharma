@@ -1,0 +1,59 @@
+<?php
+/**
+* Copyright © 2015 Magento. All rights reserved.
+* See COPYING.txt for license details.
+*/
+
+// @codingStandardsIgnoreFile
+
+?>
+<div class="container">
+	<div class="row">
+		<div class="col-sm-6">
+			<?php echo $block->getChildHtml('leftmenu') ?>
+		</div>
+		<div class="col-sm-18">
+			<?php
+			$blockObj = $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Homeinfo');
+			$home = $blockObj->isHomePage();
+			if ($home)
+			{
+				$data = $this->helper('Mageplaza\BannerSlider\Helper\Data')->getActiveSliders();
+				foreach($data as $items){
+					$slider_id = $items['slider_id'];
+					$customer_group_ids = $items['customer_group_ids'];
+				}
+				$blockObj = $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Customerinfo');
+				$group_id = $blockObj->getGroupId();
+				if (!empty($customer_group_ids)) {
+					$customergroup_id = explode(",", $customer_group_ids);
+					if (in_array($group_id, $customergroup_id)) {
+						echo $block->getLayout()->createBlock('Mageplaza\BannerSlider\Block\Widget')->setSliderId($slider_id)->toHtml();
+					}
+					else {
+						echo $block->getLayout()->createBlock('Mageplaza\BannerSlider\Block\Widget')->setSliderId(1)->toHtml();
+					}
+				}
+			}
+			?>
+
+			<?php //echo $block->getChildHtml('topslideshow') ?>
+			<?php echo $block->getChildHtml('breadcrumbs') ?>
+		</div>
+	</div>
+</div>
+
+
+<?php 
+	$blockName = $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Customerinfo');
+
+	$customerInfo = $blockName->getGroupId();
+
+	if($customerInfo==0){ ?>
+		<style type="text/css">
+			a.action.showcart {
+			    display: none !important;
+			}
+		</style>
+	<?php }
+?>

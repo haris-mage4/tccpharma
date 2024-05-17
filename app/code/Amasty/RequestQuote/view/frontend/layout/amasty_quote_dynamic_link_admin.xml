@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <block class="Amasty\RequestQuote\Block\Email\Items" name="custom.email.dynamic.link" template="Amasty_RequestQuote::email/dynamic-quote-link-admin.phtml">
+            <arguments>
+                <argument name="quote_loader" xsi:type="object">Amasty\RequestQuote\ViewModel\QuoteLoader</argument>
+                <argument name="viewModel" xsi:type="object">Amasty\RequestQuote\ViewModel\Data</argument>
+            </arguments>
+        </block>
+    </body>
+</page>

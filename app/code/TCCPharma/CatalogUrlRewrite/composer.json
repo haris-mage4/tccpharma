@@ -1,0 +1,19 @@
+{
+    "name": "tccpharma/module-catalog-url-rewrite",
+    "description": "TCC Pharma Catalog Url Rewrite for Magento 2",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "require": {
+        "magento/framework": ">100.0",
+        "magento/module-catalog-url-rewrite": ">100.0",
+        "psr/log": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "TCCPharma\\CatalogUrlRewrite\\": ""
+        }
+    }
+}

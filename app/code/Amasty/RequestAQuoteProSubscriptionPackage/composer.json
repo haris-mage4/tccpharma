@@ -1,0 +1,28 @@
+{
+    "name": "amasty/module-request-a-quote-pro-subscription-package",
+    "description": "Request a Quote Pro Subscription Package by Amasty",
+    "require": {
+        "php": ">=7.3",
+        "amasty/base": ">=1.14.2",
+        "amasty/module-request-quote": ">=2.3.7",
+        "amasty/module-quote-attributes": ">=1.0.0",
+        "amasty/module-quote-attributes-management": ">=1.0.0"
+    },
+    "suggest": {
+        "amasty/module-request-a-quote-graphql": "Install module-request-a-quote-graphql module to activate Graphql and Request a Quote compatibility"
+    },
+    "homepage": "https://amasty.com/",
+    "type": "magento2-module",
+    "version": "1.0.3",
+    "license": [
+        "Commercial"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Amasty\\RequestAQuoteProSubscriptionPackage\\": ""
+        }
+    }
+}

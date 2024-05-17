@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Request a Quote Attributes for Magento 2 (System)
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Amasty\QuoteAttributes\Model\Attribute\Frontend\CastToUiInterface"
+                type="Amasty\QuoteAttributes\Model\Attribute\Frontend\CastToUi" />
+    <preference for="Amasty\QuoteAttributes\Model\Attribute\Frontend\Modifier\ModifierInterface"
+                type="Amasty\QuoteAttributes\Model\Attribute\Frontend\Modifier\UiConfigModifier" />
+
+    <type name="Amasty\QuoteAttributes\Model\Attribute\Frontend\Modifier\UiConfigModifier">
+        <arguments>
+            <argument name="uiConfigModifiers" xsi:type="array">
+                <item name="select"
+                      xsi:type="object">Amasty\QuoteAttributes\Model\Attribute\Frontend\Modifier\SelectConfigModifier</item>
+                <item name="multiselect"
+                      xsi:type="object">Amasty\QuoteAttributes\Model\Attribute\Frontend\Modifier\MultiselectConfigModifier</item>
+                <item name="boolean"
+                      xsi:type="object">Amasty\QuoteAttributes\Model\Attribute\Frontend\Modifier\BooleanConfigModifier</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Amasty\RequestQuote\Block\Cart\Quote\Details">
+        <arguments>
+            <argument name="layoutProcessors" xsi:type="array">
+                <item name="customQuoteAttributes"
+                      xsi:type="object">Amasty\QuoteAttributes\Block\QuoteCart\AttributesProcessor</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Amasty\QuoteAttributes\Model\Attribute\Frontend\GetUiMeta">
+        <arguments>
+            <argument name="uiMeta" xsi:type="array">
+                <item name="text" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/form/element/abstract</item>
+                    <item name="config" xsi:type="array">
+                        <item name="template" xsi:type="string">ui/form/field</item>
+                        <item name="elementTmpl" xsi:type="string">ui/form/element/input</item>
+                    </item>
+                </item>
+                <item name="textarea" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/form/element/abstract</item>
+                    <item name="config" xsi:type="array">
+                        <item name="template" xsi:type="string">ui/form/field</item>
+                        <item name="elementTmpl" xsi:type="string">ui/form/element/textarea</item>
+                        <item name="cols" xsi:type="number">15</item>
+                        <item name="rows" xsi:type="number">2</item>
+                    </item>
+                </item>
+                <item name="date" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/form/element/date</item>
+                    <item name="config" xsi:type="array">
+                        <item name="template" xsi:type="string">ui/form/field</item>
+                        <item name="elementTmpl" xsi:type="string">ui/form/element/date</item>
+                    </item>
+                </item>
+                <item name="select" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/form/element/select</item>
+                    <item name="config" xsi:type="array">
+                        <item name="template" xsi:type="string">ui/form/field</item>
+                        <item name="elementTmpl" xsi:type="string">ui/form/element/select</item>
+                    </item>
+                </item>
+                <item name="multiselect" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/form/element/multiselect</item>
+                    <item name="config" xsi:type="array">
+                        <item name="template" xsi:type="string">ui/form/field</item>
+                        <item name="elementTmpl" xsi:type="string">ui/form/element/multiselect</item>
+                    </item>
+                </item>
+                <item name="boolean" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/form/element/select</item>
+                    <item name="config" xsi:type="array">
+                        <item name="template" xsi:type="string">ui/form/field</item>
+                        <item name="elementTmpl" xsi:type="string">ui/form/element/select</item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+</config>

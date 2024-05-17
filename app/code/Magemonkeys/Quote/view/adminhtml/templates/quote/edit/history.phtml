@@ -1,0 +1,58 @@
+
+<div id="order_history_block" class="edit-order-comments">
+        <div class="order-history-block" id="history_form">
+        <div class="admin__field">
+                <label for="history_comment" class="admin__field-label">
+                    <?= $escaper->escapeHtml(__('Remarks')) ?>
+                </label>
+                <div class="admin__field-control">
+                    <textarea name="quote[note]"
+                              rows="3"
+                              cols="5"
+                              id="history_comment"
+                              class="admin__control-textarea"></textarea>
+                </div>
+            </div>
+            <div class="admin__field">
+                <div class="order-history-comments-options">
+                    <!-- <div class="admin__field admin__field-option">
+                            <input name="history[is_customer_notified]"
+                                   type="checkbox"
+                                   id="history_notify"
+                                   class="admin__control-checkbox"
+                                   value="1" />
+                            <label class="admin__field-label" for="history_notify">
+                                <?= $block->escapeHtml(__('Notify Customer by Email')) ?>
+                            </label>
+                    </div> -->
+
+                </div>
+                <div class="order-history-comments-actions">
+                    <?= $block->getChildHtml('submit_button') ?>
+                </div>
+            </div>
+        </div>
+
+    
+
+<?php $collection = $block->getAdminRemarkHistory(); ?>
+<?php
+$timezoneInterface = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\Stdlib\DateTime\TimezoneInterface');
+        
+?>
+<ul class="note-list">
+    <?php foreach($collection as $data):?>
+        <?php 
+            $formattedDate = date("M d, Y, h:i:s A", strtotime($data->getCreatedAt()));
+            $currentDate = $timezoneInterface->date(new \DateTime($formattedDate));
+            $formattedDate = $timezoneInterface->formatDateTime($currentDate, \IntlDateFormatter::MEDIUM, \IntlDateFormatter::SHORT);
+        ?>
+        <li class="note-list-item">
+            <?= $formattedDate; ?> |
+            <strong class="note-list-comment">Admin Remark : </strong><?= $data->getAdminRemark(); ?> |
+            <?= $data->getIsCustomerNotified()? 'Customer Notified':'Customer Not Notified'; ?>     
+        </li>
+
+    <?php endforeach; ?>
+</ul>
+</div>

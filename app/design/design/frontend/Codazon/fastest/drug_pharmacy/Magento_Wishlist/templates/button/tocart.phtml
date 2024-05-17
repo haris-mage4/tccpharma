@@ -1,0 +1,20 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** @var \Magento\Wishlist\Block\Customer\Wishlist\Button $block */
+?>
+
+<?php if ($block->getWishlist()->getItemsCount() && $block->getWishlist()->isSalable()) : ?>
+    <?php
+        $blockObj= $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Customerinfo');
+        $customerGroupId = $blockObj->getGroupId(); 
+        if ($customerGroupId != 9 && $customerGroupId != 10 && $customerGroupId != 11) {
+    ?>
+    <button type="button" data-role="all-tocart" title="<?= $block->escapeHtmlAttr(__('Add All to Cart')) ?>" class="action tocart">
+        <span><?= $block->escapeHtml(__('Add All to Cart')) ?></span>
+    </button>
+    <?php } ?>
+<?php endif;?>

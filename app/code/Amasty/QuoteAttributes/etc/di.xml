@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Request a Quote Attributes for Magento 2 (System)
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Amasty\QuoteAttributes\Api\Data\QuoteEntityInterface" type="Amasty\QuoteAttributes\Model\QuoteEntity" />
+    <preference for="Amasty\QuoteAttributes\Api\QuoteEntityRepositoryInterface" type="Amasty\QuoteAttributes\Model\Repository\QuoteEntityRepository" />
+
+    <preference for="Amasty\QuoteAttributes\Model\QuoteEntity\Query\GetByQuoteIdInterface" type="Amasty\QuoteAttributes\Model\QuoteEntity\Query\GetByQuoteIdCache" />
+    <preference for="Amasty\QuoteAttributes\Model\QuoteEntity\Query\GetByIdInterface" type="Amasty\QuoteAttributes\Model\QuoteEntity\Query\GetByIdCache" />
+    <preference for="Amasty\QuoteAttributes\Model\QuoteEntity\Query\GetNewInterface" type="Amasty\QuoteAttributes\Model\QuoteEntity\Query\GetNew" />
+    <preference for="Amasty\QuoteAttributes\Model\QuoteEntity\Command\SaveInterface" type="Amasty\QuoteAttributes\Model\QuoteEntity\Command\Save" />
+
+    <preference for="Amasty\QuoteAttributes\Api\Data\AttributeInterface" type="Amasty\QuoteAttributes\Model\Attribute" />
+    <preference for="Amasty\QuoteAttributes\Api\AttributeRepositoryInterface" type="Amasty\QuoteAttributes\Model\Repository\AttributeRepository" />
+
+    <preference for="Amasty\QuoteAttributes\Model\Attribute\Query\GetNewInterface" type="Amasty\QuoteAttributes\Model\Attribute\Query\GetNew" />
+    <preference for="Amasty\QuoteAttributes\Model\Attribute\Query\GetByCodeInterface" type="Amasty\QuoteAttributes\Model\Attribute\Query\GetByCode" />
+    <preference for="Amasty\QuoteAttributes\Model\Attribute\Query\GetByIdInterface" type="Amasty\QuoteAttributes\Model\Attribute\Query\GetById" />
+    <preference for="Amasty\QuoteAttributes\Model\Attribute\Query\GetListInterface" type="Amasty\QuoteAttributes\Model\Attribute\Query\GetList" />
+    <preference for="Amasty\QuoteAttributes\Model\Attribute\Command\SaveInterface" type="Amasty\QuoteAttributes\Model\Attribute\Command\Save" />
+    <preference for="Amasty\QuoteAttributes\Model\Attribute\Command\DeleteInterface" type="Amasty\QuoteAttributes\Model\Attribute\Command\Delete" />
+    <preference for="Amasty\QuoteAttributes\Model\Attribute\Command\DeleteByIdInterface" type="Amasty\QuoteAttributes\Model\Attribute\Command\DeleteById" />
+
+    <type name="Magento\Framework\EntityManager\MetadataPool">
+        <arguments>
+            <argument name="metadata" xsi:type="array">
+                <item name="Amasty\QuoteAttributes\Api\Data\AttributeInterface" xsi:type="array">
+                    <item name="entityTableName" xsi:type="string">amasty_quote_attribute_entity</item>
+                    <item name="eavEntityType" xsi:type="string">amasty_quote</item>
+                    <item name="identifierField" xsi:type="string">entity_id</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Amasty\RequestQuote\Model\QuoteRepository">
+        <plugin name="Amasty_QuoteAttributes::add-quote-entity"
+                type="Amasty\QuoteAttributes\Plugin\RequestQuote\Model\QuoteRepository\AddQuoteEntity" />
+    </type>
+
+    <type name="Amasty\QuoteAttributes\Model\Quote\QuoteEntityRelation">
+        <arguments>
+            <argument name="quoteEntityRepository"
+                      xsi:type="object">Amasty\QuoteAttributes\Api\QuoteEntityRepositoryInterface\Proxy</argument>
+        </arguments>
+    </type>
+    <virtualType name="QuoteRelationsComposite">
+        <arguments>
+            <argument name="relationProcessors" xsi:type="array">
+                <item name="quote_entity" xsi:type="object">Amasty\QuoteAttributes\Model\Quote\QuoteEntityRelation</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Amasty\RequestQuote\Model\Pdf\PdfInformation">
+        <plugin name="Amasty_QuoteAttributes::add-attributes-variable"
+                type="Amasty\QuoteAttributes\Plugin\RequestQuote\Model\Pdf\PdfInformation\AddAttributesVariable" />
+    </type>
+    <type name="Amasty\RequestQuote\Model\Source\PdfVariables">
+        <plugin name="Amasty_QuoteAttributes::add-attributes-variable"
+                type="Amasty\QuoteAttributes\Plugin\RequestQuote\Model\Source\PdfVariables\AddAttributesVariable" />
+    </type>
+
+    <type name="Amasty\RequestQuote\Model\Email\Sender">
+        <plugin name="Amasty_QuoteAttributes::add-attributes-variable"
+                type="Amasty\QuoteAttributes\Plugin\RequestQuote\Model\Email\Sender\AddAttributesVariable" />
+    </type>
+    <type name="Magento\Email\Model\Template">
+        <plugin name="Amasty_QuoteAttributes::add-attributes-variable"
+                type="Amasty\QuoteAttributes\Plugin\Email\Model\Template\AddAttributesVariable" />
+    </type>
+
+    <virtualType name="Amasty\QuoteAttributes\Model\Api\SearchCriteria\CollectionProcessor\AttributeFilterProcessor" type="Magento\Framework\Api\SearchCriteria\CollectionProcessor\FilterProcessor">
+        <arguments>
+            <argument name="customFilters" xsi:type="array">
+                <item name="stores" xsi:type="object">Amasty\QuoteAttributes\Model\SearchCriteria\CollectionProcessor\FilterProcessor\AttributeStoreFilter</item>
+                <item name="store_id" xsi:type="object">Amasty\QuoteAttributes\Model\SearchCriteria\CollectionProcessor\FilterProcessor\AttributeStoreFilter</item>
+            </argument>
+            <argument name="fieldMapping" xsi:type="array">
+                <item name="sort_order" xsi:type="string">additional_table.sort_order</item>
+                <item name="stores" xsi:type="string">store_id</item>
+                <item name="attribute_id" xsi:type="string">main_table.attribute_id</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Amasty\QuoteAttributes\Model\Api\SearchCriteria\AttributeCollectionProcessor" type="Magento\Framework\Api\SearchCriteria\CollectionProcessor">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="filters" xsi:type="object">Amasty\QuoteAttributes\Model\Api\SearchCriteria\CollectionProcessor\AttributeFilterProcessor</item>
+                <item name="sorting" xsi:type="object">Amasty\QuoteAttributes\Model\Api\SearchCriteria\CollectionProcessor\AttributeSortingProcessor</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Amasty\QuoteAttributes\Model\EavAttributeRepository" type="Magento\Eav\Model\AttributeRepository">
+        <arguments>
+            <argument name="collectionProcessor" xsi:type="object">Amasty\QuoteAttributes\Model\Api\SearchCriteria\AttributeCollectionProcessor</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Amasty\QuoteAttributes\Model\Attribute\Query\GetList">
+        <arguments>
+            <argument name="eavAttributeRepository" xsi:type="object">Amasty\QuoteAttributes\Model\EavAttributeRepository</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Amasty\QuoteAttributes\Model\Api\SearchCriteria\CollectionProcessor\AttributeSortingProcessor" type="Magento\Framework\Api\SearchCriteria\CollectionProcessor\SortingProcessor">
+        <arguments>
+            <argument name="fieldMapping" xsi:type="array">
+                <item name="attribute_id" xsi:type="string">main_table.attribute_id</item>
+                <item name="sort_order" xsi:type="string">additional_table.sort_order</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="amQuoteAttributesFloatValidatorResolver" type="Amasty\QuoteAttributes\Model\Di\ClassExistsWrapper">
+        <arguments>
+            <argument name="name" xsi:type="string">Zend_Validate_Float</argument>
+            <argument name="isShared" xsi:type="boolean">true</argument>
+            <argument name="isProxy" xsi:type="boolean">true</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Amasty\QuoteAttributes\Model\Attribute\Data\Validator\DecimalValidator">
+        <arguments>
+            <argument name="floatValidator" xsi:type="object">amQuoteAttributesFloatValidatorResolver</argument>
+        </arguments>
+    </type>
+</config>

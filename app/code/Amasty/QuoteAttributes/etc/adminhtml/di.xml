@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Request a Quote Attributes for Magento 2 (System)
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Amasty\RequestQuote\Model\Quote\Backend\Edit">
+        <plugin name="Amasty_QuoteAttributes::import-quote-entity-data"
+                type="Amasty\QuoteAttributes\Plugin\RequestQuote\Model\Quote\Backend\Edit\ImportData" />
+    </type>
+
+    <type name="Amasty\RequestQuote\Model\Quote\Backend\Session">
+        <plugin name="Amasty_QuoteAttributes::add-quote-entity"
+                type="Amasty\QuoteAttributes\Plugin\RequestQuote\Model\Quote\Backend\Session\AddQuoteEntity" />
+    </type>
+    <type name="Amasty\RequestQuote\Model\ResourceModel\Quote\Grid\Collection">
+        <plugin name="Amasty_QuoteAttributes::join-quote-attributes"
+                type="Amasty\QuoteAttributes\Plugin\RequestQuote\Model\ResourceModel\Quote\Grid\Collection\JoinAttributes" />
+    </type>
+</config>

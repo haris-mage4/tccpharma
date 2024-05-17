@@ -1,0 +1,634 @@
+<?php
+
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+use Magento\Framework\App\Action\Action;
+
+// @codingStandardsIgnoreFile
+
+?>
+<?php
+/**
+ * Product list template
+ *
+ * @var $block \Magento\Catalog\Block\Product\ListProduct
+ */
+?>
+<?php
+$_productCollection = $block->getLoadedProductCollection();
+$_helper = $this->helper('Magento\Catalog\Helper\Output');
+$_optionHelper = $this->helper('Codazon\ThemeOptions\Helper\Data');
+$_mobileHelper = $this->helper('Codazon\ThemeOptions\Helper\Mobile');
+$labelHelper = $this->helper('Codazon\ProductLabel\Helper\Data');
+$toolTipHelper = $this->helper('Eagle\Tooltip\Helper\Config\TooltipConfig');
+$blockObj = $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Customerinfo');
+$customerGroupId = $blockObj->getGroupId();
+$allowedGroups = [0, 1, 6, 8];
+$urlInterface = \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\UrlInterface::class);
+$currentUrl = $urlInterface->getCurrentUrl();
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$blockCart = $this->helper('Amasty\RequestQuote\Helper\Cart');
+$customerSession = $objectManager->get('Magento\Customer\Model\Session');
+?>
+<?php if (!$_productCollection->count()) : ?>
+	<div class="message info empty">
+		<div><?php /* @escapeNotVerified */ echo __('We can\'t find products matching the selection.') ?></div>
+	</div>
+<?php else : ?>
+	<?php echo $block->getToolbarHtml() ?>
+	<?php echo $block->getAdditionalHtml() ?>
+	<?php
+	$showHover = $_optionHelper->getConfig('general_section/category_view/hover_product_effect');
+	if ($block->getMode() == 'grid') {
+		$viewMode = 'grid';
+		$image = 'category_page_grid';
+		$image_hover = 'category_page_grid_hover';
+		$showDescription = $_optionHelper->getConfig('general_section/category_view/show_short_description');
+		$showCompareWishlist = $_optionHelper->getConfig('general_section/category_view/show_action');
+		$showReviewRating = $_optionHelper->getConfig('general_section/category_view/review_rating_star');
+		$pageColumn = $_optionHelper->getPageColumns();
+		switch ($pageColumn) {
+			case '3columns':
+				$columnsDeskClass = 'desktop_' . $_optionHelper->getConfig('general_section/category_view/category_desktop_view/product_row_desk_3col');
+				$columnsTabClass = 'tablet_' . $_optionHelper->getConfig('general_section/category_view/category_tablet_view/product_row_tablet_3col');
+
+				break;
+			case '1column':
+				$columnsDeskClass = 'desktop_' . $_optionHelper->getConfig('general_section/category_view/category_desktop_view/product_row_desk_1col');
+				$columnsTabClass = 'tablet_' . $_optionHelper->getConfig('general_section/category_view/category_tablet_view/product_row_tablet_1col');
+				break;
+			case '2columns':
+				$columnsDeskClass = 'desktop_' . $_optionHelper->getConfig('general_section/category_view/category_desktop_view/product_row_desk_2col');
+				$columnsTabClass = 'tablet_' . $_optionHelper->getConfig('general_section/category_view/category_tablet_view/product_row_tablet_2col');
+				break;
+			default:
+				$columnsDeskClass = 'desktop_' . $_optionHelper->getConfig('general_section/category_view/category_desktop_view/product_row_desk_2col');
+				$columnsTabClass = 'tablet_' . $_optionHelper->getConfig('general_section/category_view/category_tablet_view/product_row_tablet_2col');
+				break;
+		}
+		//echo $_optionHelper->getConfig('general_section/category_view/category_desktop_view/product_row_desk_2col');
+		//echo $_optionHelper->getConfig('general_section/category_view/category_desktop_view/product_row_desk_1col');
+		//echo $columnsDeskClass;
+		$columnsMobileClass = 'mobile_' . $_optionHelper->getConfig('general_section/category_view/category_mobile_view/product_row_mobile');
+		if (!$_mobileHelper->isMobile()) {
+			$columnsClass = $columnsDeskClass;
+		} else if ($_mobileHelper->isTablet()) {
+			$columnsClass = $columnsTabClass;
+		} else if ($_mobileHelper->isMobile() && !$_mobileHelper->isTablet()) {
+			$columnsClass = $columnsMobileClass;
+		}
+		$templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+		$pos = $block->getPositioned();
+	?>
+
+		<div class="products wrapper <?php /* @escapeNotVerified */ echo $viewMode; ?> products-<?php /* @escapeNotVerified */ echo $viewMode; ?>">
+			<?php $iterator = 1; ?>
+			<div class="<?php echo $columnsClass ?>" id="category-products-grid">
+				<ol class="products list items product-items same-height">
+					<?php /** @var $_product \Magento\Catalog\Model\Product */ ?>
+					<?php foreach ($_productCollection as $_product) : ?>
+						<?php /* @escapeNotVerified */ echo ($iterator++ == 1) ? '<li class="item product product-item">' : '</li><li class="item product product-item">' ?>
+						<div class="product-item-info" data-container="product-grid">
+							<div class="cdz-hover-section">
+								<div class="cdz-product-top">
+									<?php
+									$productImage = $block->getImage($_product, $image);
+									$productHoverImage = $block->getImage($_product, $image_hover);
+									$tmp1 = $productImage->getData('image_url');
+									$tmp1 = explode('/', $tmp1);
+
+									$tmp2 = $productHoverImage->getData('image_url');
+									$tmp2 = explode('/', $tmp2);
+
+									if ($tmp1[count($tmp1) - 1] == $tmp2[count($tmp2) - 1]) {
+										$productHoverImage = $productImage;
+									}
+
+									if ($pos != null) {
+										$position = ' style="left:' . $productImage->getWidth() . 'px;'
+											. 'top:' . $productImage->getHeight() . 'px;"';
+									}
+									?>
+									<?php // Product Image
+									?>
+									<a href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" class="product photo product-item-photo" tabindex="-1">
+										<span class="main-image">
+											<?php echo $productImage->toHtml(); ?>
+										</span>
+										<span class="hover-image">
+											<?php echo $productHoverImage->toHtml(); ?>
+										</span>
+									</a>
+								</div>
+								<?php
+								if ($customerSession->isLoggedIn()) { ?>
+									<!--wishlist-->
+									<div class="cdz-product-wishlist show-tooltip">
+										<?php if ($this->helper('Magento\Wishlist\Helper\Data')->isAllow() && $showCompareWishlist) : ?>
+											<a href="#" class="action towishlist" title="<?php echo $block->escapeHtml(__('Favorites')); ?>" aria-label="<?php echo $block->escapeHtml(__('Favorites')); ?>" data-post='<?php /* @escapeNotVerified */ echo $block->getAddToWishlistParams($_product); ?>' data-action="add-to-wishlist" role="button">
+												<span><?php /* @escapeNotVerified */ echo __('Favorites') ?></span>
+											</a>
+										<?php endif; ?>
+									</div>
+								<?php } ?>
+								<?php $labelHelper->showLabel($_product) ?>
+							</div>
+							<div class="product details product-item-details">
+								<?php
+								$_productNameStripped = $block->stripTags($_product->getName(), null, true);
+								?>
+								<strong class="product name product-item-name">
+									<a class="product-item-link fashion" href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>">
+										<?php /* @escapeNotVerified */ echo $_helper->productAttribute($_product, $_product->getName(), 'name'); ?>
+									</a>
+								</strong>
+								<div class="custom-product-details">
+									<?php /* @escapeNotVerified */ echo 'SKU#: ' . $_product->getSku() . '<br/>'; ?>
+									<?php $attribute = $_product->getResource()->getAttribute('ndc');
+									echo 'NDC#: ' . $attributeValue = $attribute->getFrontend()->getValue($_product) . '<br/>'; ?>
+									<?php echo 'Manufacturer: ' . $_helper->productAttribute($_product, $_product->getManufacturer(), 'manufacturer') . '<br/>'; ?>
+									<?php $attribute = $_product->getResource()->getAttribute('size');
+									echo 'Size: ' . $attributeValue = $attribute->getFrontend()->getValue($_product) . '<br/>'; ?>
+									<?php $attribute = $_product->getResource()->getAttribute('unit_of_measure');
+									echo 'Unit: ' . $attributeValue = $attribute->getFrontend()->getValue($_product) . '<br/>'; ?>
+									<?php $attribute = $_product->getResource()->getAttribute('price'); ?>
+									<?php $_price = $attribute->getFrontend()->getValue($_product); ?>
+									<?php $blockCart = $this->helper('Amasty\RequestQuote\Helper\Cart'); ?>
+									<?php if ($customerGroupId == 10 || $customerGroupId == 11  || $customerGroupId == 8 || $customerGroupId == 6) : ?>
+
+										<?php if ($_price > 0.01) : ?>
+											<?php
+											$formattedPrice = $objectManager->get('Magento\Framework\Pricing\PriceCurrencyInterface');
+											?>
+											<?php if ($toolTipHelper->tierPriceByCustomerId($_product->getSku(), $customerGroupId) != null) : ?>
+												<?php if ($_price == 0.01) : ?>
+													<div class="tooltip-container">
+														<div class="tooltip-icon baseuser">
+															<span class="tooltip-question-mark">?</span>
+														</div>
+														<div class="tooltip-content">Request a quote.</div>
+													</div>
+												<?php else : ?>
+													<span class="list-price"> <?= 'Price: $' . $toolTipHelper->tierPriceByCustomerId($_product->getSku(), $customerGroupId) . '<br/>'; ?></span>
+													<div class="tooltip-container-special-price">
+														<div class="tooltip-icon-special-price">
+															<span class="tooltip-question-mark-special-price">$</span>
+														</div>
+														<div class="tooltip-content-special-price"><?= $toolTipHelper->getSpecialPriceText(); ?></div>
+													</div>
+												<?php endif; ?>
+											<?php else : ?>
+												<span class="list-price"> <?= 'Price: ' . $formattedPrice->format($_price, false, 2) . '<br/>'; ?></span>
+												<div class="tooltip-container">
+													<div class="tooltip-icon">
+														<span class="tooltip-question-mark">?</span>
+													</div>
+													<div class="tooltip-content"><?= $toolTipHelper->getRegularPriceText(); ?></div>
+												</div>
+											<?php endif; ?>
+										<?php else : ?>
+
+											<form action="<?= /* @escapeNotVerified */ $blockCart->getAddUrl($_product) ?>" method="post">
+												<?php echo $block->getBlockHtml('formkey') ?>
+												<?= 'Price: ' ?><button class="bt-quot" type="submit" title="<?php echo $block->escapeHtml(__('Request Quote')); ?>">
+													<span><?php /* @escapeNotVerified */ echo __('Request Quote') ?></span>
+												</button>
+											</form>
+										<?php endif; ?>
+
+									<?php endif; ?>
+									<?php if ($customerGroupId == 0 || $customerGroupId == 9) : ?>
+										<form action="<?= /* @escapeNotVerified */ $blockCart->getAddUrl($_product) ?>" method="post">
+											<?php echo $block->getBlockHtml('formkey') ?>
+											<?= 'Price: ' ?><button class="bt-quot" type="submit" title="<?php echo $block->escapeHtml(__('Request Quote')); ?>">
+												<span><?php /* @escapeNotVerified */ echo __('Request Quote') ?></span>
+											</button>
+										</form>
+
+									<?php endif; ?>
+									<?php
+									//    $_0stockItem = $_product->getExtensionAttributes()->getStockItem();
+									//    exit;
+									//   echo  "Availability".$stockItem->getIsInStock();
+									// echo $_product->getQty();
+									$stockRegistry = $objectManager->get(Magento\CatalogInventory\Api\StockRegistryInterface::class);
+									$stockItem = $stockRegistry->getStockItem($_product->getId());
+									$quantity = $stockItem->getQty();
+									?>
+
+
+									<div class="product-status">
+										<p class="product_available">
+											<?php if ($quantity != 0) : ?>
+										<div class="tooltip">Availability : <span style="color:green;font-weight:bold;text-transform: capitalize;">In Stock</span>
+											<i class="fa fa-question-circle" aria-hidden="true"></i>
+											<span class="tooltiptext">
+												<strong>In Stock:</strong> In stock at our AZ warehouse. Instant turnaround likely.<br>
+											</span>
+										</div>
+									<?php else : ?>
+										<div class="tooltip">Availability : <span style="color:blue;font-weight:bold;text-transform: capitalize;">In Network</span>
+											<i class="fa fa-question-circle" aria-hidden="true"></i>
+											<span class="tooltiptext">
+												<strong>In Network:</strong>
+												<ul class="tooltiptext_list">
+													<li>Product may be available to ship with a 1-5 day lead time.</li>
+													<li> Request a quote for more specific information.</li>
+												</ul>
+												<p class="note">*If unavailable, we will quote an equivalent option or can notify you of availability.</p>
+											</span>
+											</span>
+										</div>
+									<?php endif; ?>
+									</p>
+									</div>
+
+								</div>
+
+								<div class="hidden hide-price">
+									<?php /* @escapeNotVerified */ echo $block->getProductPrice($_product) ?>
+								</div>
+								<?php if ($showReviewRating) : ?>
+									<?php echo $block->getReviewsSummaryHtml($_product, $templateType); ?>
+								<?php endif ?>
+								<?php echo $block->getProductDetailsHtml($_product); ?>
+
+								<div class="product-item-inner">
+									<!--<div class="product actions product-item-actions"<?php echo strpos($pos, $viewMode . '-actions') ? $position : ''; ?>>
+									<div class="actions-primary"<?php echo strpos($pos, $viewMode . '-primary') ? $position : ''; ?>>
+										
+									</div>
+									<div data-role="add-to-links" class="actions-secondary"<?php echo strpos($pos, $viewMode . '-secondary') ? $position : ''; ?>>
+									</div>
+								</div>-->
+									<?php if ($showDescription) : ?>
+										<div class="product description product-item-description">
+											<?php /* @escapeNotVerified */ echo $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') ?>
+											<a href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" title="<?php /* @escapeNotVerified */ echo $_productNameStripped ?>" class="action more"><?php /* @escapeNotVerified */ echo __('Learn More') ?></a>
+										</div>
+									<?php endif; ?>
+
+								</div>
+								<?php if ($customerGroupId != 0 && $customerGroupId != 10 && $customerGroupId != 11 && $customerGroupId != 9) : ?>
+									<!--quiclick-addtocart-->
+									<div class="cdz-product-bottom <?php echo $showHover ? 'hover-effect' : 'non-hover' ?>">
+										<div class="cdz-buttons-container">
+											<div class="cdz-buttons-inner">
+												<?php if ($_product->isSaleable()) : ?>
+													<?php
+													if ($customerGroupId != 0 && $customerGroupId != 9 && $customerGroupId != 10 && $customerGroupId != 11 && $quantity != 0) {
+													?>
+														<?php if ($_product->getPrice() > 0.01) { ?>
+															<?php $postParams = $block->getAddToCartPostParams($_product); ?>
+															<form data-role="tocart-form" action="<?php /* @escapeNotVerified */ echo $postParams['action']; ?>" method="post">
+																<input type="hidden" name="product" value="<?php /* @escapeNotVerified */ echo $postParams['data']['product']; ?>">
+																<input type="hidden" name="<?php /* @escapeNotVerified */ echo Action::PARAM_NAME_URL_ENCODED; ?>" value="<?php /* @escapeNotVerified */ echo $postParams['data'][Action::PARAM_NAME_URL_ENCODED]; ?>">
+																<?php echo $block->getBlockHtml('formkey') ?>
+																<button type="submit" title="<?php echo $block->escapeHtml(__('Add to Cart')); ?>" class="action tocart primary show-tooltip">
+																	<span><?php /* @escapeNotVerified */ echo __('Add to Cart') ?></span>
+																</button>
+															</form>
+													<?php }
+													} ?>
+												<?php else : ?>
+													<?php if ($_product->getIsSalable()) : ?>
+														<div class="stock available"><span><?php /* @escapeNotVerified */ echo __('In stock') ?></span></div>
+													<?php else : ?>
+														<div class="stock unavailable"><span><?php /* @escapeNotVerified */ echo __('Out of stock') ?></span></div>
+													<?php endif; ?>
+												<?php endif; ?>
+												<?php if (
+													$customerGroupId != 0 && $customerGroupId != 10 && $customerGroupId != 11 && $customerGroupId != 9 &&
+													$customerGroupId != 8 && $customerGroupId != 6
+												) : ?>
+													<?php echo $this->helper('Codazon\QuickShop\Helper\Data')->getQuickShopButton($_product, 'show-tooltip'); ?>
+												<?php endif; ?>
+												<?php
+												$compareHelper = $this->helper('Magento\Catalog\Helper\Product\Compare');
+												?>
+												<?php if ($showCompareWishlist) : ?>
+													<a href="#" class="action tocompare show-tooltip" title="<?php echo $block->escapeHtml(__('Add to Compare')); ?>" aria-label="<?php echo $block->escapeHtml(__('Add to Compare')); ?>" data-post='<?php /* @escapeNotVerified */ echo $compareHelper->getPostDataParams($_product); ?>' role="button">
+														<span><?php /* @escapeNotVerified */ echo __('Add to Compare') ?></span>
+													</a>
+												<?php endif ?>
+											</div>
+										</div>
+									</div>
+								<?php endif; ?>
+							</div>
+						</div>
+						<?php echo ($iterator == count($_productCollection) + 1) ? '</li>' : '' ?>
+					<?php endforeach; ?>
+				</ol>
+			</div>
+		</div>
+	<?php } else {
+		$viewMode = 'list';
+		$image = 'category_page_list';
+		$image_hover = 'category_page_list_hover';
+		$showDescription = $_optionHelper->getConfig('general_section/category_view/show_short_description');;
+		$showCompareWishlist = $_optionHelper->getConfig('general_section/category_view/show_action');
+		$showReviewRating = $_optionHelper->getConfig('general_section/category_view/review_rating_star');
+		$templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::FULL_VIEW;
+		$columnsClass = 'desk_1';
+		$pos = $block->getPositioned();
+		$iterator = 1;
+		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+		$userContext = $objectManager->get('Magento\Framework\App\Http\Context');
+		$isLoggedIn = $userContext->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
+
+		$url  = $this->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true]);
+		$login_url = $this->getUrl('customer/account/login', array('referer' => base64_encode($url)));
+
+		$priceHelper = $objectManager->create('Magento\Framework\Pricing\Helper\Data');
+		// $layoutFactory = $objectManager->get('Magento\Framework\View\LayoutFactory');
+		// $block = $layoutFactory->create()->createBlock('RapideWeb\ProductListTable\Block\ProductList');
+		$btnText = "Add To Cart";
+	?>
+		<div class="products wrapper <?php /* @escapeNotVerified */ echo $viewMode; ?> products-<?php /* @escapeNotVerified */ echo $viewMode; ?>">
+			<?php $iterator = 1; ?>
+			<div class="<?php echo $columnsClass ?>" id="category-products-grid">
+				<ol class="products list items product-items same-height">
+					<table class="products-table-list dataTable no-footer" id="productlisttable" role="grid" aria-describedby="productlisttable_info" style="width: 1124px;">
+						<thead>
+							<tr role="row">
+								<th class="product-table-sku sorting_asc" tabindex="0" rowspan="1" colspan="1" style="width: 103px;">SKU</th>
+								<th class="product-table-ndc sorting" tabindex="0" rowspan="1" colspan="1" style="width: 53px;">NDC</th>
+								<th class="product-table-name sorting" tabindex="0" rowspan="1" colspan="1" style="width: 266px;">Name</th>
+								<th class="product-table-man sorting" tabindex="0" rowspan="1" colspan="1" style="width: 138px;">Manufacturer</th>
+								<th class="product-table-unit sorting" tabindex="0" rowspan="1" colspan="1" style="width: 89px;">Unit of Measure</th>
+								<th class="product-table-price sorting" tabindex="0" rowspan="1" colspan="1" style="width: 80px;">Price</th>
+								<th class="product-table-qty sorting" tabindex="0" rowspan="1" colspan="1" style="width: 85px;">Availability</th>
+								<th class="product-table-btn sorting" tabindex="0" rowspan="1" colspan="1" style="width: 150px;">Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php /** @var $_product \Magento\Catalog\Model\Product */ ?>
+							<?php foreach ($_productCollection as $_product) : ?>
+								<tr role="row">
+									<td class="">
+										<strong class="product name product-item-name">
+											<a class="product-item-link" href="<?= $_product->getProductUrl() ?>"><?= $_product->getSku() ?></a>
+										</strong>
+									</td>
+									<td>
+										<strong class="product name product-item-name">
+											<a class="product-item-link" href="<?= $_product->getProductUrl() ?>"><?= $_product->getNdc() ?></a>
+										</strong>
+									</td>
+									<td>
+										<strong class="product name product-item-name">
+											<a class="product-item-link" href="<?= $_product->getProductUrl() ?>"><?= $_product->getName() ?></a>
+										</strong>
+									</td>
+									<td>
+										<strong class="product name product-item-name"><?= $_helper->productAttribute($_product, $_product->getManufacturer(), 'manufacturer') ?></strong>
+									</td>
+									<td>
+										<strong class="product name product-item-name"><?= $_helper->productAttribute($_product, $_product->getSize(), 'size') ?></strong>
+									</td>
+									<?php if ($isLoggedIn) : ?>
+										<?php if ($customerGroupId == 10 || $customerGroupId == 11  || $customerGroupId == 8 || $customerGroupId == 6) : ?>
+											<?php $price = $formattedPrice = $priceHelper->currency($_product->getFinalPrice(), true, false); ?>
+											<?php if ($toolTipHelper->tierPriceByCustomerId($_product->getSku(), $customerGroupId) !== null) : ?>
+												<td>
+													<?php if ($formattedPrice = $priceHelper->currency($_product->getFinalPrice(), true, false) == '$0.01') : ?>
+														<div class="tooltip-container">
+															<div class="tooltip-icon baseuser">
+																<span class="tooltip-question-mark">?</span>
+															</div>
+															<div class="tooltip-content">Request a quote.</div>
+														</div>
+													<?php else : ?>
+														$
+														<?php if ($toolTipHelper->tierPriceByCustomerId($_product->getSku(), $customerGroupId) !== '0.01') : ?>
+															<?= $toolTipHelper->tierPriceByCustomerId($_product->getSku(), $customerGroupId) ?>
+															<div class="tooltip-container-special-price list">
+																<div class="tooltip-icon-special-price list">
+																	<span class="tooltip-question-mark-special-price list">$</span>
+																</div>
+
+																<div class="tooltip-content-special-price list"><?= $toolTipHelper->getSpecialPriceText(); ?></div>
+															</div>
+														<?php else : ?>
+															<div class="tooltip-container">
+																<div class="tooltip-icon">
+																	<span class="tooltip-question-mark">?</span>
+																</div>
+																<div class="tooltip-content"><?= $toolTipHelper->getRegularPriceText(); ?></div>
+															</div>
+														<?php endif; ?>
+													<?php endif; ?>
+
+												</td>
+											<?php else : ?>
+												<td>
+													<?php if ($formattedPrice = $priceHelper->currency($_product->getFinalPrice(), true, false) !== '$0.01') : ?>
+														<?= $price ?>
+														<div class="tooltip-container">
+															<div class="tooltip-icon">
+																<span class="tooltip-question-mark">?</span>
+															</div>
+															<div class="tooltip-content"><?= $toolTipHelper->getRegularPriceText(); ?></div>
+														</div>
+													<?php else : ?>
+														<div class="tooltip-container">
+															<div class="tooltip-icon">
+																<span class="tooltip-question-mark">?</span>
+															</div>
+															<div class="tooltip-content"><?= $toolTipHelper->getRegularPriceText(); ?></div>
+														</div>
+													<?php endif; ?>
+												</td>
+											<?php endif; ?>
+										<?php else : ?>
+											<?php if ($customerGroupId == 0 || $customerGroupId == 9) : ?>
+												<td>
+													<div class="tooltip-container">
+														<div class="tooltip-icon">
+															<span class="tooltip-question-mark">?</span>
+														</div>
+														<div class="tooltip-content"><?= $toolTipHelper->getRegularPriceText(); ?></div>
+													</div>
+												</td>
+											<?php endif; ?>
+										<?php endif; ?>
+									<?php else : ?>
+										<td><a href="<?= $login_url ?>">Log in</a> to see price</td>
+									<?php endif; ?>
+									<td>
+										<?php
+										$stockRegistry = $objectManager->get(Magento\CatalogInventory\Api\StockRegistryInterface::class);
+										$stockItem = $stockRegistry->getStockItem($_product->getId());
+										$quantity = $stockItem->getQty();
+										?>
+										<div class="product-status">
+											<p class="product_available">
+												<?php if ($quantity != 0) : ?>
+											<div class="tooltip"><span style="color:green;font-weight:bold;text-transform: capitalize;">In Stock</span>
+												<i class="fa fa-question-circle" aria-hidden="true"></i>
+												<span class="tooltiptext">
+													<strong>In Stock: </strong> In stock at our AZ warehouse. Instant turnaround likely.<br>
+												</span>
+											</div>
+										<?php else : ?>
+
+											<div class="tooltip"><span style="color:blue;font-weight:bold;text-transform: capitalize;">In Network</span>
+												<i class="fa fa-question-circle" aria-hidden="true"></i>
+												<span class="tooltiptext">
+													<strong>In Network:</strong>
+													<ul class="tooltiptext_list">
+														<li>Product may be available to ship with a 1-5 day lead time.</li>
+														<li> Request a quote for more specific information.</li>
+													</ul>
+													<p class="note">*If unavailable, we will quote an equivalent option or can notify you of availability.</p>
+												</span>
+												</span>
+											</div>
+										<?php endif; ?>
+									</td>
+									<td>
+
+										<?php
+										$addToCart = '';
+										if ($isLoggedIn) {
+											$customerGroup = $customerSession->getCustomer()->getGroupId();
+											if ($_product->isSaleable()) :
+												$postParams = $block->getAddToCartPostParams($_product);
+												$action = $postParams['action'];
+												$addToCart .= '<form data-role="tocart-form" id="product-form-' . $_product->getId() . '" data-product-sku="' . $block->escapeHtml($_product->getSku()) . '"action="' . $action . '"method="post">';
+												$addToCart .= '<input type="hidden" name="product" value="' . $postParams['data']['product'] . '">';
+												$addToCart .= '<input type="hidden" name="uenc" value="' . $postParams['data']['uenc'] . '">';
+												$addToCart .= '<input type="hidden" name="qty" maxlength="12" value="1" title="Qty" class="input-text qty qty-' . $_product->getId() . '" />';
+												$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+												$formKey = $objectManager->get('Magento\Framework\Data\Form\FormKey');
+
+
+												$addToCart .= $block->getBlockHtml('formkey');
+
+												if (in_array($customerGroup, $allowedGroups)) {
+													$addToCart .= '<button type="submit" title="' . $btnText . '" class="action tocart primary"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span>' . $btnText . '</span></button></form>';
+												} else {
+													$addToCart .= '<a type="submit" href="javascript:addToQuote(' . $_product->getId() . ')" item="' . $_product->getId() . '" title="Add to Quote" class="amquote-addto-button action outline" data-amquote-js="addto-button" id="product-addtoquote-' . $_product->getId() . '"><span class="amquote-addto-button-text">Add to Quote</span></a></form>';
+												}
+											else :
+												if ($_product->isAvailable()) :
+													$addToCart .= '<div class="stock available"><span>In stock</span></div>';
+												else :
+													$addToCart .= '<div class="stock unavailable"><span>Out of stock</span></div>';
+												endif;
+											endif;
+										} else {
+											$addToCart = "<a href='$login_url'>Log in</a> to add to cart";
+										}
+										echo $addToCart;
+										?>
+
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</ol>
+			</div>
+		</div>
+	<?php } ?>
+	<?php echo $block->getToolbarHtml() ?>
+	<?php if (!$block->isRedirectToCartEnabled()) : ?>
+		<script type="text/x-magento-init">
+			{
+            "[data-role=tocart-form], .form.map.checkout": {
+                "catalogAddToCart": {}
+            }
+        }
+        </script>
+	<?php endif; ?>
+	<?php if ($block->getMode() == 'grid') : ?>
+		<script type="text/javascript">
+			require(['jquery', 'Codazon_ThemeOptions/js/is-mobile'], function($, isMobile) {
+				function setClass() {
+					var widthWindow = $(window).width();
+					var list = $('#category-products-grid');
+					if (widthWindow > 1200)
+						list.removeClass().addClass('<?php echo $columnsDeskClass ?>');
+					else if (isMobile.iPad())
+						list.removeClass().addClass('<?php echo $columnsTabClass ?>');
+					else
+						list.removeClass().addClass('<?php echo $columnsMobileClass ?>');
+				}
+				$(window).on('resize', function() {
+					setClass();
+				});
+				setClass();
+			});
+		</script>
+	<?php endif; ?>
+<?php endif; ?>
+<script type="text/javascript">
+	require(['jquery', 'Magento_Customer/js/customer-data'], function($, customerData) {
+		jQuery(document).ready(function() {
+			var customer = customerData.get('customer')();
+			console.log(customer);
+		});
+	});
+
+	function updateQty(ele) {
+		var product_id = jQuery(ele).attr('product_id');
+		var qty = jQuery(ele).val();
+		jQuery('.qty-' + product_id).val(qty);
+	}
+
+	function addToQuote(product_id) {
+		jQuery.ajax({
+			url: "<?= $this->getUrl('amasty_quote/cart/add', ['uenc' => base64_encode($currentUrl)]) ?>",
+			type: "POST",
+			data: {
+				product: product_id,
+				item: product_id,
+				form_key: jQuery.cookie('form_key'),
+				qty: jQuery('#qty-a-' + product_id).val()
+			},
+		}).done(function(data) {
+			jQuery('html, body').animate({
+				scrollTop: 0
+			}, 'slow');
+			// if (data.backUrl != 'undefined') {
+			// 	require([
+			// 		'jquery', 'Magento_Customer/js/customer-data'
+			// 	], function($, cd) {
+			// 		cd.reload(['cart'], true);
+			// 		cd.reload(['messages'], true);
+			// 	});
+			// }
+			// console.log(data.backUrl)
+			return true;
+		});
+	}
+
+	require(['jquery'], function(jQuery) {
+		jQuery(document).ready(function() {
+			jQuery(document).on('click', '.amquote-addto-button-text', function() {
+				jQuery(this).text('Added to Quote');
+			});
+		});
+	});
+</script>
+<style>
+	.amquote-addto-button {
+		width: 100%;
+		padding: 1px;
+		text-align: center;
+		font-size: 14px;
+		text-decoration: none;
+	}
+
+	.amquote-addto-button:link,
+	.amquote-addto-button:visited,
+	.amquote-addto-button:hover,
+	.amquote-addto-button:active {
+		text-decoration: none;
+	}
+</style>

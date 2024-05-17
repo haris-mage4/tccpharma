@@ -1,0 +1,194 @@
+<?php
+/**
+ * @company RapideWeb
+ * @package RapideWeb_ProductListTable
+ * @author James Wu <james4u.boda@gmail.com>
+ * @date Mar 30, 2018
+ *
+ */
+?>
+
+<?php
+/**
+ * @var $block \RapideWeb\ProductListTable\Block\ProductList
+ */
+use Magento\Framework\App\Action\Action;
+
+?>
+<?php
+$_productCollection = $block->getAllProductsListTable();
+
+$_helper = $this->helper('Magento\Catalog\Helper\Output');
+$_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+
+$isEnabled = $block->isEnabled();
+$isShowImage = $block->isShowProductImage();
+$isShowOption = $block->isShowProductOption();
+$imageWidth = $block->getImageWidth();
+$imageHeight = $block->getImageHeight();
+$btnText = $block->getButtonText();
+$btnBgColor = $block->getButtonBgColor();
+$btnColor = $block->getButtonColor();
+
+$image = 'category_page_grid';
+$search = "";
+if (isset($_GET['query'])) {
+    $search = $_GET['query'];
+}
+
+?>
+<?php if ($isEnabled): ?>
+
+    <div class="product-list-table-wrapper">
+    <?= $block->getAdditionalHtml() ?>
+    <?php if (!$_productCollection->count()): ?>
+        <div class="message info empty"><div><?= /* @escapeNotVerified */ __('We can\'t find products matching the selection.') ?></div></div>
+    <?php else: ?>
+        <?php echo $block->getToolbarHtml() ?>
+        <div class="products wrapper products-table">
+            <table class="products-table-list" id="productlisttable">
+                <thead>
+                <tr>
+                <th class="product-table-name"><?= /* @escapeNotVerified */ __('SKU') ?></th>
+                <th class="product-table-name"><?= /* @escapeNotVerified */ __('NDC') ?></th>
+                <th class="product-table-name"><?= /* @escapeNotVerified */ __('Name') ?></th>
+                <th class="product-table-name"><?= /* @escapeNotVerified */ __('Manufacturer') ?></th>
+                <th class="product-table-name"><?= /* @escapeNotVerified */ __('Closest Expiration Date') ?></th>
+                <th class="product-table-price"><?= /* @escapeNotVerified */ __('Product Size') ?></th>
+                <th class="product-table-price"><?= /* @escapeNotVerified */ __('Price') ?></th>
+                <th class="product-table-price"><?= /* @escapeNotVerified */ __('Qty') ?></th>
+                <th class="product-table-btn"><?= /* @escapeNotVerified */ __('Add to Cart Button') ?></th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    <?php endif; ?>
+    <?php if (!$block->isRedirectToCartEnabled()) : ?>
+        <script type="text/x-magento-init">
+        {
+            "[data-role=tocart-form], .form.map.checkout": {
+                "catalogAddToCart": {
+                    "product_sku": ""
+                }
+            }
+        }
+        </script>
+    <?php endif; ?>
+    <script>
+        require(['jquery'], function(jQuery){
+            var $body = jQuery('body');
+            $body.on('change', '.products-table-list .product-table-qty select', function() {
+                var $productItem = jQuery(this).closest('.product-table-item');
+                var $qtyBox = jQuery(this).closest('.product-table-qty').siblings('.product-table-btn').find('.qty');
+                var qtyVal = jQuery(this).val();
+                $qtyBox.val(qtyVal);
+            });
+
+            $body.on('click', '.customizable-option', function() {
+                jQuery(this).siblings().removeClass('selected');
+                jQuery(this).addClass('selected');
+
+                var priceType = jQuery(this).data('price-type');
+                var priceAmount = jQuery(this).data('price-amount');
+                var optionTypeId = jQuery(this).data('option-type-id');
+                var $priceBox = jQuery(this).closest('.product-table-option').siblings('.product-table-price').find('.price');
+                var $optionbox = jQuery(this).closest('.product-table-option').siblings('.product-table-btn').find('.option');
+
+                $optionbox.val(optionTypeId);
+
+                if (priceType == 'fixed') {
+                    $priceBox.html(priceAmount);
+                }
+            });
+        });
+        requirejs(['jquery','dataTable'],function(jQuery, dataTable){
+            jQuery(document).ready(function(){
+                // if(jQuery('.product-list-table-wrapper .message.info.empty').length){
+                //     jQuery('.product-list-table-wrapper').show();
+                //     jQuery(".table-placeholder").hide();
+                //     jQuery('.products.wrapper.products-table.table-placeholder').hide();
+                //     jQuery('.products-table-navigation.products-table-navigation-placeholder').hide();
+                // }
+                jQuery('#productlisttable').dataTable( {
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": "<?php echo $this->getUrl('productlisttable/index/ajax/sale/1') ?>",
+                    "initComplete": function( settings, json ) {
+                        console.log("initComplete");
+                        jQuery("#productlisttable_length select").appendTo("#productlisttable_length");
+                        jQuery("#productlisttable_filter input").appendTo("#productlisttable_filter");
+                        jQuery("#productlisttable_filter input").attr('placeholder',"Quick Search");
+                        jQuery("#productlisttable_length label").text("Show");
+                        jQuery(".table-placeholder").hide();
+                        jQuery(".product-list-table-wrapper").show();
+                        jQuery(".products-table-navigation-placeholder").hide();
+                      }
+                } );
+            });
+        });
+
+        function updateQty(ele){
+            var product_id = jQuery(ele).attr('product_id');
+            var qty = jQuery(ele).val();
+            jQuery('.qty-'+product_id).val(qty);
+        }
+    </script>
+    </div>
+<?php endif; ?>
+<style type="text/css">
+.dataTables_length{
+    width: 45%;
+    float: left;
+}
+.dataTables_filter{
+    width: 45%;
+    float: right;
+}
+.dataTables_length select,.dataTables_filter input{
+    height:35px;
+    width: 75%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.dataTables_length select{
+    width: 50%;
+}
+/*--------*/
+.dataTables_length1{
+    width: 45%;
+    float: left;
+}
+.dataTables_filter1{
+    width: 45%;
+    float: right;
+}
+.dataTables_length1 select,.dataTables_filter1 input{
+    height:35px;
+    width: 75%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.dataTables_length1 select{
+    width: 50%;
+}
+.table-placeholder{
+    display: none;
+}
+</style>
+<?php if ($btnBgColor && $btnColor) : ?>
+        <style>
+            .products-table-list .product-table-btn .action.primary {
+                background: <?= /* @NoEscape */ $btnBgColor ?>;
+                border-color: <?= /* @NoEscape */ $btnBgColor ?>;
+                color: <?= /* @NoEscape */ $btnColor ?>;
+            }
+            .products-table-list .product-table-btn .action.primary:hover {
+                background: <?= /* @NoEscape */ $btnColor ?>;
+                color: <?= /* @NoEscape */ $btnBgColor ?>;
+            }
+            .products-table-list .product-table-image img {
+                max-width: <?= /* @NoEscape */ $imageWidth ?>px;
+                max-height: <?= /* @NoEscape */ $imageHeight ?>px;
+            }
+        </style>
+    <?php endif; ?>

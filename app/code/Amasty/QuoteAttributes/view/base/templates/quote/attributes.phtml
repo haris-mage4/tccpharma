@@ -1,0 +1,18 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Request a Quote Attributes for Magento 2 (System)
+ */
+/** @var \Amasty\QuoteAttributes\Block\Quote\Attributes $block */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+
+<table>
+<?php foreach ($block->getAttributesData() as $attributeData): ?>
+    <tr>
+        <th><?= $escaper->escapeHtml($attributeData['label']) ?></th>
+        <td><?= /** @noEscape  */ $attributeData['value'] // given attribute value as html ?></td>
+    </tr>
+<?php endforeach; ?>
+</table>

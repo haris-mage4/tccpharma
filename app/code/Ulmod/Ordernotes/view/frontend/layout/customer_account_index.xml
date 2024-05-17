@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Ulmod. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="customer_account_dashboard_top" remove="true"/>
+        <referenceContainer name="content">
+            <block class="Ulmod\Ordernotes\Block\Order\Recent" name="um_customer_account_dashboard_top" template="Ulmod_Ordernotes::order/recent.phtml"/>
+            <block class="Ulmod\Ordernotes\Block\Notes\ReadForm" name="um_notes_readform" template="Ulmod_Ordernotes::readform.phtml"/>
+       </referenceContainer>
+    </body>
+</page>

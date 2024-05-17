@@ -1,0 +1,13 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
+ * @package Amasty_RequestQuote
+ */
+
+use Magento\Framework\UrlInterface;
+$quote = $block->getQuote()
+?>
+<?php if ($quote): ?>
+<a href="<?= $block->getBaseUrl(UrlInterface::URL_TYPE_WEB).'request_quote/account/view/quote_id/'.$quote->getEntityId(); ?>"><h1>Your Quote Request <span class="no-link">#<?php echo $quote->getIncrementId(); ?></span></h1></a>
+<?php endif; ?>

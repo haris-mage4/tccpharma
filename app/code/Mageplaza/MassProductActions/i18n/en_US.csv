@@ -1,0 +1,113 @@
+"Select Attribute(s)","Select Attribute(s)"
+"Attribute Set","Attribute Set"
+"Remove Categories","Remove Categories"
+"Add Categories","Add Categories"
+"New Category","New Category"
+"Remove Cross-Sell Product(s)","Remove Cross-Sell Product(s)"
+"Add Cross-Sell Product(s)","Add Cross-Sell Product(s)"
+Direction,Direction
+"One-way relation: Products with SKUs above will be added to the Related Product List of the selected ones.","One-way relation: Products with SKUs above will be added to the Related Product List of the selected ones."
+"Mutual-way relation: The same as one-way, but do one step further: The selected ones are also added to the Related Product List of the products with SKUs above.","Mutual-way relation: The same as one-way, but do one step further: The selected ones are also added to the Related Product List of the products with SKUs above."
+"Copy from Product(s)","Copy from Product(s)"
+"Product ID","Product ID"
+Name,Name
+Sku,Sku
+Price,Price
+Position,Position
+Action,Action
+Products,Products
+"Advanced Inventory","Advanced Inventory"
+"Manage Stock","Manage Stock"
+[GLOBAL],[GLOBAL]
+Qty,Qty
+"Out-of-Stock Threshold","Out-of-Stock Threshold"
+"Minimum Qty Allowed in Shopping Cart","Minimum Qty Allowed in Shopping Cart"
+"Maximum Qty Allowed in Shopping Cart","Maximum Qty Allowed in Shopping Cart"
+"Qty Uses Decimals","Qty Uses Decimals"
+Backorders,Backorders
+"Notify for Quantity Below","Notify for Quantity Below"
+"Enable Qty Increments","Enable Qty Increments"
+"Qty Increments","Qty Increments"
+"Stock Availability","Stock Availability"
+"Use Config Settings","Use Config Settings"
+Change,Change
+"Please select the products you want to copy their custom options.","Please select the products you want to copy their custom options."
+"Only products which include custom options will be displayed as below.","Only products which include custom options will be displayed as below."
+"Change Price","Change Price"
+"Update using Cost","Update using Cost"
+Value,Value
+"Change Cost","Change Cost"
+"Special Price","Special Price"
+"Update using Price","Update using Price"
+"Special Price From Date","Special Price From Date"
+"Special Price To Date","Special Price To Date"
+"Change Tier Price(s)","Change Tier Price(s)"
+"All Websites","All Websites"
+"ALL GROUPS","ALL GROUPS"
+"Remove Related Product(s)","Remove Related Product(s)"
+"Add Related Product(s)","Add Related Product(s)"
+Select,Select
+"Remove Up-Sell Product(s)","Remove Up-Sell Product(s)"
+"Add Up-Sell Product(s)","Add Up-Sell Product(s)"
+"Add Product To Websites","Add Product To Websites"
+"Remove Product From Websites","Remove Product From Websites"
+"To hide an item in catalog or search results, set the status to ""Disabled"".","To hide an item in catalog or search results, set the status to ""Disabled""."
+"You have not selected any products","You have not selected any products"
+"Page not found.","Page not found."
+"The selected product(s) does not exist.","The selected product(s) does not exist."
+"A total of %1 product(s) have been updated %2.","A total of %1 product(s) have been updated %2."
+"A total of %1 product(s) have not been updated %2.","A total of %1 product(s) have not been updated %2."
+"The product with SKU %1 is not found","The product with SKU %1 is not found"
+"You have submitted the products successfully.","You have submitted the products successfully."
+"You have not selected any products.","You have not selected any products."
+"You have not selected any products, so no product has been updated","You have not selected any products, so no product has been updated"
+"There are no product that is match with your selection","There are no product that is match with your selection"
+"There is no update. You have not selected any products.","There is no update. You have not selected any products."
+Submit,Submit
+Loading,Loading
+"-- Please select --","-- Please select --"
+Plus,Plus
+"Plus by Percentage","Plus by Percentage"
+"Fixed value","Fixed value"
+Minus,Minus
+"Minus by Percentage","Minus by Percentage"
+"One-way relation","One-way relation"
+"Mutual-way relation","Mutual-way relation"
+"Remove all images of the selected products","Remove all images of the selected products"
+"Copy image(s) from other product(s)","Copy image(s) from other product(s)"
+Replace,Replace
+Add,Add
+"In Stock","In Stock"
+"Out of Stock","Out of Stock"
+"Change Attribute Set","Change Attribute Set"
+"Quick Attributes Update","Quick Attributes Update"
+"Update Category","Update Category"
+"Update Cross-sell Products","Update Cross-sell Products"
+"Copy Custom Options","Copy Custom Options"
+"Update Images","Update Images"
+"Update Inventory","Update Inventory"
+"Update Price","Update Price"
+"Update Related Products","Update Related Products"
+"Update Up-sell Products","Update Up-sell Products"
+"Update Website","Update Website"
+"UPPER CASE","UPPER CASE"
+"lower case","lower case"
+"Capitalize Each Word","Capitalize Each Word"
+"tOGGLE cASE","tOGGLE cASE"
+Website,Website
+"Customer Group","Customer Group"
+Quantity,Quantity
+"Price Value","Price Value"
+"Price Options","Price Options"
+"Store View:","Store View:"
+"Stores Configuration","Stores Configuration"
+"Please confirm scope switching. All data that hasn't been saved will be lost.","Please confirm scope switching. All data that hasn't been saved will be lost."
+"Update Up-Sell Products","Update Up-Sell Products"
+"Update Cross-Sell Products","Update Cross-Sell Products"
+"Mass Product Actions","Mass Product Actions"
+General,General
+Enable,Enable
+"Select Actions","Select Actions"
+"Admins can set the sort order for the position of each action. The smaller the sort order, the upper position of the action in the action grid.","Admins can set the sort order for the position of each action. The smaller the sort order, the upper position of the action in the action grid."
+"Please enter the correct date format.","Please enter the correct date format."
+"Please check your selected SKU again","Please check your selected SKU again"

@@ -1,0 +1,9 @@
+<?php
+
+/**
+ * @var $block \Eagle\CustomSearchBlock\Block\SearchBlock
+ */
+?>
+<?php if ($block->getSearchContentBySearchTerm() !== null) : ?>
+      <?= $block->getSearchContentBySearchTerm(); ?>
+<?php endif; ?> 

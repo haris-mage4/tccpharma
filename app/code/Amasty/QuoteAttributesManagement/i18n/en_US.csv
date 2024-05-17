@@ -1,0 +1,72 @@
+"The field has been deleted.","The field has been deleted."
+"Can't delete item right now. Please review the log and try again.","Can't delete item right now. Please review the log and try again."
+"Edit Quote Field","Edit Quote Field"
+"Custom Quote Fields","Custom Quote Fields"
+"New Quote Field","New Quote Field"
+"Attribute was saved successfully.","Attribute was saved successfully."
+"Something went wrong. Please review the error log.","Something went wrong. Please review the error log."
+"Could not modify system attribute.","Could not modify system attribute."
+"Could not change %1","Could not change %1"
+"Attribute Label","Attribute Label"
+"Attribute Code","Attribute Code"
+"Input Type","Input Type"
+None,None
+Date,Date
+"Text Field","Text Field"
+"Text Area","Text Area"
+Dropdown,Dropdown
+Yes/No,Yes/No
+"Multiple Select","Multiple Select"
+"Strip HTML Tags","Strip HTML Tags"
+"Escape HTML Entities","Escape HTML Entities"
+"Normalize Date","Normalize Date"
+"Are you sure you want to delete this field?","Are you sure you want to delete this field?"
+"Delete Field","Delete Field"
+"Custom Quote Fields New","Custom Quote Fields New"
+"Custom Quote Fields Edit","Custom Quote Fields Edit"
+"Field Properties","Field Properties"
+Back,Back
+Reset,Reset
+"Save and Continue Edit","Save and Continue Edit"
+Save,Save
+General,General
+"
+                    For internal use. Must be unique with no spaces. Please use only lowercase letters and underscores.
+                    It is not recommended to use digits, other symbols,
+                    or uppercase letters since it may cause unwanted issues or undesired behavior.
+                ","
+                    For internal use. Must be unique with no spaces. Please use only lowercase letters and underscores.
+                    It is not recommended to use digits, other symbols,
+                    or uppercase letters since it may cause unwanted issues or undesired behavior.
+                "
+"Store Views","Store Views"
+Required,Required
+"Default Value","Default Value"
+"Input Validation","Input Validation"
+"Input/Output Filter","Input/Output Filter"
+Values,Values
+"Add Value","Add Value"
+"Is Default","Is Default"
+"Field Configuration","Field Configuration"
+"
+                    Select ""Yes"" to add this field to the list of column options on the quotes grid.
+                ","
+                    Select ""Yes"" to add this field to the list of column options on the quotes grid.
+                "
+"Add to Column Options","Add to Column Options"
+"
+                    Select ""Yes"" to add this field to the list of filter options on the quotes grid.
+                ","
+                    Select ""Yes"" to add this field to the list of filter options on the quotes grid.
+                "
+"Use in Filter Options","Use in Filter Options"
+"Position of attribute on quote pages","Position of attribute on quote pages"
+"Sort Order","Sort Order"
+"Manage Titles (Size, Color, etc.)","Manage Titles (Size, Color, etc.)"
+"Add New Field","Add New Field"
+"Store View","Store View"
+"All Store Views","All Store Views"
+Code,Code
+Label,Label
+Type,Type
+"Show on Quotes Grid","Show on Quotes Grid"

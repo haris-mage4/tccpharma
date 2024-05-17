@@ -1,0 +1,27 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Request a Quote Attributes for Magento 2 (System)
+ */
+/** @var \Amasty\QuoteAttributes\Block\Account\Quote\Attributes $block */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+
+<div class="block block-order-details-comments">
+    <div class="block-title">
+        <strong><?= $escaper->escapeHtml(__('Additional Information')) ?></strong>
+    </div>
+    <div class="block-content">
+        <ul class="note-list amquote-custom-fields">
+            <?php foreach ($block->getAttributesData() as $attributeData): ?>
+                <li class="note-list-item amquote-item">
+                    <?= $escaper->escapeHtml($attributeData['label']) ?>
+                    <div class="note-list-comment amquote-comment">
+                        <?= /** @noEscape  */ $attributeData['value'] // given attribute value as html ?>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</div>

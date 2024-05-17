@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <fieldset name="display_settings">
+        <field name="category_customergroup">
+            <argument name="data" xsi:type="array">
+                <item name="options" xsi:type="object">Magemonkeys\RestrictCategory\Model\Attribute\Source\CustomerGroup</item>
+                <item name="config" xsi:type="array">                   
+                    <item name="formElement" xsi:type="string">multiselect</item>
+                    <item name="label" xsi:type="string" translate="true">Customer Group</item>
+                </item>
+            </argument>
+        </field>
+    </fieldset>
+</form>

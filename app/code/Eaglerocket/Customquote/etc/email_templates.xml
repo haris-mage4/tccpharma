@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="../../../Magento/Email/etc/email_templates.xsd">
+   <template id="eaglerocket_custom_email_template" label="eaglerocket_custom_email_template" file="custom_email.html" type="html" module="Eaglerocket_Customquote" area="frontend" />
+</config>
+
+
+<!-- <?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
+       <template id="custom_mail_template" label="Your Custom Label" file="yourfile.html" type="html" module="Eaglerocket_Customquote" area="frontend"/>
+</config> -->

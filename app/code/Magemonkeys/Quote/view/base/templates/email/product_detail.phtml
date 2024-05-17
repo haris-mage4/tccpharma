@@ -1,0 +1,106 @@
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$order = $objectManager->create('Amasty\RequestQuote\Model\Quote')->load($block->getData('quoteid'));
+$_items = $order->getItemsCollection();
+$blockObj = $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Customerinfo');
+$customerGroupId = $blockObj->getGroupId();
+$priceHelper = $objectManager->get('\Magento\Framework\Pricing\Helper\Data');
+
+
+
+
+?>
+<table class="email-items">
+    <thead>
+        <tr>
+            <th class="item-info">
+                <?= $block->escapeHtml(__('Items')) ?>
+            </th>
+            <th class="item-qtyorder">
+                <?= $block->escapeHtml(__('Qty')) ?>
+            </th>
+            <th class="item-price">
+                <?= $block->escapeHtml(__('Requested Price')) ?>
+            </th>
+            <?php if ($customerGroupId != 9) : ?>
+                <th class="item-price">
+                    <?= $block->escapeHtml(__('List Price')) ?>
+                </th>
+            <?php endif; ?>
+            <th class="item-price">
+                <?= $block->escapeHtml(__('Approved Price')) ?>
+            </th>
+            <th class="item-price">
+                <?= $block->escapeHtml(__('Approved Qty')) ?>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($_items as $item) : ?>
+            <?php if (!$item->getParentItem()) : ?>
+                <tr>
+                    <td>
+                        <?= $block->escapeHtml($item->getName()) ?>
+                        <span>SKU: <?= $block->escapeHtml($item->getSku()) ?></span>
+                    </td>
+                    <td style="text-align:right"><?= $block->escapeHtml($item->getQty()) ?></td>
+                    <?php $additionalData = json_decode($item->getAdditionalData(), true) ?>
+                    <?php $requestedPrice = isset($additionalData['requested_custom_price']) ? $additionalData['requested_custom_price'] : null ?>
+                    <td style="text-align:right"><?= $block->escapeHtml($priceHelper->currency($requestedPrice, true, false)); ?></td>
+                    <?php if ($customerGroupId != 9) : ?>
+                        <td style="text-align:right"><?= $block->escapeHtml($priceHelper->currency($item->getProduct()->getPrice(), true, false)); ?></td>
+                    <?php endif; ?>
+                    <?php $approvedPrice = $priceHelper->currency($item->getPrice(), true, false); ?>
+                    <td style="text-align:right">
+                        <?php if ($item->getApprovalStatus() == 0) : ?>
+                            <?= /* @noEscape */ __('Pending') ?>
+                        <?php else : ?>
+                            <?= $approvedPrice ?>
+                        <?php endif; ?>
+                    </td>
+                    <td style="text-align:right">
+                        <?php if ($item->getApprovalStatus() == 0) : ?>
+                            <?= /* @noEscape */ __('Pending') ?>
+                        <?php else : ?>
+                            <?php $availableQty = intval($item->getAvailableQty()); ?>
+                            <?= ($availableQty > 0) ? $availableQty : '-' ?>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
+        <?php endforeach; ?>
+
+    <tfoot class="order-totals">
+        <tr class="subtotal">
+            <th colspan="4" class="mark" scope="row" style="font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif; vertical-align: top; background-color: #f5f5f5; font-weight: 400; padding: 10px; text-align: right;">
+                Subtotal </th>
+            <td class="amount" data-th="Subtotal" style="font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif; vertical-align: top; background-color: #f5f5f5; padding: 10px; text-align: right;">
+                <span class="price" style="white-space: nowrap;"><?= $block->escapeHtml($formattedPrice = $priceHelper->currency($order->getTotals()['subtotal']['value'], true, false)) ?></span>
+            </td>
+        </tr>
+        <tr class="shipping">
+            <th colspan="4" class="mark" scope="row" style="font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif; vertical-align: top; background-color: #f5f5f5; font-weight: 400; padding: 10px; text-align: right; padding-top: 0;">
+                Shipping &amp; Handling </th>
+            <td class="amount" data-th="Shipping &amp; Handling" style="font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif; vertical-align: top; background-color: #f5f5f5; padding: 10px; text-align: right; padding-top: 0;">
+                <span class="price" style="white-space: nowrap;"><?= $block->escapeHtml($formattedPrice = $priceHelper->currency($order->getTotals()['shipping']['value'], true, false)) ?></span>
+            </td>
+        </tr>
+        <tr class="tax">
+            <th colspan="4" class="mark" scope="row" style="font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif; vertical-align: top; background-color: #f5f5f5; font-weight: 400; padding: 10px; text-align: right; padding-top: 0;">
+                Tax </th>
+            <td class="amount" data-th="Tax" style="font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif; vertical-align: top; background-color: #f5f5f5; padding: 10px; text-align: right; padding-top: 0;">
+                <span class="price" style="white-space: nowrap;"><?= $block->escapeHtml($formattedPrice = $priceHelper->currency($order->getTotals()['tax']['value'], true, false)) ?></span>
+            </td>
+        </tr>
+        <tr class="grand_total">
+            <th colspan="4" class="mark" scope="row" style="font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif; vertical-align: top; background-color: #f5f5f5; font-weight: 400; padding: 10px; text-align: right; padding-top: 0;">
+                "Estimated Total" </th>
+            <td class="amount" data-th=" &quot;Estimated Total&quot;" style="font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif; vertical-align: top; background-color: #f5f5f5; padding: 10px; text-align: right; padding-top: 0;">
+                <span class="price" style="white-space: nowrap;"><?= $block->escapeHtml($formattedPrice = $priceHelper->currency($order->getTotals()['grand_total']['value'], true, false)) ?></span>
+            </td>
+        </tr>
+    </tfoot>
+
+    </tbody>
+
+</table>

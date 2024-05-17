@@ -1,0 +1,190 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_MassProductActions
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+namespace Mageplaza\MassProductActions\Block\Adminhtml\Related\Edit;
+
+use Magento\Backend\Block\Template\Context;
+use Magento\Backend\Block\Widget\Form\Generic;
+use Magento\Framework\Data\FormFactory;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Registry;
+use Mageplaza\MassProductActions\Helper\Data as HelperData;
+use Mageplaza\MassProductActions\Model\Config\Source\Direction;
+use Mageplaza\MassProductActions\Model\Config\Source\RemoveProductEvents;
+use Magento\Backend\Block\Widget\Form\Element\Dependence;
+
+/**
+ * Class Form
+ * @package Mageplaza\MassProductActions\Block\Adminhtml\Related\Edit
+ */
+class Form extends Generic
+{
+    /**
+     * @var Direction
+     */
+    protected $_direction;
+
+    /**
+     * @var RemoveProductEvents
+     */
+    protected $_removeProductEvent;
+
+    /**
+     * @var HelperData
+     */
+    protected $_helperData;
+
+
+    /**
+     * Form constructor.
+     * @param Context $context
+     * @param Registry $registry
+     * @param FormFactory $formFactory
+     * @param Direction $direction
+     * @param RemoveProductEvents $removeProductEvent
+     * @param HelperData $helperData
+     * @param array $data
+     */
+    public function __construct(
+        Context $context,
+        Registry $registry,
+        FormFactory $formFactory,
+        Direction $direction,
+        RemoveProductEvents $removeProductEvent,
+        HelperData $helperData,
+        array $data = []
+    ) {
+        $this->_direction          = $direction;
+        $this->_removeProductEvent = $removeProductEvent;
+        $this->_helperData         = $helperData;
+
+        parent::__construct($context, $registry, $formFactory, $data);
+    }
+
+    /**
+     * @return Generic
+     * @throws LocalizedException
+     */
+    protected function _prepareForm()
+    {
+        /** @var \Magento\Framework\Data\Form $form */
+        $form = $this->_formFactory->create([
+            'data' => [
+                'id'      => 'mp_related_edit_form',
+                'action'  => $this->getUrl(
+                    'mpmassproductactions/product/massRelated',
+                    ['form_key' => $this->getFormKey()]
+                ),
+                'method'  => 'post',
+                'enctype' => 'multipart/form-data',
+            ],
+        ]);
+
+        $form->setHtmlIdPrefix('related_');
+        $form->setFieldNameSuffix('related');
+
+        $onclickText = 'mpMassProductAction.loadProductsGrid(event,mpRelatedProductsGridUrl);this.hide();';
+        $fieldset    = $form->addFieldset('base_fieldset', ['class' => 'fieldset-wide']);
+
+        $fieldset->addField('action', 'select', [
+            'name'   => 'action',
+            'label'  => __('Remove Related Products'),
+            'title'  => __('Remove Related Products'),
+            'class'  => 'mp_products_input_select',
+            'values' => $this->_removeProductEvent->toOptionArray(),
+        ]);
+
+        $fieldset->addField('remove_products', 'text', [
+            'name'        => 'remove_products',
+            'label'       => __('Remove Specific Products'),
+            'title'       => __('Remove Specific Products'),
+            'class'       => 'mp_products_input_text',
+            'placeholder' => 'product SKU',
+            'note'        => $this->_helperData->getSelectProductHtml($onclickText)
+                . $this->_helperData->getSubmitProductHtml($this->getViewFileUrl('images/loader-1.gif'))
+        ]);
+
+        $fieldset->addField('related', 'hidden', [
+            'name' => 'related'
+        ]);
+
+        $fieldset->addField('add_products', 'text', [
+            'name'        => 'add_products',
+            'label'       => __('Add Related Product(s)'),
+            'title'       => __('Add Related Product(s)'),
+            'class'       => 'mp_products_input_text',
+            'placeholder' => 'product SKU',
+            'note'        => $this->_helperData->getSelectProductHtml($onclickText)
+                . $this->_helperData->getSubmitProductHtml($this->getViewFileUrl('images/loader-1.gif'))
+        ]);
+
+        $fieldset->addField('direction', 'select', [
+            'name'   => 'direction',
+            'label'  => __('Direction'),
+            'title'  => __('Direction'),
+            'class'  => 'mp_products_input_select',
+            'values' => $this->_direction->toOptionArray(),
+            'note'   => __('One-way relation: Products with SKUs above will be added to the Related Product List of the selected ones.') .
+                __('Mutual-way relation: The same as one-way, but do one step further: The selected ones are also added to the Related Product List of the products with SKUs above.')
+        ]);
+
+        $fieldset->addField('copy_products', 'text', [
+            'name'        => 'copy_products',
+            'label'       => __('Copy from Product(s)'),
+            'title'       => __('Copy from Product(s)'),
+            'class'       => 'mp_products_input_text',
+            'placeholder' => 'product SKU',
+            'note'        => $this->_helperData->getSelectProductHtml($onclickText)
+                . $this->_helperData->getSubmitProductHtml($this->getViewFileUrl('images/loader-1.gif'))
+        ]);
+
+        $fieldset->addField('product_grid', 'note', [
+            'name' => 'product_grid',
+            'text' => '<div class="mpmassproductactions_products_grid"></div>'
+        ]);
+
+        $form->setUseContainer(true);
+
+        $this->setChild(
+            'form_after',
+            $this->getLayout()->createBlock(Dependence::class)
+                ->addFieldMap('related_action', 'action')
+                ->addFieldMap('related_remove_products', 'remove_products')
+                ->addFieldDependence('remove_products', 'action', RemoveProductEvents::SPECIFIC_PRODUCT)
+
+        );
+
+        $this->setForm($form);
+
+        return parent::_prepareForm();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormHtml()
+    {
+        $html = '<div class="mp-massproductactions-message submit-message"></div>';
+        $html .= parent::getFormHtml();
+
+        return $html;
+    }
+}

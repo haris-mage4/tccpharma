@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+	<default>
+		<tooltip>
+			<general>
+                <enable_tooltip>1</enable_tooltip>
+                <regular_price_tooltip>Please note that list prices are subject to change based on market conditions. Request a quote for accurate pricing for this product.</regular_price_tooltip>
+                <special_price_tooltip>Special pricing available for this product.</special_price_tooltip>
+				
+			</general>
+		</tooltip>
+	</default>
+</config>

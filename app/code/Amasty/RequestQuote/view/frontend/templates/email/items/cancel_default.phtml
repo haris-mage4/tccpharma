@@ -1,0 +1,127 @@
+<?php
+
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
+ * @package Amasty_RequestQuote
+ */
+?>
+<?php
+/** @var $block \Amasty\RequestQuote\Block\Email\Items\Renderer\DefaultRenderer */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var $item \Magento\Quote\Model\Quote\Item */
+$item = $block->getItem();
+$product = $item->getProduct();
+$quote = $item->getQuote();
+$helper = $this->helper('Magemonkeys\Quote\Helper\Data');
+$ndc = $helper->getProductNdc($item->getSku());
+$uom = $helper->getProductSize($item->getSku());
+$price  = $helper->getProductPrice($item->getSku());
+$quote_data_block = $block->getLayout()->createBlock('Magemonkeys\Quote\Block\Data');
+$quote_data = $quote_data_block->getAdminRemark($quote->getId());
+$quote_data_block = $block->getLayout()->createBlock('Magemonkeys\Quote\Block\Data');
+$status_value = $item->getQuote()->getStatus();
+$toolTipHelper = $this->helper('Eagle\Tooltip\Helper\Config\TooltipConfig');
+$customerGroupId = $block->getQuote()->getCustomer()->getGroupId();
+?>
+<?php if ($item->getApprovalStatus() == 2) : ?>
+    <tr style="height: 100%;">
+        <td class="col serial-no" data-serial=""></td>
+        <td class="item-info<?php if ($block->getItemOptions()) : ?> has-extra<?php endif; ?>">
+            <p class="product-name"><?= $escaper->escapeHtml($item->getName()) ?></p>
+            <p class="sku"><?= /* @noEscape */ __('SKU') ?>: <?= $escaper->escapeHtml($item->getSku()) ?></p>
+            <p class="ndc"><?= /* @noEscape */ __('NDC') ?>: <?= $escaper->escapeHtml($ndc) ?></p>
+            <p class="uom"><?= /* @noEscape */ __('UOM') ?>: <?= $escaper->escapeHtml($uom) ?></p>
+            <?php if ($block->getItemOptions()) : ?>
+                <dl class="item-options">
+                    <?php foreach ($block->getItemOptions() as $option) : ?>
+                        <dt><strong><em><?= /* @noEscape */ $option['label'] ?></em></strong></dt>
+                        <dd>
+                            <?= /* @noEscape */ nl2br($option['value']) ?>
+                        </dd>
+                    <?php endforeach; ?>
+                </dl>
+            <?php endif; ?>
+            <?php $addInfoBlock = $block->getProductAdditionalInformationBlock(); ?>
+            <?php if ($addInfoBlock) : ?>
+                <?= $addInfoBlock->setItem($item)->toHtml() ?>
+            <?php endif; ?>
+            <?= $escaper->escapeHtml($item->getDescription()) ?>
+        </td>
+        <td class="item-qty"><?= /* @noEscape */ $item->getQty() * 1 ?></td>
+        <td class="item-available_qty">
+            <?php if ($item->getApprovalStatus() == 0) : ?>
+                <span style="background: yellow; font-weight: bold;"><?= /* @noEscape */ "Pending" ?></span>
+            <?php elseif ($item->getApprovalStatus() == 2) : ?>
+                <span style="background: yellow; font-weight: bold;">Cancelled</span>
+            <?php elseif (intval($item->getAvailableQty()) == 0) : ?>
+                <span style="background: yellow; font-weight: bold;"><?= /* @noEscape */ "Pending" ?></span>
+            <?php else : ?>
+                <span style="background: yellow; font-weight: bold;"><?= /* @noEscape */ $item->getAvailableQty() * 1 ?></span>
+            <?php endif; ?>
+        </td>
+
+        <?php
+        $data = json_decode($item->getAdditionalData(), true);
+        $requestedPrice = 'N/A';
+        if (isset($data['requested_custom_price']) && $data['requested_custom_price'] !== 0) {
+            if ($data['requested_custom_price'] !== '') {
+                $requestedPrice = '$' . $data['requested_custom_price'];
+            }
+        }
+        ?>
+        <td class="item-price">
+            <?php if ($item->getPrice() == 0.00 || $item->getPrice() == 0.01) : ?>
+                <?= $escaper->escapeHtml(__('N/A')) ?>
+            <?php else : ?>
+                <?= $requestedPrice ?>
+        </td>
+    <?php endif; ?>
+
+    <?php if ($customerGroupId != 9) : ?>
+        <td class="item-price">
+            <!-- if ($block->getUnitPriceHtml($item) <= $price) :  -->
+            <?php if ($product->getPrice() > 0.01) : ?>
+                <?php if ($toolTipHelper->tierPriceByCustomerId($product->getSku(), $customerGroupId) != null) : ?>
+                    <?= $toolTipHelper->getTierPriceByQty($item->getSku(), $customerGroupId, $item->getQty()) ?>
+                <?php else : ?>
+                    <?= /* @noEscape */ $price; ?>
+                <?php endif; ?>
+            <?php else : ?>
+                <?= $escaper->escapeHtml(__('N/A')) ?>
+            <?php endif; ?>
+        </td>
+    <?php endif; ?>
+
+    <?php
+    $approvedPrice = $status_value == 2
+        ? $block->getUnitPriceHtml($item)
+        : $escaper->escapeHtml(__('Pending'));
+    ?>
+    <td class="col price qty" data-th="<?= $escaper->escapeHtml(__('Approved Price')) ?>">
+        <span class="price-excluding-tax">
+            <span class="cart-price">
+                <span class="price" style="background-color:yellow;">
+                    <?php if ($item->getApprovalStatus() == 0) : ?>
+                        <?= /* @noEscape */ __('Pending') ?>
+                    <?php elseif ($item->getApprovalStatus() == 2) : ?>
+                        <?= /* @noEscape */ __('Cancelled') ?>
+                    <?php else : ?>
+                        <?= /* @noEscape */ $approvedPrice ?>
+                    <?php endif; ?>
+                </span>
+            </span>
+        </span>
+    </td>
+
+    </tr>
+    <?php if ($item->getQuoteNote()) : ?>
+        <tr>
+            <td colspan="10">
+                <p class="note" style="background-color: #fdf0d5; color: #333; padding: 10px; border-radius: 5px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
+                    <strong><?= /* @noEscape */ __('Product Note') ?>:</strong> <?= $escaper->escapeHtml($item->getQuoteNote()) ?>
+                </p>
+            </td>
+        </tr>
+    <?php endif; ?>
+<?php endif; ?>

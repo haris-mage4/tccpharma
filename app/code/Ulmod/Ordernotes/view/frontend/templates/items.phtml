@@ -1,0 +1,34 @@
+<?php
+/**
+ * Copyright © Ulmod. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+?>
+<?php /** @var $this Ulmod\Notesonorderders\Block\Notes\Index */ ?>
+<?php $notes = $block->getNotes() ?>
+<?php if ($notes->count()): ?>
+<ul class="um-notes notes">
+    <?php foreach ($notes as $note): ?>
+        <li class="ulmod-cnote-item ulmod-anote-item ulmod-cnote 
+            <?php if ($note->getCustomerId()):?>note-customer<?php endif;?>">
+            <div class="um-message-header">
+             <strong class="major">
+                <?php if ($note->getCustomerId()):?>
+                    <?= $block->escapeHtml($note->getCfirstname()) ?>
+                <?php else:?>
+                    <?= $block->escapeHtml($note->getFirstname()) ?>
+                <?php endif;?>             
+             </strong>
+             <span class="minor"><?= /* @noEscape */ $block->formatDate($note->getCreatedAt())?></span>
+            </div>
+            <div class="um-message-content">
+                <p class="msg"><?= $block->escapeHtml($note->getNote()) ?></p>
+            </div>        
+        </li>
+    <?php endforeach; ?>
+</ul>
+<?php else:?>
+<div class="message info empty">
+    <span><?= $block->escapeHtml(__('List is empty'));?></span>
+</div>
+<?php endif; ?>

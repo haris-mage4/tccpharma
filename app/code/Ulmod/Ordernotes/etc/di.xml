@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Ulmod. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Sales\Block\Order\Email\Items">
+        <plugin name="noteOnOrderEmailPlugin"
+                type="Ulmod\Ordernotes\Block\Plugin\Email"
+                disabled="false" sortOrder="100"/>
+    </type>
+    <type name="Magento\Checkout\Model\GuestPaymentInformationManagement">
+        <plugin name="um_save_order_comment_in_quote" 
+            type="Ulmod\Ordernotes\Plugin\Model\Checkout\GuestPaymentInformationManagement" 
+                sortOrder="10"/>
+    </type> 
+    <type name="Magento\Checkout\Model\PaymentInformationManagement">
+        <plugin name="um_save_order_comment_in_quote" 
+            type="Ulmod\Ordernotes\Plugin\Model\Checkout\PaymentInformationManagement" 
+            sortOrder="20"/>
+    </type>
+    <type name="Magento\Quote\Model\QuoteManagement">
+        <plugin name="um_save_order_comment_in_quote" 
+            type="Ulmod\Ordernotes\Plugin\Model\Checkout\PaymentInformationManagement" 
+            sortOrder="30"/>
+    </type>
+    <!-- Order Filters -->
+    <type name="Ulmod\Ordernotes\Block\Order\History">
+        <arguments>
+            <argument name="specialFilter" xsi:type="array">
+                <item name="skuFilter" xsi:type="object">Ulmod\Ordernotes\Model\Filters\SkuFilter</item>
+                <item name="dateFilter" xsi:type="object">Ulmod\Ordernotes\Model\Filters\DateFilter</item>
+                <item name="nameFilter" xsi:type="object">Ulmod\Ordernotes\Model\Filters\NameFilter</item>
+                <item name="poFilter" xsi:type="object">Ulmod\Ordernotes\Model\Filters\PoFilter</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Order Filters -->
+</config>

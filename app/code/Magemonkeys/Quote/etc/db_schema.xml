@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+
+  <table name="mage_monkeys_quote_status_history" resource="checkout" engine="innodb" comment="Amasty Quote Table">
+    <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true"
+            comment="Entity_Id"/>
+    <column xsi:type="int" name="quote_id"  unsigned="true" nullable="false" padding="10" comment="parent_id"/>
+    <column xsi:type="int" name="is_customer_notified" nullable="false" padding="10" comment="is_customer_notified"/>
+    <column xsi:type="varchar" name="admin_remark" nullable="false" length="255" comment="admin_remark"/>
+    <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+    
+    <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" 
+      comment="Updated At"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="entity_id"/>
+    </constraint>
+
+    <constraint xsi:type="foreign" referenceId="FL_ALLOWED_AMASTY_QUOTE" table="mage_monkeys_quote_status_history"
+               column="quote_id" referenceTable="amasty_quote" referenceColumn="quote_id"
+               onDelete="CASCADE"/>
+  </table>
+</schema>

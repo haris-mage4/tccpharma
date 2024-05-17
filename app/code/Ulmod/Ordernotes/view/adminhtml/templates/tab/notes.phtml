@@ -1,0 +1,80 @@
+<?php
+/**
+ * Copyright © Ulmod. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+?>
+<div class="um-ordernotes">
+<div class="fieldset-wrapper customer-information">
+    <div class="admin__page-section-title">
+        <span class="title"><?= $block->escapeHtml(__('Order Notes')) ?></span>
+    </div>
+    <?php
+        $notes = $block->getCollection();
+        $action = $block->getUrl('ulmod_ordernotes/notes/update', ['_current' => true]);
+    ?>
+    <form id="masonotes-form" action="<?= $block->escapeUrl($action) ?>">
+        <div class="notes-holder">
+            <div class="notes-message">
+                <div id="notes-holder" class="notes-holder-block">
+                <?= $block->getLayout()->createBlock(\Ulmod\Ordernotes\Block\Adminhtml\Order\Notes::class)
+                    ->setTemplate("Ulmod_Ordernotes::tab/items.phtml")
+                    ->toHtml();
+                ?>
+                </div>
+                <div>
+                    <span class="new-note-label"><?= $block->escapeHtml(__('New Note'))?></span><br />
+                    <textarea name="masonotes_new[0][note]" id="mascnote_new"></textarea>
+                    <br />
+                    <input type="hidden" name="masonotes_new[0][status]" value="0" />
+                    <input type="hidden" name="masonotes_new[0][email]" value="0" />
+                    <label for="masonotes_new" class="um_masonotes_new">
+                        <input id="masonotes_new" type="checkbox" name="masonotes_new[0][status]" 
+                            value="1" />&nbsp;<?= $block->escapeHtml(__('Visible on Storefront'));?>
+                    </label>
+                    <label for="masonotes_email" class="um_masonotes_email">
+                        <input id="masonotes_email" type="checkbox" name="masonotes_new[0][email]" 
+                            value="1" />&nbsp;<?= $block->escapeHtml(__('Notify Customer by Email'));?>
+                    </label>
+                    <br />
+                    <br />
+                    <br />
+                </div>
+                <input type="hidden" name="store_name" id="store_name_field" 
+                    value="<?= $block->escapeHtml($block->getCurrectAdminStoreName()); ?>" />                 
+                <?php if (!$block->getIsOrder()):?>
+                    <div style="float:right;">
+                        <button class="action- scalable um-notes-a-submit save primary ui-button ui-widget 
+                            ui-state-default ui-corner-all ui-button-text-only" 
+                            onclick="ordernotesupdate();return false;">
+                            <span><?= $block->escapeHtml(__('Submit'))?></span>
+                        </button>
+                    </div>
+                    <div style="clear:both;"></div>
+                <?php endif;?>
+            </div>
+        </div>
+    </form>
+    <script>
+        require([
+            'prototype'
+        ], function() {
+
+        });
+        jQuery('.masonotes_edit').on('change', function() {
+            jQuery(this).next().val(1);
+        });
+        function ordernotesupdate()
+        {
+            new Ajax.Request($('masonotes-form').action, {
+                parameters: Form.serialize($('masonotes-form'), true),
+                area: $('masonotes-form'),
+                onComplete: function (transport) {
+                    $('mascnote_new').value = '';
+                    $('notes-holder').innerHTML = transport.responseText;
+                }
+            });
+        }
+    </script>
+</div>
+</div>

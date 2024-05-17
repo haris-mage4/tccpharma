@@ -1,0 +1,50 @@
+<?php
+/**
+ * Copyright © Ulmod. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+?>
+<?php
+   $currentStoreName = $block->getStore()->getName();
+?>   
+<div class="order-details-items ordered">
+<div class="order-title">
+    <strong><?= $block->escapeHtml(__('Order Notes')) ?></strong>
+</div>
+<div id="notes-on-order-container">
+    <?= $block->getLayout()->createBlock(\Ulmod\Ordernotes\Block\Notes\Index::class)
+        ->setTemplate("Ulmod_Ordernotes::items.phtml")
+        ->toHtml();
+    ?>    
+</div>
+<div class="ulmod-cnote">
+    <form name="order-notes-form" id="order-notes-form"
+          action="<?= $block->escapeUrl($block->getUrl('ordernotes/notes/add', ['_current' => true])) ?>"
+          onsubmit="return notesOnOrderSubmit();return false;">
+        <?= /* @noEscape */ $block->getBlockHtml('formkey');?>
+        <textarea name="reply" id="notes-order-reply"></textarea>
+            <input type="hidden" name="store_name" id="store_name_field" 
+                value="<?= $block->escapeHtml($currentStoreName); ?>" />  
+        <button type="submit" class="action primary">
+            <span><?= $block->escapeHtml(__('Add Note')) ?></span>
+        </button>
+    </form>
+</div>
+</div>
+<script>
+    require(['prototype'], function(jQuery, modal, prototype) 
+    {    });
+
+    function notesOnOrderSubmit()
+    {
+        new Ajax.Request($('order-notes-form').action, {
+            parameters: Form.serialize($('order-notes-form'), true),
+            area: $('order-notes-form'),
+            onComplete: function (transport) {
+                $('notes-order-reply').value = '';
+                $('notes-on-order-container').innerHTML = transport.responseText;
+            }
+        });
+        return false;
+    }
+</script>

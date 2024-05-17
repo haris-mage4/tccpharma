@@ -1,0 +1,46 @@
+<?php
+$quoteRemarkCollection = $this->getRemarkCommentCollection();
+?>
+<div class="quote-details-items ordered">
+	<div class="quote-title">
+		<strong>Quote Remark Notes</strong>
+	</div>
+	<div id="notes-on-quote-container">
+		<ul class="um-notes remark">
+			<?php if ($quoteRemarkCollection && count($quoteRemarkCollection) > 0) : ?>
+				<?php foreach ($quoteRemarkCollection as $remark) : ?>
+					<li class="quote-remark-customer">
+						<div class="quote-remark-header">
+							<strong>
+								<?php if ($remark->getAdminUserName()) : ?>
+									<?php echo $remark->getAdminUserName(); ?>
+								<?php else : ?>
+									<?php echo $remark->getCustomerName(); ?>
+								<?php endif; ?>
+							</strong><span>Added: <?= __($remark->getUpdatedAt()); ?></span>
+						</div>
+						<div class="remark-message-content">
+							<p class="msg"><?= __($remark->getRemarkComment()); ?></p>
+						</div>
+					</li>
+				<?php endforeach; ?>
+			<?php else : ?>
+				<li class="quote-remark-customer">
+					<div class="remark-message-content">
+						<p class="msg"><?= __('Quote Remark Not Found'); ?></p>
+					</div>
+				</li>
+			<?php endif; ?>
+		</ul>
+	</div>
+	<div class="ulmod-cnote">
+		<form name="quote-remark-form" id="quote-notes-form" method="post" action="<?php echo $this->getFormAction(); ?>">
+			<input type="hidden" name="form_key" value="<?php echo $block->getFormKey() ?>" />
+			<input type="hidden" name="quote_id" value="<?php echo $this->getQuoteId(); ?>" />
+			<textarea name="remark_comment" id="notes-order-reply"></textarea>
+			<button type="submit" class="action primary">
+				<span>Add Remark</span>
+			</button>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,150 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_MassProductActions
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var TierPrice $block */
+
+use Mageplaza\MassProductActions\Block\Adminhtml\Price\Edit\TierPrice; ?>
+<div class="mp-massproductactions-tier-price-wrapper">
+    <script id="mp_tier_price_row_template"
+            type="text/x-magento-template">
+        <tr>
+            <td>
+                <select title="<?= /* @noEscape */ __('Website') ?>"
+                        name="tier_price[<%- data.index %>][website_id]"
+                        id="tier-price-W-<%- data.index %>"
+                        class="select admin__control-select mp-website-select"
+                        onchange="mpProductTierPrice.currencyOnChange(event)">
+                    <?php foreach ($block->getWebsites() as $website): ?>
+                        <option data-symbol="<?= /* @noEscape */ $block->getCurrencySymbolByWebsite($website['value']) ?>"
+                                value="<?= /* @noEscape */ $website['value'] ?>"><?= /* @noEscape */ $website['label'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </td>
+            <td>
+                <select title="<?= /* @noEscape */ __('Customer Group') ?>"
+                        name="tier_price[<%- data.index %>][cust_group]"
+                        id="tier-price-C-<%- data.index %>"
+                        class="select admin__control-select">
+                    <?php foreach ($block->getCustomerGroups() as $group): ?>
+                        <option value="<?= /* @noEscape */ $group['value'] ?>"><?= /* @noEscape */ $group['label'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </td>
+            <td>
+                <input title="<?= /* @noEscape */ __('Quantity') ?>"
+                       class="input-text admin__control-text validate-greater-than-zero required-entry _required"
+                       type="text"
+                       name="tier_price[<%- data.index %>][price_qty]"
+                       id="tier-price-Q-<%- data.index %>" value="">
+            </td>
+            <td class="col-price-value">
+                <div class="mp-field-price-value" style="width: auto;">
+                    <input title="<?= /* @noEscape */ __('Price Value') ?>"
+                           class="input-text admin__control-text mp-tier-price-input"
+                           type="text"
+                           name="tier_price[<%- data.index %>][price]"
+                           id="tier-price-PV-<%- data.index %>" value="">
+                    <label class="admin__addon-prefix" for="tier-price-PV-<%- data.index %>">
+                        <span class="mp-tier-price-symbol"><?= /* @noEscape */ $block->getCurrencySymbolByWebsite('0') ?></span>
+                    </label>
+                </div>
+            </td>
+            <td>
+                <button type="button" class="action-default action-delete"
+                        onclick="mpProductTierPrice.deleteRow(event)">
+                    <span><?= ('Delete') ?></span>
+                </button>
+            </td>
+        </tr>
+    </script>
+    <table id="mp-massproductactions-tier-price" class="mp-massproductactions-table admin__control-table">
+        <thead>
+        <tr class="heading">
+            <th class="col-website">
+                <span><?= /* @noEscape */ __('Website') ?></span>
+            </th>
+            <th class="col-customer">
+                <span><?= /* @noEscape */ __('Customer Group') ?></span>
+            </th>
+            <th class="col-qty">
+                <span><?= /* @noEscape */ __('Quantity') ?></span>
+            </th>
+            <th class="col-price">
+                <span><?= /* @noEscape */ __('Price') ?></span>
+            </th>
+            <th class="col-action">
+                <span><?= /* @noEscape */ __('Action') ?></span>
+            </th>
+        </tr>
+        </thead>
+        <tfoot>
+        <tr class="mp-row-add-button">
+            <td colspan="5" class="mp-row-add">
+                <button id="add-tier-price" title="<?= /* @noEscape */ __('Add') ?>" type="button"
+                        class="action-default scalable"
+                        onclick="mpProductTierPrice.add(event)">
+                    <span><?= /* @noEscape */ __('Add') ?></span>
+                </button>
+            </td>
+        </tr>
+        </tfoot>
+        <tbody id="mp_tier_price_row_container">
+        </tbody>
+    </table>
+</div>
+<script>
+    require([
+        'jquery',
+        'mage/template'
+    ], function ($, mageTemplate) {
+        mpProductTierPrice = {
+            index: 0,
+            add: function (event) {
+                this.index++;
+
+                var data = {index: this.index},
+                    tBody = $(event.target).parents('#mp-massproductactions-tier-price')
+                        .find('#mp_tier_price_row_container'),
+                    rowHtml = mageTemplate(
+                        '#mp_tier_price_row_template',
+                        {
+                            data: data
+                        }
+                    );
+                tBody.append(rowHtml);
+            },
+
+            deleteRow: function (event) {
+                var row = $(event.target).parents()[1];
+                if (row) {
+                    row.parentNode.removeChild(row)
+                }
+            },
+
+            currencyOnChange: function (event) {
+                var currencySymbolLabel = $(event.target).parents('tr').find('.mp-tier-price-symbol'),
+                    selectedSymbol = $(event.target).find('option:selected').attr('data-symbol');
+
+                currencySymbolLabel.html(selectedSymbol);
+            }
+        };
+    });
+</script>

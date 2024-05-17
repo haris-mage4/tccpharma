@@ -1,0 +1,22 @@
+<div class="payment-option _collapsible opc-payment-additional um-ordernotes-checkout-block um-ordercomment comment last"
+     data-bind="mageInit: {'collapsible':{'openedState': '_active'}}">
+    <div class="payment-option-title field choice" data-role="title">
+        <span class="action action-toggle" role="heading" aria-level="2">
+            <!-- ko i18n: 'Leave a Note'--><!-- /ko -->
+        </span>
+    </div>
+    <div class="payment-option-content" data-role="content">
+        <form class="form form-comment order-comment-form">
+            <div class="payment-option-inner">
+                <div class="field">
+                    <label class="label">
+                        <span data-bind="i18n: 'Enter note'"></span>
+                    </label>
+                    <div class="control">
+                        <textarea id="um-ordernotes" class="input-text um_order_comment" name="um_order_comment" rows="4" data-bind="attr:{placeholder: $t('Enter your note...')} " ></textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

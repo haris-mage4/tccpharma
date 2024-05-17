@@ -1,0 +1,333 @@
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_MassProductActions
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+.action-menu > li._parent {
+    position: relative;
+}
+
+.page-actions-buttons {
+    display: block;
+}
+
+.mp-massproductactions-action-form {
+    display: none;
+}
+
+.mp-massproductactions-action-form .page-main-actions {
+    margin: 0 0 3rem;
+}
+
+.mp-massproductactions-action-form #attribute_set_base_fieldset, .mp-massproductactions-action-form #category_base_fieldset {
+    min-height: 700px;
+}
+
+.mp-massproductactions-action-form .mp_products_input_select {
+    width: 72.5%;
+}
+
+.mp-massproductactions-action-form .mp_products_input_text::placeholder {
+    font-style: italic;
+}
+
+.mp-massproductactions-action-form .mp_products_input_text {
+    width: 63%;
+    margin-right: 8px;
+}
+
+.mp-massproductactions-action-form input[type="checkbox"] {
+    background: #fff;
+    border-radius: 2px;
+    border: 1px solid #adadad;
+    cursor: pointer;
+    display: inline-block;
+    height: 16px;
+    margin: 0 5px 0 0;
+    transition: all .1s ease-in;
+    vertical-align: middle;
+    width: 16px;
+}
+
+.mp-massproductactions-grid-form .admin__field-note {
+    display: inline;
+}
+
+.mp-massproductactions-grid-form #direction-note {
+    display: block;
+}
+
+.mp-massproductactions-grid-form .admin__field-control {
+    position: relative;
+}
+
+.mp-massproductactions-grid-form .admin__field-control .mpmassproductactions_image_loader img {
+    width: 25px;
+    position: absolute;
+    top: 5px;
+    left: 67.5%;
+    display: none;
+}
+
+/** update category form */
+#mp_category_edit_form .action-close {
+    padding: 0;
+}
+
+#mp_category_edit_form .action-close:before {
+    font-size: .5em;
+}
+
+/** website form */
+#mp_website_edit_form .admin__field-control.control {
+    margin-top: 8px;
+}
+
+#mp_website_edit_form .admin__field.field {
+    margin-bottom: 6rem;
+}
+
+#mp_website_edit_form .store-tree .website-name {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#mp_website_edit_form .store-tree .website-groups {
+    margin: 5px 0 20px 25px;
+}
+
+#mp_website_edit_form .store-tree .website-groups dt {
+    font-weight: bold;
+}
+
+#mp_website_edit_form .store-tree .website-groups dd {
+    margin: 5px 0 15px 15px;
+}
+
+#mp_website_edit_form .store-tree .website-groups dd > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#mp_website_edit_form .store-tree .website-groups dd > ul > li {
+    margin: 0 0 5px;
+}
+
+/** copy custom option form */
+#mp-massproductactions-option-form .mp_option_description_form {
+    margin-bottom: 25px;
+}
+
+/** product grid css */
+.field-product_grid .admin__field-control {
+    width: 98% !important;
+}
+
+.field-product_grid .admin__field-value {
+    width: 100%;
+}
+
+/** Update attributes css */
+
+#mp-massproductactions-attribute-form #select_attribute_fieldset-wrapper {
+    margin: 0 7%;
+}
+
+#mp-massproductactions-attribute-form #select_attribute_fieldset .admin__field-control.control {
+    width: 100%;
+    margin-left: 0;
+}
+
+#mp-massproductactions-attribute-form #select_attribute_fieldset #mp_attribute_select {
+    width: 81%;
+    display: block;
+    margin: auto;
+}
+
+@media screen and (max-width: 1450px) and (min-width: 1100px) {
+    #mp-massproductactions-attribute-form #select_attribute_fieldset #mp_attribute_select {
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 1099px) {
+    #mp-massproductactions-attribute-form #select_attribute_fieldset #mp_attribute_select {
+        width: 100%;
+    }
+}
+
+#mp-massproductactions-attribute-form #select_attribute_fieldset .mp-massproductactions-attribute-item {
+    margin: 3px 0;
+}
+
+#mp-massproductactions-attribute-form #select_attribute_fieldset .mp-massproductactions-attribute-item label {
+    cursor: pointer;
+}
+
+#mp-massproductactions-attribute-form .collapse.in {
+    height: auto !important;
+    overflow: visible;
+}
+
+#mp-massproductactions-attribute-form #base_fieldset {
+    margin-top: 3rem;
+}
+
+#mp-massproductactions-attribute-form #base_fieldset .admin__field-control.control {
+    padding: 10px;
+}
+
+#mp-massproductactions-attribute-form #base_fieldset .admin__field.field {
+    display: none;
+}
+
+#mp-massproductactions-attribute-form #base_fieldset .mp-attribute-value {
+    margin-bottom: 7px;
+}
+
+#mp-massproductactions-attribute-form #base_fieldset .mp-attribute-filter {
+    margin-top: 5px;
+}
+
+#mp-massproductactions-attribute-form #base_fieldset .admin__fieldset > .admin__field {
+    margin-bottom: 5rem;
+}
+
+#mp-massproductactions-attribute-form #base_fieldset .mage-error {
+    position: inherit;
+    bottom: -60px;
+}
+
+/** Update inventory css */
+#mp-massproductactions-inventory-form .admin__field-control .field.calculation {
+    margin-bottom: 8px;
+}
+
+#mp-massproductactions-inventory-form .admin__field-control .admin__field {
+    display: inline-block;
+}
+
+#mp-massproductactions-inventory-form .admin__field-control label.label {
+    cursor: pointer;
+}
+
+#mp-massproductactions-inventory-form .admin__field-control .admin__field-note {
+    display: inline-block;
+    float: right;
+    margin-top: 2px;
+}
+
+#mp-massproductactions-inventory-form .admin__field-control label.addafter {
+    display: block;
+    margin-top: 4px;
+}
+
+#mp-massproductactions-inventory-form .field-service {
+    box-sizing: border-box;
+    width: 20%;
+    padding: 7px 0 0 15px;
+    color: #999;
+    font-size: 12px;
+    letter-spacing: .05em;
+}
+
+#mp-massproductactions-inventory-form .field-service[value-scope]:before {
+    content: attr(value-scope) !important;
+    white-space: nowrap;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/** Update price css */
+
+#mp-massproductactions-price-form fieldset {
+    margin-bottom: 45px;
+}
+
+#mp-massproductactions-price-form fieldset#price_tier_price_fieldset #price_tier_price {
+    width: 100%;
+}
+
+#mp-massproductactions-price-form #mp-massproductactions-tier-price .col-price-value label.admin__addon-prefix {
+    position: absolute;
+    top: 1px;
+    left: 0.5rem;
+}
+
+#mp-massproductactions-price-form #mp-massproductactions-tier-price .col-price-value input.mp-tier-price-input {
+    padding-left: 2rem;
+}
+
+#mp-massproductactions-price-form .mp-field-price-value {
+    display: inline-block;
+    position: relative;
+}
+
+#mp-massproductactions-price-form .mp-field-price-type {
+    display: inline-block;
+    width: 65%;
+}
+
+#mp-massproductactions-price-form .mp-field-price-type select {
+    width: 100%;
+}
+
+#mp-massproductactions-price-form #mp-massproductactions-tier-price .col-website {
+    width: 20%;
+}
+
+#mp-massproductactions-price-form #mp-massproductactions-tier-price .col-customer {
+    width: 20%;
+}
+
+#mp-massproductactions-price-form #mp-massproductactions-tier-price .col-qty span:after {
+    margin: 0 0 0 .5rem;
+    color: #e22626;
+    content: '*';
+}
+
+#mp-massproductactions-price-form #mp-massproductactions-tier-price .col-qty {
+    width: 20%;
+}
+
+#mp-massproductactions-price-form #mp-massproductactions-tier-price .col-price {
+    width: 35%;
+}
+
+.action-select-wrap .action-menu, .action-select-wrap .abs-action-menu .action-submenu, .action-select-wrap .action-menu .action-submenu, .action-select-wrap .actions-split .dropdown-menu .action-submenu, .action-select-wrap .actions-split .action-menu .action-submenu {
+    overflow-y: visible;
+    max-height: inherit;
+}
+
+.modals-overlay {
+    z-index: 899 !important;
+}
+
+.create_category_modal {
+    z-index: 902 !important;
+}
+
+.mpmassproductactions_products_grid input[type="checkbox"] {
+    margin-top: 0!important;
+}
+
+.mpmassproductactions_products_grid .data-grid-checkbox-cell-inner {
+    height: 15px;
+    width: 15px;
+}
+

@@ -1,0 +1,106 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+
+/**
+ * Product view template
+ *
+ * @var $block \Magento\Catalog\Block\Product\View\Description
+ */
+?>
+<?php
+$_product = $block->getProduct();
+if (!$_product instanceof \Magento\Catalog\Model\Product) {
+    return;
+}
+$_className = $block->getCssClass();
+?>
+
+<div class="product attribute <?= $block->escapeHtmlAttr($_className) ?>">
+    <strong class="type"><?= $block->escapeHtml('NDC') ?></strong>
+    <div class="value"><?php echo $_product->getNdc() ?></div>
+</div>
+<br>
+<div class="product attribute <?= $block->escapeHtmlAttr($_className) ?>">
+    <strong class="type"><?= $block->escapeHtml('Manufacturer') ?></strong>
+    <div class="value"><?php echo $_product->getManufacturer() ?></div>
+</div>
+<br>
+<div class="product attribute <?= $block->escapeHtmlAttr($_className) ?>">
+    <strong class="type"><?= $block->escapeHtml('Size') ?></strong>
+    <div class="value"><?php echo $_product->getSize() ?></div>
+</div>
+<br>
+<div class="product attribute <?= $block->escapeHtmlAttr($_className) ?>">
+    <strong class="type"><?= $block->escapeHtml('Unit') ?></strong>
+    <div class="value"><?php echo $_product->getUnitOfMeasure() ?></div>
+</div>
+<br>
+<div class="product attribute wishlist">
+<a href="#" data-post='<?php  echo $this->helper('Magento\Wishlist\Helper\Data')->getAddParams($_product) ?>' class="action towishlist add-to-wishlist" data-action="add-to-wishlist">
+    <p>
+        <?php echo 'Add to Wish List' ?>
+    </p>
+</a>
+
+</div>
+
+<script type="text/x-magento-init">
+{
+    "*": {
+        "Magento_Ui/js/core/app": {
+            "components": {
+                "wishlist": {
+                    "component": "Magento_Wishlist/js/view/wishlist"
+                }
+            }
+        }
+    }
+}
+</script>
+<style type="text/css">
+    .add-to-wishlist>p:before {
+        display: inline-block;
+        font-family: FontAwesome;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        content: "\f007";
+        font-size: 16px;
+        margin-right: 5px;
+        content: "\f08a";
+    }
+    .product.attribute.wishlist {
+        background: #2595c6;
+        padding: 10px;
+        max-width: 174px;
+        padding-bottom: 1px;
+        border: 1px solid #0094c6;
+        margin-top: 15px;
+    }
+    .product.attribute.wishlist:hover {
+        background: #fff !important;
+        border: 1px solid #0094c6;
+        -webkit-transition: all 500ms ease;
+    -o-transition: all 500ms ease;
+    transition: all 500ms ease;
+    -moz-backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    }
+   .wishlist a {
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    font-size: 16px;
+}
+    .wishlist a:hover {
+    color: #2695c6 !important;
+}
+</style>

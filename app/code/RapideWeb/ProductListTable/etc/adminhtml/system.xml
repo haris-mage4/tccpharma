@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+	<system>
+		<tab id="rapideweb" sortOrder="1" translate="label">
+			<label>RapideWeb Extensions</label>
+		</tab>
+		<section id="productlisttable" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="1" translate="label">
+			<label>Product List Table</label>
+			<tab>rapideweb</tab>
+			<resource>RapideWeb_ProductListTable::config_rapideweb_productlisttable</resource>
+			<group id="general" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="1" translate="label">
+				<label>General</label>
+				<field id="enabled" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="1" translate="label" type="select">
+					<label>Enable Extension</label>
+					<comment/>
+					<source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+				</field>
+				<field id="page_title" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="2" translate="label" type="text">
+					<label>Product Listing Table Page Title</label>
+					<comment/>
+				</field>
+				<field id="navigation" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="3" translate="label" type="select">
+					<label>Show/Hide Top Navigation</label>
+					<comment/>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="product_image" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="4" translate="label" type="select">
+					<label>Show/Hide Product Image</label>
+					<comment/>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="product_option" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="5" translate="label" type="select">
+					<label>Show/Hide Product Option</label>
+					<comment/>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="category" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="6" translate="label" type="multiselect">
+					<label>Select Categories</label>
+					<source_model>RapideWeb\ProductListTable\Model\Config\Source\Category</source_model>
+				</field>
+			</group>
+			<group id="design" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="2" translate="label">
+				<label>Design</label>
+				<field id="image_width" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="11" translate="label" type="text">
+					<label>Product Image Width</label>
+					<comment>Should be Number e.g. 100</comment>
+				</field>
+				<field id="image_height" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="12" translate="label" type="text">
+					<label>Product Image Height</label>
+					<comment>Should be Number e.g. 100</comment>
+				</field>
+				<field id="button_text" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="13" translate="label" type="text">
+					<label>Button Text</label>
+					<comment>e.g. "Add to Cart"</comment>
+				</field>
+				<field id="button_bg_color" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="14" translate="label" type="text">
+					<label>Button Background Color</label>
+					<comment>e.g. #303030 OR #333</comment>
+				</field>
+				<field id="button_color" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="15" translate="label" type="text">
+					<label>Button Color</label>
+					<comment>e.g. #ffffff OR #fff</comment>
+				</field>
+			</group>
+		</section>
+	</system>
+</config>

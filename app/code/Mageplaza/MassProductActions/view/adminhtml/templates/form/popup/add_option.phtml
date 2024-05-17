@@ -1,0 +1,58 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_MassProductActions
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var Template $block */
+
+use Magento\Backend\Block\Template; ?>
+
+<div id="mp-massproductactions-add-option-form" class="mp-massproductactions-action-form">
+    <div class="option-form-message"></div>
+    <div class="page-main-actions">
+        <div class="page-actions" data-ui-id="page-actions-toolbar-content-header">
+            <div class="page-actions-inner" data-title="<?= /* @noEscape */ __('Submit') ?>">
+                <div class="page-actions-buttons">
+                    <button id="save" title="<?= /* @noEscape */ __('Save') ?>" type="button"
+                            class="action- save scalable primary"
+                            data-ui-id="save-button"
+                            onclick="mpMassProductAction.saveAddOption();">
+                        <span><?= /* @noEscape */ __('Submit') ?></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <form id="option-form"></form>
+    </div>
+</div>
+
+<style>
+    #option-form .fieldset-wrapper-title span {
+        font-size: 1.8rem !important;
+        font-weight: 600;
+    }
+    #option-form td.admin__collapsible-block-wrapper {
+        border: none;
+    }
+    .modal-content {
+        height: 100%;
+    }
+</style>

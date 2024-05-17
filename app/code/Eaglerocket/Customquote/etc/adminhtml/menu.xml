@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+    	        <add id="Eaglerocket_Customquote::customquote" title="Customquote" module="Eaglerocket_Customquote" sortOrder="51" resource="Eaglerocket_Customquote::customquote"/>
+
+        <add id="Eaglerocket_Customquote::post" title="Manage Question" module="Eaglerocket_Customquote" sortOrder="10" action="eaglerocket_customquote/post" 
+        	resource="Eaglerocket_Customquote::post" parent="Eaglerocket_Customquote::customquote"/>
+
+        <add id="Eaglerocket_Customquote::customquote_configuration" title="Configuration"
+         module="Eaglerocket_Customquote" sortOrder="99" parent="Eaglerocket_Customquote::customquote" action="adminhtml/system_config/edit/section/customquote" resource="Eaglerocket_Customquote::customquote_configuration"/>
+
+    </menu>
+</config>

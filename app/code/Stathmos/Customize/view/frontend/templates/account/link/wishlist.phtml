@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** @var \Magento\Customer\Block\Account\AuthorizationLink $block */
+
+$dataPostParam = '';
+?>
+<?php if ($block->isLoggedIn()) : ?>
+    <?php
+    $dataPostParam = sprintf(" data-post='%s'", $block->getPostParams());
+
+    $blockObj = $block->getLayout()->createBlock('Magemonkeys\Customerinfo\Block\Customerinfo');
+    $customerGroupId = $blockObj->getGroupId();
+
+    $isSpecialGroup = in_array($customerGroupId, [9, 10, 11]);
+
+    $orderHistoryUrl = $isSpecialGroup ? $this->getUrl('coming-soon-6581c71abdfd7') : $this->getUrl('sales/order/history');
+    $quoteHistoryUrl = $this->getUrl('amasty_quote/account/index');
+
+    $orderHistoryText = $isSpecialGroup ? "My Orders" : "My Orders";
+    $quoteHistoryText = $isSpecialGroup ? "Quote History / Place Orders" : "My Quotes";
+    ?>
+
+    <li class="order-history">
+        <a href="<?= $orderHistoryUrl ?>" id="idJw4JvO4X" class="order-history"><?= $block->escapeHtml($orderHistoryText) ?></a>
+    </li>
+
+    <li class="quote-history">
+        <a href="<?= $quoteHistoryUrl ?>" id="idJw4JvO4X" class="quote-history"><?= $block->escapeHtml($quoteHistoryText) ?></a>
+    </li>
+
+    <li class="wishlist">
+        <a href="<?= $this->getUrl('wishlist') ?>" id="idJw4JvO4X" class="wishlist"><?= $block->escapeHtml("My Favorites") ?></a>
+    </li>
+<?php endif; ?>

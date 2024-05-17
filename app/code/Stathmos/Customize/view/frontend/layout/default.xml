@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Stathmos_Customize::css/local.css" />
+    </head>
+    <body>
+        <!-- <referenceBlock name="wish-list-link" remove="true" /> -->
+        <block class="Stathmos\Customize\Block\Account\Wishlist" name="wish-list-link" after="my-account-link" template="Stathmos_Customize::account/link/wishlist.phtml">
+            <arguments>
+                <argument name="sortOrder" xsi:type="number">60</argument>
+            </arguments>
+        </block>
+        <referenceBlock name="authorization-link">
+            <arguments>
+                <argument name="sortOrder" xsi:type="number">600000</argument>
+            </arguments>
+        </referenceBlock>
+        <move element="amasty_quote_hide_actions" destination="header.wrapper.right" />
+    </body>
+</page>

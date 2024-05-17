@@ -1,0 +1,61 @@
+<?php
+/**
+ * Copyright © Ulmod. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+?>
+<div id="um_notes_modal" style="display:none">
+   <form id="um_notes_form" 
+      action="<?= $block->escapeUrl($block->getUrl('ordernotes/notes/read', ['_current' => true])) ?>"
+      method="post"
+      data-hasrequired="* Required Fields" 
+      data-mage-init='{"validation":{}}'>
+      <fieldset class="fieldset umnotes_request">     
+        <input type="hidden" name="new_customer_note_markread" value="1"> 
+        <input type="hidden" name="um_orderid" value="" class="um_orderid">   
+        <div class="um-notes-actions">         
+          <button type="submit" title="<?= $block->escapeHtml(__('Yes')) ?>"
+          class="um-note-submit action primary">
+                  <span><?= $block->escapeHtml(__('Yes')) ?></span>
+          </button> 
+          </div>   
+      </fieldset>
+   </form>
+</div>
+<script>
+  require(
+      [
+          'jquery',
+          'Magento_Ui/js/modal/modal'
+      ],
+      function ($,
+                modal) {
+          var options = {
+              type: 'popup',
+              responsive: true,
+              innerScroll: true,
+              title: 'Mark This Note As Read?',
+              wrapperClass: 'modals-wrapper um-notes-modals-wrapper',
+              buttons: [{
+                  text: $.mage.__('Submit'),
+                  class: 'notes_submit action primary',
+                  attr: {
+                      'data-action': 'confirm'
+                  },
+                  click: function () {
+                      $('#um_notes_form').submit();
+                  }
+              }]
+          };            
+          $(document).on('click', '.um-grid-markread-note', function () {  
+              var um_orderid = $(this).parent().find('input[name="um_orderid"]').val();  
+             $('.umnotes_request .um_orderid').val(um_orderid);  
+
+              $('#um_notes_form')[0].reset();
+              var popup = modal(options, $('#um_notes_modal'));
+              $('#um_notes_modal').modal('openModal');
+                $('.modal-footer').hide();
+          });
+      }
+  );
+</script>

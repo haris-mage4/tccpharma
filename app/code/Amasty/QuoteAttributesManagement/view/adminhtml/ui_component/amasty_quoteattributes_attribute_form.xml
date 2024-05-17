@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Request a Quote Attribute Management for Magento 2 (System)
+ */-->
+
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">
+                amasty_quoteattributes_attribute_form.amasty_quoteattributes_attribute_form_data_source
+            </item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Field Properties</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <dataScope>data</dataScope>
+        <namespace>amasty_quoteattributes_attribute_form</namespace>
+        <deps>
+            <dep>amasty_quoteattributes_attribute_form.amasty_quoteattributes_attribute_form_data_source</dep>
+        </deps>
+        <buttons>
+            <button name="back">
+                <url path="*/*/index"/>
+                <class>back</class>
+                <label translate="true">Back</label>
+            </button>
+            <button name="reset">
+                <class>reset</class>
+                <label translate="true">Reset</label>
+            </button>
+            <button name="delete" class="Amasty\QuoteAttributesManagement\Ui\Component\Control\DeleteButton"/>
+            <button name="save_and_continue">
+                <url path="*/*/save"/>
+                <class>save</class>
+                <label translate="true">Save and Continue Edit</label>
+            </button>
+            <button name="save">
+                <url path="*/*/save"/>
+                <class>save primary</class>
+                <label translate="true">Save</label>
+            </button>
+        </buttons>
+    </settings>
+    <dataSource name="amasty_quoteattributes_attribute_form_data_source" component="Magento_Ui/js/form/provider">
+        <settings>
+            <submitUrl path="*/*/save"/>
+        </settings>
+        <dataProvider class="Amasty\QuoteAttributesManagement\Ui\DataProvider\Form\DataProvider"
+                      name="amasty_quoteattributes_attribute_form_data_source">
+            <settings>
+                <requestFieldName>attribute_id</requestFieldName>
+                <primaryFieldName>attribute_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <fieldset name="base_fieldset" sortOrder="10">
+        <settings>
+            <collapsible>true</collapsible>
+            <opened>true</opened>
+            <label translate="true">General</label>
+        </settings>
+        <field name="attribute_id" formElement="hidden">
+            <settings>
+                <dataType>text</dataType>
+            </settings>
+        </field>
+        <field name="frontend_label[0]" sortOrder="10" formElement="input">
+            <settings>
+                <required>true</required>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                    <rule name="validate-no-html-tags" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>string</dataType>
+                <label translate="true">Attribute Label</label>
+                <dataScope>frontend_label.0</dataScope>
+            </settings>
+        </field>
+        <field name="attribute_code" sortOrder="20" formElement="input">
+            <settings>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                    <rule name="validate-code" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>string</dataType>
+                <label translate="true">Attribute Code</label>
+                <notice translate="true">
+                    For internal use. Must be unique with no spaces. Please use only lowercase letters and underscores.
+                    It is not recommended to use digits, other symbols,
+                    or uppercase letters since it may cause unwanted issues or undesired behavior.
+                </notice>
+                <dataScope>attribute_code</dataScope>
+            </settings>
+        </field>
+        <field name="stores" formElement="multiselect" sortOrder="25">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="string">0</item>
+                </item>
+            </argument>
+            <settings>
+                <label translate="true">Store Views</label>
+                <dataType>text</dataType>
+                <dataScope>stores</dataScope>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="Amasty\QuoteAttributesManagement\Model\Source\StoreOptions"/>
+                    </settings>
+                </multiselect>
+            </formElements>
+        </field>
+        <field name="frontend_input" component="Amasty_QuoteAttributesManagement/js/components/frontend-input" sortOrder="30" formElement="select">
+            <settings>
+                <dataType>string</dataType>
+                <label translate="true">Input Type</label>
+                <dataScope>frontend_input</dataScope>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Amasty\QuoteAttributesManagement\Model\Source\FrontendInput"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="is_required"
+               component="Amasty_QuoteAttributesManagement/js/components/is-required"
+               sortOrder="40"
+               formElement="checkbox">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">0</item>
+                    <item name="valuesForOptions" xsi:type="array">
+                        <item name="text" xsi:type="string">text</item>
+                        <item name="textarea" xsi:type="string">textarea</item>
+                        <item name="date" xsi:type="string">date</item>
+                        <item name="boolean" xsi:type="string">boolean</item>
+                        <item name="multiselect" xsi:type="string">multiselect</item>
+                        <item name="select" xsi:type="string">select</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <label translate="true">Required</label>
+                <dataScope>is_required</dataScope>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+        <field name="default_value_text"
+               component="Amasty_QuoteAttributesManagement/js/components/default-value/text"
+               sortOrder="50"
+               formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="valuesForOptions" xsi:type="array">
+                        <item name="text" xsi:type="string">text</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>string</dataType>
+                <label translate="true">Default Value</label>
+                <dataScope>default_value_text</dataScope>
+            </settings>
+        </field>
+        <field name="default_value_textarea"
+               component="Amasty_QuoteAttributesManagement/js/components/default-value/textarea"
+               sortOrder="50"
+               formElement="textarea">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="valuesForOptions" xsi:type="array">
+                        <item name="textarea" xsi:type="string">textarea</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Default Value</label>
+                <dataScope>default_value_textarea</dataScope>
+            </settings>
+        </field>
+        <field name="default_value_yesno"
+               component="Amasty_QuoteAttributesManagement/js/components/default-value/yesno"
+               sortOrder="50"
+               formElement="checkbox">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">0</item>
+                    <item name="valuesForOptions" xsi:type="array">
+                        <item name="boolean" xsi:type="string">boolean</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Default Value</label>
+                <dataScope>default_value_yesno</dataScope>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+        <field name="default_value_date"
+               component="Amasty_QuoteAttributesManagement/js/components/default-value/date"
+               sortOrder="50"
+               formElement="date">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="valuesForOptions" xsi:type="array">
+                        <item name="date" xsi:type="string">date</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Default Value</label>
+                <dataScope>default_value_date</dataScope>
+            </settings>
+        </field>
+        <field name="frontend_class"
+               component="Amasty_QuoteAttributesManagement/js/components/frontend-class"
+               sortOrder="60"
+               formElement="select">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="valuesForOptions" xsi:type="array">
+                        <item name="text" xsi:type="string">text</item>
+                        <item name="date" xsi:type="string">date</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>string</dataType>
+                <label translate="true">Input Validation</label>
+                <dataScope>frontend_class</dataScope>
+            </settings>
+        </field>
+        <field name="input_filter"
+               component="Amasty_QuoteAttributesManagement/js/components/input-filter"
+               sortOrder="70"
+               formElement="select">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="valuesForOptions" xsi:type="array">
+                        <item name="text" xsi:type="string">text</item>
+                        <item name="textarea" xsi:type="string">textarea</item>
+                        <item name="date" xsi:type="string">date</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>string</dataType>
+                <label translate="true">Input/Output Filter</label>
+                <dataScope>input_filter</dataScope>
+            </settings>
+        </field>
+    </fieldset>
+    <fieldset name="attribute_options_select_container"
+              component="Amasty_QuoteAttributesManagement/js/components/options-container"
+              sortOrder="15">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="valuesForOptions" xsi:type="array">
+                    <item name="select" xsi:type="string">select</item>
+                </item>
+            </item>
+        </argument>
+        <settings>
+            <collapsible>true</collapsible>
+            <label translate="true">Values</label>
+        </settings>
+        <dynamicRows name="attribute_options_select">
+            <settings>
+                <addButtonLabel translate="true">Add Value</addButtonLabel>
+                <additionalClasses>
+                    <class name="admin__field-wide">true</class>
+                    <class name="amquoteattrs-options-container">true</class>
+                </additionalClasses>
+                <componentType>dynamicRows</componentType>
+            </settings>
+            <container name="record" component="Magento_Ui/js/dynamic-rows/record">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="isTemplate" xsi:type="boolean">true</item>
+                        <item name="is_collection" xsi:type="boolean">true</item>
+                        <item name="componentType" xsi:type="string">container</item>
+                    </item>
+                </argument>
+                <field name="option_id" formElement="hidden">
+                    <settings>
+                        <dataType>text</dataType>
+                        <visible>false</visible>
+                    </settings>
+                </field>
+                <field name="is_default"
+                       component="Magento_Catalog/js/form/element/checkbox" sortOrder="0" formElement="checkbox">
+                    <argument name="data" xsi:type="array">
+                        <item name="config" xsi:type="array">
+                            <item name="prefixElementName" xsi:type="string">option_</item>
+                            <item name="inputCheckBoxName" xsi:type="string">attribute_options_select_default</item>
+                            <item name="columnsHeaderClasses" xsi:type="string">control-table-options-th</item>
+                            <item name="modules" xsi:type="array">
+                                <item name="rows" xsi:type="string">
+                                    ns = ${ $.ns }, index = attribute_options_select
+                                </item>
+                            </item>
+                        </item>
+                    </argument>
+                    <settings>
+                        <additionalClasses>
+                            <class name="control-table-options-cell">true</class>
+                        </additionalClasses>
+                        <dataType>boolean</dataType>
+                        <label translate="true">Is Default</label>
+                    </settings>
+                    <formElements>
+                        <checkbox>
+                            <settings>
+                                <prefer>radio</prefer>
+                            </settings>
+                        </checkbox>
+                    </formElements>
+                </field>
+                <field name="position" component="Magento_Catalog/js/form/element/input" formElement="input">
+                    <argument name="data" xsi:type="array">
+                        <item name="config" xsi:type="array">
+                            <item name="prefixName" xsi:type="string">option.order</item>
+                            <item name="prefixElementName" xsi:type="string">option_</item>
+                        </item>
+                    </argument>
+                    <settings>
+                        <dataType>text</dataType>
+                        <visible>false</visible>
+                    </settings>
+                </field>
+            </container>
+        </dynamicRows>
+        <field name="attribute_options_select_count"
+              component="Amasty_QuoteAttributesManagement/js/form/element/amquoteattrs-counter"
+              formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="listens" xsi:type="array">
+                        <item name="${ $.parentName }.attribute_options_select:elems" xsi:type="string">onRowsUpdate</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>int</dataType>
+                <additionalClasses>
+                    <class name="amquoteattrs-options-counter">true</class>
+                </additionalClasses>
+                <labelVisible>false</labelVisible>
+            </settings>
+        </field>
+    </fieldset>
+    <fieldset name="attribute_options_multiselect_container"
+              component="Amasty_QuoteAttributesManagement/js/components/options-container" sortOrder="15">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="valuesForOptions" xsi:type="array">
+                    <item name="multiselect" xsi:type="string">multiselect</item>
+                </item>
+            </item>
+        </argument>
+        <settings>
+            <collapsible>true</collapsible>
+            <label translate="true">Values</label>
+        </settings>
+        <dynamicRows name="attribute_options_multiselect">
+            <settings>
+                <addButtonLabel translate="true">Add Value</addButtonLabel>
+                <additionalClasses>
+                    <class name="admin__field-wide">true</class>
+                    <class name="amquoteattrs-options-container">true</class>
+                </additionalClasses>
+                <componentType>dynamicRows</componentType>
+            </settings>
+            <container name="record" component="Magento_Ui/js/dynamic-rows/record">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="isTemplate" xsi:type="boolean">true</item>
+                        <item name="is_collection" xsi:type="boolean">true</item>
+                        <item name="componentType" xsi:type="string">container</item>
+                    </item>
+                </argument>
+                <field name="option_id" formElement="hidden">
+                    <settings>
+                        <dataType>text</dataType>
+                        <visible>false</visible>
+                    </settings>
+                </field>
+                <field name="is_default"
+                      component="Amasty_QuoteAttributesManagement/js/form/element/amquoteattrs-checkbox"
+                      sortOrder="0"
+                      formElement="checkbox">
+                    <argument name="data" xsi:type="array">
+                        <item name="config" xsi:type="array">
+                            <item name="source" xsi:type="string">test</item>
+                            <item name="prefixElementName" xsi:type="string">option_</item>
+                            <item name="inputCheckBoxName" xsi:type="string">
+                                attribute_options_multiselect_default
+                            </item>
+                            <item name="multiple" xsi:type="boolean">true</item>
+                            <item name="value" xsi:type="string">1</item>
+                            <item name="columnsHeaderClasses" xsi:type="string">control-table-options-th</item>
+                            <item name="modules" xsi:type="array">
+                                <item name="rows" xsi:type="string">
+                                    ns = ${ $.ns }, index = attribute_options_multiselect
+                                </item>
+                            </item>
+                        </item>
+                    </argument>
+                    <settings>
+                        <additionalClasses>
+                            <class name="control-table-options-cell">true</class>
+                        </additionalClasses>
+                        <dataType>boolean</dataType>
+                        <label translate="true">Is Default</label>
+                    </settings>
+                </field>
+                <field name="position" component="Magento_Catalog/js/form/element/input" formElement="input">
+                    <argument name="data" xsi:type="array">
+                        <item name="config" xsi:type="array">
+                            <item name="prefixName" xsi:type="string">option.order</item>
+                            <item name="prefixElementName" xsi:type="string">option_</item>
+                        </item>
+                    </argument>
+                    <settings>
+                        <additionalClasses>
+                            <class name="_hidden">true</class>
+                        </additionalClasses>
+                        <dataType>text</dataType>
+                        <visible>false</visible>
+                        <dataScope>position</dataScope>
+                    </settings>
+                </field>
+            </container>
+        </dynamicRows>
+        <field name="attribute_options_multiselect_count"
+              component="Amasty_QuoteAttributesManagement/js/form/element/amquoteattrs-counter"
+              formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="listens" xsi:type="array">
+                        <item name="${ $.parentName }.attribute_options_multiselect:elems" xsi:type="string">onRowsUpdate</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>int</dataType>
+                <additionalClasses>
+                    <class name="amquoteattrs-options-counter">true</class>
+                </additionalClasses>
+                <labelVisible>false</labelVisible>
+            </settings>
+        </field>
+    </fieldset>
+    <fieldset name="configuration_fieldset" sortOrder="20">
+        <settings>
+            <collapsible>true</collapsible>
+            <label translate="true">Field Configuration</label>
+        </settings>
+
+        <field name="used_in_grid" sortOrder="10" formElement="checkbox">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">0</item>
+                </item>
+            </argument>
+            <settings>
+                <notice translate="true">
+                    Select "Yes" to add this field to the list of column options on the quotes grid.
+                </notice>
+                <dataType>boolean</dataType>
+                <label translate="true">Add to Column Options</label>
+                <dataScope>used_in_grid</dataScope>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+        <field name="filterable_in_grid" sortOrder="20" formElement="checkbox">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">0</item>
+                    <item name="imports" xsi:type="array">
+                        <item name="visible" xsi:type="string">ns = ${ $.ns }, index = used_in_grid :checked</item>
+                    </item>
+
+                </item>
+            </argument>
+            <settings>
+                <notice translate="true">
+                    Select "Yes" to add this field to the list of filter options on the quotes grid.
+                </notice>
+                <dataType>boolean</dataType>
+                <label translate="true">Use in Filter Options</label>
+                <dataScope>filterable_in_grid</dataScope>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+        <field name="sort_order" sortOrder="30" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="string">0</item>
+                </item>
+            </argument>
+            <settings>
+                <validation>
+                    <rule name="validate-number" xsi:type="boolean">true</rule>
+                    <rule name="greater-than-equals-to" xsi:type="number">0</rule>
+                </validation>
+                <notice translate="true">Position of attribute on quote pages</notice>
+                <dataType>number</dataType>
+                <label translate="true">Sort Order</label>
+                <dataScope>sort_order</dataScope>
+            </settings>
+        </field>
+    </fieldset>
+    <fieldset name="manage_titles_fieldset" sortOrder="30">
+        <settings>
+            <collapsible>true</collapsible>
+            <label translate="true">Manage Titles (Size, Color, etc.)</label>
+        </settings>
+    </fieldset>
+</form>

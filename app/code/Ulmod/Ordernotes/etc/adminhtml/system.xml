@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Ulmod. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="ulmod_extensions" translate="label" sortOrder="8888888">
+            <label>Ulmod Extensions</label>
+        </tab>	
+		<section id="ulmod_ordernotes" translate="label" type="text" sortOrder="110" showInDefault="1"
+                 showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label><![CDATA[Order Notes]]></label>
+            <tab>ulmod_extensions</tab>
+            <resource>Ulmod_Ordernotes::norders</resource>	
+		     <group id="notifications" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Notifications</label>				
+				<group id="customer" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Customer Notifications</label>				
+					<field id="template" translate="label" type="select" sortOrder="20"  showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Email Template</label>
+						<source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+					</field>
+					<field id="sender_name" translate="label" type="text" sortOrder="50"  showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Email Sender Name</label>
+						<validate>required-entry</validate>						
+					</field>				
+					<field id="sender_email" translate="label" type="text" sortOrder="60"  showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Email Sender Email</label>
+						<validate>required-entry validate-email</validate>
+					</field>
+				</group>	
+				<group id="admin" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Amin Notifications</label>	
+					<field id="template" translate="label" type="select" sortOrder="20"  showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Email Template</label>
+						<source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+					</field>					
+					<field id="admin_email" translate="label" type="text" sortOrder="30"  showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Admin Email ID</label>
+						<validate>required-entry validate-email</validate>
+						<comment><![CDATA[ To : Email ID . eg. joe@example.com]]></comment>
+					</field>
+					<field id="sender_name" translate="label" type="text" sortOrder="50"  showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Email Sender Name</label>
+						<validate>required-entry</validate>							
+					</field>				
+					<field id="sender_email" translate="label" type="text" sortOrder="60"  showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Email Sender Email</label>
+						<validate>required-entry validate-email</validate>					
+					</field>
+				</group>			 
+              </group>			
+        </section>
+    </system>
+</config>

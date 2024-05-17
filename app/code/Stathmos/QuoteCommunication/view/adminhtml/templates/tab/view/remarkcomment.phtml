@@ -1,0 +1,61 @@
+<div class="fieldset-wrapper order-information">
+    <div class="fieldset-wrapper-title">
+        <span class="title"><?php echo __('Remark Comment Histroy') ?></span>
+    </div>
+   <?php $quoteRemarkCollection = $this->getRemarkCommentCollection();?>
+    <div class="quote-details-items ordered">
+       <!--  <div class="quote-title">
+            <strong><?php echo __('Remark Comment Histroy') ?></strong>
+        </div> -->
+        <div id="notes-on-quote-container">
+            <ul class="um-notes remark">
+                <?php
+                    if($quoteRemarkCollection && count($quoteRemarkCollection) > 0){
+                        foreach($quoteRemarkCollection as $remark){ ?>
+                            <li class="quote-remark-customer">
+                                <div class="quote-remark-header">
+                                    <strong>
+                                        <?php if($remark->getAdminUserName()){
+                                                echo $remark->getAdminUserName();
+                                            }else{
+                                                echo $remark->getCustomerName();
+                                            } ?>
+                                    </strong>
+                                    <span><?= __($remark->getUpdatedAt());?></span>
+                                </div>
+                                <div class="remark-message-content">
+                                    <p class="msg"><?= nl2br(__($remark->getRemarkComment())); ?></p>
+                                </div>
+                            </li>
+                        <?php }
+                    } else { ?>
+                        <li class="quote-remark-customer">
+                            <div class="remark-message-content">
+                                <p class="msg"><?= __('Quote Remark Not Found'); ?></p>
+                            </div>
+                        </li>
+                    <?php } ?>
+            </ul>
+        </div>
+        <div class="ulmod-cnote">
+            <form name="quote-remark-form" id="quote-notes-form" method="post" action="<?php echo $this->getFormAction(); ?>">
+                <input type="hidden" name="form_key" value="<?php  echo $block->getFormKey() ?>" />
+                <input type="hidden" name="quote_id" value="<?php echo $this->getQuote()->getId(); ?>" />
+                <textarea name="remark_comment" id="notes-order-reply"></textarea>
+                <button type="submit" class="action primary">
+                    <span>Add Remark</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+<style type="text/css">
+    .remark li {list-style: none;background-color: #f1f1f1;padding: 12px;border-bottom: 1px solid #ccc;}
+    .quote-remark-header{margin-top: 10px;}
+    .quote-remark-header strong{float: left;margin-right: 10px;text-transform: capitalize;}
+    ul.um-notes.remark {margin-top: 20px;}
+    .quote-details-items textarea#notes-order-reply {width: 100%;margin-bottom: 10px;}
+    .quote-details-items button.action.primary {float: right;}
+</style>
+

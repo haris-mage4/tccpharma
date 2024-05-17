@@ -1,0 +1,180 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// phpcs:disable Magento2.Templates.ThisInTemplate
+// @codingStandardsIgnoreFile
+
+/** @var \Magento\Sales\Block\Order\History $block */
+?>
+<?php
+// $helper = $this->helper('Stathmos\Customize\Helper\Data');
+// $values = $helper->YourHelperMethod();
+?>
+<?php $_orders = $block->getOrders(); ?>
+<?= $block->getChildHtml('info') ?>
+<?php if ($_orders && count($_orders)) : ?>
+     <div class="orders-history">
+        <form class="order-search" id="order-search" action="<?php echo $this->getUrl('sales/order/history') ?>">
+            <input type="text" placeholder="Search order items here..." value="<?php if(isset($_GET['search']) && $_GET['search']){ echo $_GET['search']; } ?>" name="search">
+            <button type="submit" title="Search" class="action search primary">
+                <span>Search</span>
+            </button>
+        </form>
+        <div class="history">
+            <!-- <caption class="table-caption"><?= $block->escapeHtml(__('Orders')) ?></caption> -->
+            <?php foreach ($_orders as $_order) : ?>
+            <div class="hallcontent">
+            <div class="order_col">
+                
+                <h4><?= $block->escapeHtml(__('Order #')) ?></h4><p><?= $block->escapeHtml($_order->getRealOrderId()) ?></p>
+                <h4><?= $block->escapeHtml(__('PO #')) ?></h4><p><?= $block->escapeHtml($_order->getPoNumber()) ?></p>
+                <h4><?= $block->escapeHtml(__('Date')) ?></h4><p><?= /* @noEscape */ $block->formatDate($_order->getCreatedAt()) ?></p>
+                <h4><?= $block->escapeHtml(__('Order Total')) ?></h4><p><?= /* @noEscape */ $_order->formatPrice($_order->getGrandTotal()) ?></p>
+                <h4><?= $block->escapeHtml(__('Status')) ?></h4><p class="<?php echo $_order->getStatusLabel();?>"><?= $block->escapeHtml($_order->getStatusLabel()) ?></p>
+                <h4><?= $block->escapeHtml(__('Action')) ?></h4>
+                    <a href="<?= $block->escapeUrl($block->getViewUrl($_order)) ?>" class="action view">
+                                <p><?= $block->escapeHtml(__('View')) ?></p>
+                     </a>
+                     <?php if ($this->helper(\Magento\Sales\Helper\Reorder::class)->canReorder($_order->getEntityId())) : ?>
+                                <a href="#" data-post='<?= /* @noEscape */
+                                $this->helper(\Magento\Framework\Data\Helper\PostHelper::class)
+                                    ->getPostData($block->getReorderUrl($_order))
+                                ?>' class="action order">
+                                    <p><?= $block->escapeHtml(__('Reorder')) ?></p>
+                                </a>
+                    <?php endif ?>
+            </div>
+            <?php $i=1; foreach ($_order->getAllItems() as $item) { ?>
+                            <?php 
+                                $product = $item->getProduct();
+                                $class = '';
+                                if($i==1){
+                                    $class = 'no_border';
+                                }
+                                $i++;
+                            ?>
+	            <div class="order_data <?php echo $class;?>">
+	                <h4>Item Name <p><?php echo $item->getName(); ?></p></h4>
+	                <h4>SKU <p><?php echo $item->getSku(); ?></p></h4>
+	                <h4>NDC <p><?php echo $product->getNdc(); ?></p></h4>
+	                <h4>QTY <p class="bold_data"><?php echo intval($item->getQtyOrdered()); ?></p></h4>
+	                <h4>Price <p class="bold_data"><?php echo $this->helper('Magento\Framework\Pricing\Helper\Data')->currency($item->getPrice(),true,false); ?></p></h4>
+	            </div>
+           <?php } ?>
+           </div>
+           <?php endforeach; ?>
+        </div></div>
+     <?php if ($block->getPagerHtml()) : ?>
+        <div class="order-products-toolbar toolbar bottom"><?= $block->getPagerHtml() ?></div>
+    <?php endif ?>
+    <?php else : ?>
+        <div class="message info empty"><p><?= $block->escapeHtml($block->getEmptyOrdersMessage()) ?></p></div>
+    </div>
+    <?php endif ?>
+<style type="text/css">
+form#order-search button {
+    float: right;
+}
+form#order-search input {
+    float: left;
+    width: 88%;
+    margin-bottom: 15px;
+}
+p.bold_data {
+    font-weight: bold;
+}
+p.Pending {
+    color: #e6540d;
+}
+p.Canceled {
+    color: red;
+}
+.history {
+    float: left;
+    width: 100%;
+}
+.order_col{
+    float: left;
+    width: 40%;
+}
+.order_data{
+    float: right;
+    width: 60%;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+}
+.no_border {
+    border-top: 0;
+    padding-top: 0;
+}
+.order_col p{
+    float: right;
+    width: 70%;
+}
+.order_col h4{
+    float: left;
+    width: 30%;
+    clear: both;
+}
+.order_data p  {
+    float: right;
+    width: 80%;
+}
+.order_data h4 {
+    float: left;
+    width: 100%;
+    margin-bottom: 5px;
+}
+.history h4 {
+color: #121212;
+font: 400 14px/1.35 Poppins, Helvetica Neue, Verdana, Arial, sans-serif;
+text-transform: uppercase;
+}
+a.action.view {
+    float: left;
+    border-right: 1px solid #ccc;
+    height: 16px;
+    margin-left: -10px;
+    padding-right: 16px;
+    color: #1979c3;
+}
+a.action.order {
+    float: left;
+    color: #1979c3;
+}
+.hallcontent {
+    float: left;
+    width: 100%;
+    border-top: 1px solid #ccc;
+    padding-top: 15px;
+    padding-bottom: 5px;
+}
+.hallcontent:last-child {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+@media only screen and (max-width: 991px) {
+form#order-search input {
+    width: 80%;
+}
+.order_col {
+    float: left;
+    width: 100%;
+}
+.order_data {
+    float: right;
+    width: 100%;
+}
+}
+@media only screen and (max-width: 767px) {
+form#order-search input {
+    width: 70%;
+}
+.order_data p {
+    width: 70%;
+}
+}
+</style>

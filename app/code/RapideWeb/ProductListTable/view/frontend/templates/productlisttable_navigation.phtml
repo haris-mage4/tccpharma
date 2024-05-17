@@ -1,0 +1,38 @@
+<?php
+/**
+ * @company RapideWeb
+ * @package RapideWeb_ProductListTable
+ * @author James Wu <james4u.boda@gmail.com>
+ * @date Mar 30, 2018
+ *
+ */
+
+/**
+ * @var $block \RapideWeb\ProductListTable\Block\ProductList
+ */
+?>
+<?php $queriedChar = $block->getQueriedChar() ?>
+<?php $isEnabled = $block->isShowNavigation(); ?>
+<?php //$isEnabled = false;?>
+<?php if ($isEnabled): ?>
+    <div class="products-table-navigation">
+    <?php foreach (range('a', 'z') as $char): ?>
+        <span class="navigation-item">
+            <?php if ($char == $queriedChar): ?>
+                <span class="navigation-link selected"><?= $char ?></span>
+            <?php else: ?>
+                <a href="<?= $block->getQueryUrl($char) ?>"
+                   class="navigation-link"><?= $char ?></a>
+            <?php endif; ?>
+        </span>
+    <?php endforeach;?>
+        <span class="navigation-item">
+            <?php if (!$queriedChar || $queriedChar=='all'): ?>
+                <span class="navigation-link all selected"><?= 'All' ?></span>
+            <?php else: ?>
+                <a href="<?= $block->getQueryUrl('all') ?>"
+                   class="navigation-link all"><?= 'All' ?></a>
+            <?php endif; ?>
+        </span>
+    </div>
+<?php endif; ?>

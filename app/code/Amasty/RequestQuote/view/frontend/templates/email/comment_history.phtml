@@ -1,0 +1,37 @@
+<?php
+$quote = $block->getQuote();
+$quoteRemarkCollection = $block->getRemarkCommentCollection();
+?>
+<?php if ($quoteRemarkCollection) : ?>
+    <table style="width: 100%; border: 1px solid #c7c3c3;">
+        <th style="text-align: center; font-size: 18px; padding: 10px; border-bottom: 1px solid #c7c3c3; background-color: yellow;">How To Order:</th>
+        <tr>
+            <td colspan="10">
+                <p class="note" style="margin-bottom: 0px; padding: 10px; border-radius: 5px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
+                    To order an approved item, use the PLACE ORDER button<a href="<?= $block->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB) . 'request_quote/account/view/quote_id/' . $quote->getEntityId(); ?>"> on this quote via the catalog.</a>
+                </p>
+                <p class="note" style="padding: 0 10px; border-radius: 5px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
+                    You can also reply to this email to place your order.
+                </p>
+            </td>
+        </tr>
+        <th style="text-align: center; font-size: 18px; padding: 10px; border-bottom: 1px solid #c7c3c3; background-color: yellow;">Remark History</th>
+        <?php foreach ($quoteRemarkCollection as $remark) : ?>
+            <tr style="font-weight: bold;">
+                <?php if ($remark->getAdminUserName()) : ?>
+                    <td style="float: left; background: red; padding: 10px; border-radius: 7px; margin: 10px; background: #B4F2BB52;">
+                        <span style="color: #687e83; font-size: 12px;"><?= date('Y-m-d H:i:s', strtotime($remark->getUpdatedAt() . " -7 hours")); ?></span><br>
+                        <?= $remark->getAdminUserName(); ?>:
+                        <?= nl2br(__($remark->getRemarkComment())); ?>
+                    </td>
+                <?php else : ?>
+                    <td style="padding: 10px; border-radius: 7px; float: right; margin: 10px; background: #ECFAFF;">
+                        <span style="color: #687e83; font-size: 12px;"><?= date('Y-m-d H:i:s', strtotime($remark->getUpdatedAt() . " -7 hours")); ?></span><br>
+                        <?= $remark->getCustomerName(); ?>:
+                        <?= nl2br(__($remark->getRemarkComment())); ?>
+                    </td>
+                <?php endif; ?>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+<?php endif; ?>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Ulmod. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+-->
+<layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/layout_generic.xsd">
+    <container name="root" label="Root">
+        <block class="Ulmod\Ordernotes\Block\Adminhtml\Order\Notes"
+               name="admin.order.notes"
+               template="Ulmod_Ordernotes::tab/notes.phtml" />
+    </container>
+</layout>

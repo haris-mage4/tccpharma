@@ -1,0 +1,14 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
+ * @package Amasty_RequestQuote
+ */
+?>
+<?php $quote = $block->getQuote() ?>
+<?php if ($quote): ?>
+<p>
+You will receive an email once Quote# <span><a href="<?php echo $block->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB).'request_quote/account/view/quote_id/'.$quote->getEntityId(); ?>"> <?php echo $quote->getIncrementId(); ?></a> </span>
+<span>has been updated.</span>
+</p>
+<?php endif; ?>

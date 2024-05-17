@@ -1,0 +1,145 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+
+/**
+ * Product view template
+ *
+ * @var $block \Magento\Catalog\Block\Product\View\Description
+ */
+?>
+<?php
+$_product = $block->getProduct();
+if (!$_product instanceof \Magento\Catalog\Model\Product) {
+    return;
+}
+$_className = $block->getCssClass();
+?>
+
+<div class="product attribute <?= $block->escapeHtmlAttr($_className) ?>">
+    <strong class="type"><?= $block->escapeHtml('NDC') ?></strong>
+    <div class="value"><?php echo $_product->getNdc() ?></div>
+</div>
+<br>
+<div class="product attribute manufacturer">
+    <strong class="type"><?= $block->escapeHtml('Manufacturer:') ?></strong>
+    <div class="value"><?php echo $_product->getManufacturer() ?></div>
+</div>
+<!-- <br> -->
+<div class="product attribute size">
+    <strong class="type"><?= $block->escapeHtml('Unit Of Measure:') ?></strong>
+    <div class="value"><?php echo $_product->getSize() ?></div>
+</div>
+
+<!-- <br> -->
+<?php
+      $stockItem = $_product->getExtensionAttributes()->getStockItem($_product->getId());
+      $quantity = $stockItem->getQty();
+ ?>
+<div class="product-status">
+    <p class="product_available">Availability :
+    <?php if($quantity != 0): ?>
+        <div class="tooltip"><span style="color:green;font-weight:bold;text-transform: capitalize;">In Stock</span> <i class="fa fa-question-circle" aria-hidden="true"></i>
+            <span class="tooltiptext">
+                <strong>In Stock:</strong> In stock at our AZ warehouse. Instant turnaround likely.<br>
+            </span>
+        </div>
+    <?php else: ?>
+        <div class="tooltip"><span style="color:blue;font-weight:bold;text-transform: capitalize;">In Network</span> <i class="fa fa-question-circle" aria-hidden="true"></i>
+            <span class="tooltiptext">
+                <strong>In Network:</strong>
+                <ul class="tooltiptext_list">
+                    <li>Product may be available to ship with a 1-5 day lead time.</li>
+                    <li> Request a quote for more specific information.</li>
+                </ul>
+                <p class="note">*If unavailable, we will quote an equivalent option or can notify you of availability.</p>
+            </span>
+        </div>
+    <?php endif; ?>
+    </p>
+</div>
+
+
+<!-- <br> -->
+<?php $viewModel = $block->getData('viewModel');?>
+<?php $qty_enable_for_frontend=$viewModel->getProductQtyStatus(); ?>
+<?php $magemonkeys_productqty_enable = $viewModel->getModuleStatus(); ?>
+<?php if($magemonkeys_productqty_enable):?>
+    <?php if($qty_enable_for_frontend): ?>
+        <?php if($stockItem->getQty() != null && !empty($stockItem->getQty())):?>
+            <div class="product attribute qty">
+            <strong class="type"><?= $block->escapeHtml('Qty:') ?></strong>
+            <div class="value"><?= $stockItem->getQty() ?></div>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
+<?php endif; ?>
+
+
+<script type="text/x-magento-init">
+{
+    "*": {
+        "Magento_Ui/js/core/app": {
+            "components": {
+                "wishlist": {
+                    "component": "Magento_Wishlist/js/view/wishlist"
+                }
+            }
+        }
+    }
+}
+</script>
+<style type="text/css">
+    .add-to-wishlist>p:before {
+        display: inline-block;
+        font-family: FontAwesome;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        content: "\f007";
+        font-size: 16px;
+        margin-right: 5px;
+        content: "\f08a";
+    }
+    .product.attribute.wishlist {
+        background: #2595c6;
+        padding: 10px;
+        max-width: 180px;
+        padding-bottom: 1px;
+        border: 1px solid #0094c6;
+        margin-top: 15px;
+    }
+    .product.attribute.wishlist:hover {
+        background: #fff !important;
+        border: 1px solid #0094c6;
+        -webkit-transition: all 500ms ease;
+    -o-transition: all 500ms ease;
+    transition: all 500ms ease;
+    -moz-backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    }
+   .wishlist a {
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    font-size: 16px;
+}
+    .wishlist a:hover {
+    color: #2695c6 !important;
+}
+.product-info-stock-sku .product.attribute strong.type {
+    font-weight: normal;
+    margin-right: 5px;
+}
+.product-info-stock-sku .product.attribute .value {
+    display: inline-block;
+}
+
+</style>
